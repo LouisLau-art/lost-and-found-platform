@@ -1,0 +1,269 @@
+/* ===========================
+   REFACTORED LIGHT THEME STYLES
+   - Unified light color palette
+   - Consistent background colors
+   - Improved text readability
+   =========================== */
+
+/* Light Theme Variables */
+:root {
+  /* ===== Background Colors ===== */
+  --bg-page: #f8fafc;              /* Page background - very light blue-grey */
+  --bg-card: #ffffff;              /* Card background - pure white */
+  --bg-surface: #f1f5f9;           /* Surface background - light grey */
+  --bg-input: #ffffff;             /* Input background - white */
+  --bg-hover: #f1f5f9;             /* Hover background - light grey */
+  --bg-selected: #e2e8f0;          /* Selected background - medium grey */
+  
+  /* ===== Text Colors ===== */
+  --text-primary: #1e293b;         /* Primary text - dark slate */
+  --text-secondary: #64748b;       /* Secondary text - slate */
+  --text-tertiary: #94a3b8;        /* Tertiary text - light slate */
+  --text-inverse: #ffffff;         /* Inverse text - white */
+  --text-link: #3b82f6;            /* Link color - blue */
+  --text-link-hover: #2563eb;      /* Link hover - darker blue */
+  
+  /* ===== Border Colors ===== */
+  --border-base: #e2e8f0;          /* Base border - light grey */
+  --border-strong: #cbd5e1;        /* Strong border - medium grey */
+  --border-subtle: #f1f5f9;        /* Subtle border - very light grey */
+  
+  /* ===== Brand Colors ===== */
+  --brand-primary: #3b82f6;        /* Primary brand - blue */
+  --brand-primary-hover: #2563eb;  /* Primary hover - darker blue */
+  --brand-primary-light: #dbeafe;  /* Primary light - light blue */
+  
+  /* ===== Status Colors ===== */
+  --status-success: #10b981;       /* Success - green */
+  --status-warning: #f59e0b;       /* Warning - amber */
+  --status-danger: #ef4444;        /* Danger - red */
+  --status-info: #6366f1;          /* Info - indigo */
+  
+  /* ===== Shadows ===== */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  
+  /* ===== Spacing & Radius ===== */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-2xl: 2.5rem;
+  --spacing-3xl: 3rem;
+  
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-full: 9999px;
+}
+
+/* Global Styles */
+body {
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+}
+
+/* Card Components */
+.el-card {
+  background-color: var(--bg-card) !important;
+  border: 1px solid var(--border-base) !important;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s ease;
+}
+
+.el-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--border-strong) !important;
+}
+
+.el-card__header {
+  background-color: var(--bg-card) !important;
+  border-bottom: 1px solid var(--border-base) !important;
+  color: var(--text-primary) !important;
+  font-weight: 600;
+}
+
+/* Buttons */
+.el-button {
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.el-button--primary {
+  background-color: var(--brand-primary);
+  border-color: var(--brand-primary);
+}
+
+.el-button--primary:hover {
+  background-color: var(--brand-primary-hover);
+  border-color: var(--brand-primary-hover);
+  transform: translateY(-1px);
+}
+
+.el-button--success {
+  background-color: var(--status-success);
+  border-color: var(--status-success);
+}
+
+.el-button--warning {
+  background-color: var(--status-warning);
+  border-color: var(--status-warning);
+}
+
+.el-button--danger {
+  background-color: var(--status-danger);
+  border-color: var(--status-danger);
+}
+
+/* Tags */
+.el-tag {
+  border-radius: var(--radius-sm);
+  border: none;
+  font-weight: 500;
+}
+
+.el-tag--success {
+  background-color: var(--status-success);
+  color: var(--text-inverse);
+}
+
+.el-tag--warning {
+  background-color: var(--status-warning);
+  color: var(--text-inverse);
+}
+
+.el-tag--danger {
+  background-color: var(--status-danger);
+  color: var(--text-inverse);
+}
+
+.el-tag--info {
+  background-color: var(--text-tertiary);
+  color: var(--text-inverse);
+}
+
+/* Inputs */
+.el-input__inner {
+  background-color: var(--bg-input) !important;
+  border: 1px solid var(--border-base) !important;
+  border-radius: var(--radius-md) !important;
+  color: var(--text-primary) !important;
+  transition: all 0.3s ease;
+}
+
+.el-input__inner:focus {
+  border-color: var(--brand-primary) !important;
+  box-shadow: 0 0 0 3px var(--brand-primary-light) !important;
+}
+
+/* Tables */
+.el-table {
+  background-color: var(--bg-card) !important;
+  border: 1px solid var(--border-base) !important;
+  border-radius: var(--radius-lg) !important;
+}
+
+.el-table th {
+  background-color: var(--bg-surface) !important;
+  color: var(--text-secondary) !important;
+  font-weight: 600;
+}
+
+.el-table td {
+  color: var(--text-primary) !important;
+}
+
+/* Pagination */
+.el-pagination {
+  color: var(--text-primary) !important;
+}
+
+.el-pagination button,
+.el-pagination .el-pager li {
+  background-color: var(--bg-card) !important;
+  border: 1px solid var(--border-base) !important;
+  color: var(--text-primary) !important;
+}
+
+.el-pagination button:hover,
+.el-pagination .el-pager li:hover {
+  color: var(--brand-primary) !important;
+}
+
+.el-pagination .el-pager li.is-active {
+  background-color: var(--brand-primary) !important;
+  color: var(--text-inverse) !important;
+  border-color: var(--brand-primary) !important;
+}
+
+/* Forms */
+.el-form-item__label {
+  color: var(--text-primary) !important;
+  font-weight: 500;
+}
+
+/* Alerts */
+.el-alert {
+  border-radius: var(--radius-md);
+}
+
+.el-alert--success {
+  background-color: var(--status-success) !important;
+  color: var(--text-inverse) !important;
+}
+
+.el-alert--warning {
+  background-color: var(--status-warning) !important;
+  color: var(--text-inverse) !important;
+}
+
+.el-alert--error {
+  background-color: var(--status-danger) !important;
+  color: var(--text-inverse) !important;
+}
+
+/* Skeleton */
+.el-skeleton {
+  background-color: var(--bg-surface) !important;
+}
+
+/* Descriptions */
+.el-descriptions__label {
+  background-color: var(--bg-surface) !important;
+  color: var(--text-secondary) !important;
+  font-weight: 500;
+}
+
+.el-descriptions__content {
+  background-color: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Tabs */
+.el-tabs__item {
+  color: var(--text-secondary) !important;
+}
+
+.el-tabs__item.is-active {
+  color: var(--brand-primary) !important;
+}
+
+.el-tabs__active-bar {
+  background-color: var(--brand-primary) !important;
+}
+
+/* Avatars */
+.el-avatar {
+  background-color: var(--bg-surface) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Icons */
+.el-icon {
+  color: var(--text-secondary);
+}

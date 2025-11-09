@@ -1,0 +1,360 @@
+/* Base styles */
+@import './base.css';
+@import './refactored-theme.css';
+
+/* ===========================
+   THEME VARIABLES SYSTEM
+   =========================== */
+
+/* Light Theme (Default) */
+:root {
+  /* Background Colors */
+  --bg-color: #f9fafb;           /* Light grey page background */
+  --bg-color-page: #ffffff;      /* White page background */
+  --card-bg-color: #ffffff;      /* White card background */
+  --sidebar-bg-color: #ffffff;   /* White sidebar */
+  --nav-bg-color: #ffffff;       /* White navigation */
+  
+  /* Text Colors */
+  --text-primary: #1f2937;       /* Dark grey - primary text */
+  --text-secondary: #6b7280;     /* Medium grey - secondary text */
+  --text-muted: #9ca3af;         /* Light grey - muted text */
+  --text-inverse: #ffffff;       /* White text for dark backgrounds */
+  
+  /* Border & Divider Colors */
+  --border-color: #e5e7eb;       /* Light grey border */
+  --border-color-dark: #d1d5db;  /* Darker border for emphasis */
+  
+  /* Input & Form Colors */
+  --input-bg-color: #ffffff;     /* White input background */
+  --input-border-color: #d1d5db; /* Grey input border */
+  --input-text-color: #1f2937;   /* Dark text in inputs */
+  --input-placeholder-color: #9ca3af; /* Grey placeholder */
+  
+  /* Primary Brand Colors */
+  --primary-color: #3b82f6;      /* Blue */
+  --primary-hover: #2563eb;      /* Darker blue on hover */
+  --primary-light: #60a5fa;      /* Light blue */
+  
+  /* Status Colors */
+  --success-color: #10b981;      /* Green */
+  --warning-color: #f59e0b;      /* Orange */
+  --danger-color: #ef4444;       /* Red */
+  --info-color: #6366f1;         /* Indigo */
+  
+  /* Shadow */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* ===========================
+   PROFESSIONAL DARK THEME PALETTE
+   - Harmonious grey-based color system
+   - Optimized contrast ratios for accessibility
+   - No jarring white or pure black
+   =========================== */
+
+/* Dark Theme */
+html.dark {
+  /* ===== Background Colors (Grey Shades) ===== */
+  --bg-color-base: #111827;       /* Deepest background (page body) */
+  --bg-color-surface: #1f2937;    /* Surface color for cards, table headers */
+  --bg-color-muted: #374151;      /* Muted background for inputs, inactive elements */
+  --bg-color-hover: rgba(75, 85, 99, 0.5); /* Hover effect background */
+  
+  /* Legacy compatibility (mapped to new system) */
+  --bg-color: #111827;            /* Maps to --bg-color-base */
+  --bg-color-page: #111827;       /* Maps to --bg-color-base */
+  --card-bg-color: #1f2937;       /* Maps to --bg-color-surface */
+  --sidebar-bg-color: #1f2937;    /* Maps to --bg-color-surface */
+  --nav-bg-color: #1f2937;        /* Maps to --bg-color-surface */
+  
+  /* ===== Text Colors (Optimized Contrast) ===== */
+  --text-primary: #f9fafb;        /* Main text (almost white, but softer) */
+  --text-secondary: #d1d5db;      /* Secondary text (brighter grey) */
+  --text-muted: #9ca3af;          /* Muted text (for placeholders, disabled text) */
+  --text-inverse: #1f2937;        /* Dark text for light backgrounds */
+  
+  /* ===== Border Colors ===== */
+  --border-color-light: #4b5563;  /* Brighter border for interactive elements */
+  --border-color-base: #374151;   /* Standard border for containers */
+  --border-color: #374151;        /* Legacy compatibility */
+  --border-color-dark: #4b5563;   /* Legacy compatibility */
+  
+  /* ===== Input & Form Colors ===== */
+  --input-bg-color: #374151;      /* Dark input background (using muted) */
+  --input-border-color: #4b5563;  /* Input border */
+  --input-text-color: #f9fafb;    /* Light text in inputs */
+  --input-placeholder-color: #9ca3af; /* Grey placeholder */
+  
+  /* ===== Primary Brand Colors ===== */
+  --primary-color: #3b82f6;       /* Your brand blue */
+  --primary-color-light: rgba(59, 130, 246, 0.2); /* Light version for backgrounds */
+  --primary-hover: #60a5fa;       /* Brighter blue on hover */
+  --primary-light: #93c5fd;       /* Legacy compatibility */
+  
+  /* ===== Status Colors (brighter in dark mode) ===== */
+  --success-color: #34d399;
+  --warning-color: #fbbf24;
+  --danger-color: #f87171;
+  --info-color: #818cf8;
+  
+  /* ===== Shadow (darker in dark mode) ===== */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.5);
+  
+  /* ===== IMPORTANT RULES ===== */
+  /* DO NOT USE PURE WHITE (#FFFFFF) FOR BACKGROUNDS */
+  /* DO NOT USE PURE BLACK (#000000) FOR TEXT */
+  /* ALWAYS USE THE DEFINED GREY SHADES ABOVE */
+}
+
+/* Global reset and base styles */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text-primary);
+  background-color: var(--bg-color);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+#app {
+  min-height: 100vh;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--text-primary);
+}
+
+h1 {
+  font-size: 2.5rem;
+  letter-spacing: -0.025em;
+}
+
+h2 {
+  font-size: 2rem;
+  letter-spacing: -0.025em;
+}
+
+h3 {
+  font-size: 1.5rem;
+  letter-spacing: -0.02em;
+}
+
+h4 {
+  font-size: 1.25rem;
+  letter-spacing: -0.02em;
+}
+
+p {
+  margin: 0 0 1rem 0;
+  color: var(--text-secondary);
+}
+
+/* Links */
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+a:hover,
+a:focus {
+  color: var(--primary-hover);
+  text-decoration: underline;
+}
+
+/* ===========================
+   GLOBAL FIX: Ensure Text & Icons Visibility in Light Containers
+   =========================== */
+
+/* Fix Element Plus Card text color */
+.el-card,
+.el-card__body {
+  color: var(--text-primary) !important;
+}
+
+.el-card .el-icon {
+  color: var(--text-primary);
+}
+
+/* Fix Element Plus Table text color */
+.el-table {
+  color: var(--text-primary) !important;
+}
+
+.el-table th,
+.el-table td {
+  color: var(--text-primary) !important;
+}
+
+.el-table .el-icon {
+  color: var(--text-primary);
+}
+
+/* Fix Element Plus Input text color */
+.el-input__inner {
+  background-color: var(--input-bg-color) !important;
+  color: var(--input-text-color) !important;
+  border-color: var(--input-border-color);
+}
+
+.el-input__inner::placeholder {
+  color: var(--input-placeholder-color);
+}
+
+.el-input__prefix,
+.el-input__suffix {
+  color: var(--input-text-color);
+}
+
+/* Fix Element Plus Button text & icon color */
+.el-button {
+  transition: all 0.3s ease;
+}
+
+.el-button .el-icon {
+  vertical-align: middle;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Fix Element Plus Tag text color */
+.el-tag {
+  color: var(--text-primary);
+}
+
+/* Fix Element Plus Dropdown text color */
+.el-dropdown-menu__item {
+  color: var(--text-primary);
+}
+
+/* Ensure all text elements have proper color in light mode */
+html.light .el-card,
+html.light .el-table,
+html.light .el-input__inner {
+  color: #1f2937 !important;
+}
+
+html.light .el-icon {
+  color: #1f2937;
+}
+
+/* Layout utilities */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+@media (min-width: 640px) {
+  .container {
+    padding: 0 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    padding: 0 2rem;
+  }
+}
+
+/* Component utilities */
+.card-shadow {
+  box-shadow: var(--el-box-shadow);
+  transition: all 0.3s ease;
+}
+
+.card-shadow:hover {
+  box-shadow: var(--el-box-shadow-dark);
+  transform: translateY(-2px);
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+/* Animation classes */
+.fade-in {
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Loading states */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  width: 100%;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2rem;
+  }
+  
+  h2 {
+    font-size: 1.75rem;
+  }
+  
+  h3 {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 1.75rem;
+  }
+  
+  h2 {
+    font-size: 1.5rem;
+  }
+  
+  h3 {
+    font-size: 1.25rem;
+  }
+}

@@ -1,0 +1,399 @@
+/* ===========================
+   GLOBAL DESIGN SYSTEM
+   - Improved Contrast & Readability
+   - Enhanced Hover Effects
+   - Standardized Spacing
+   =========================== */
+
+:root {
+  /* ===== Improved Color Palette ===== */
+  /* Use light theme variables from main.css by default */
+  /* Text colors are defined in main.css */
+  
+  /* Dark theme background colors (used only when html.dark is active) */
+  --bg-dark-primary: #0f172a;     /* Darkest background */
+  --bg-dark-secondary: #1e293b;   /* Secondary dark */
+  --bg-dark-tertiary: #334155;    /* Tertiary dark */
+  
+  --primary-color: #3b82f6;       /* Blue */
+  --primary-hover: #2563eb;
+  --success-color: #10b981;       /* Green */
+  --success-hover: #059669;
+  --warning-color: #f59e0b;       /* Orange */
+  --warning-hover: #d97706;
+  --danger-color: #ef4444;        /* Red */
+  --danger-hover: #dc2626;
+  --info-color: #6366f1;          /* Indigo */
+  
+  /* ===== Spacing System (8px base) ===== */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+  --spacing-3xl: 64px;
+  
+  /* ===== Border Radius ===== */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  
+  /* ===== Transitions ===== */
+  --transition-fast: 150ms ease-in-out;
+  --transition-base: 250ms ease-in-out;
+  --transition-slow: 350ms ease-in-out;
+  
+  /* ===== Shadows ===== */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.2);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* ===== Global Text Improvements ===== */
+body {
+  /* Use color from main.css */
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  /* Use color from main.css */
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+/* Text colors are handled by main.css */
+
+.text-secondary {
+  color: var(--text-secondary) !important;
+}
+
+.text-muted {
+  color: var(--text-muted) !important;
+}
+
+/* ===== Enhanced Hover Effects ===== */
+.hover-lift {
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.hover-glow {
+  transition: box-shadow var(--transition-base);
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+}
+
+.hover-bg {
+  transition: background-color var(--transition-fast);
+}
+
+.hover-bg:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.hover-scale {
+  transition: transform var(--transition-base);
+}
+
+.hover-scale:hover {
+  transform: scale(1.05);
+}
+
+/* ===== Interactive Elements ===== */
+button, .clickable {
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+button:hover, .clickable:hover {
+  opacity: 0.9;
+}
+
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--primary-hover);
+}
+
+/* ===== Element Plus Customization ===== */
+
+/* Buttons */
+.el-button {
+  transition: all var(--transition-base) !important;
+  border-width: 1px;
+}
+
+.el-button.is-plain {
+  border-width: 2px !important;
+  font-weight: 500;
+}
+
+.el-button:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Cards */
+.el-card {
+  background-color: var(--bg-dark-secondary) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  transition: all var(--transition-base) !important;
+}
+
+.el-card:hover {
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  box-shadow: var(--shadow-lg) !important;
+}
+
+.el-card__header {
+  background-color: var(--bg-dark-primary) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  padding: var(--spacing-lg) !important;
+}
+
+.el-card__body {
+  padding: var(--spacing-lg) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Tables */
+.el-table {
+  background-color: transparent !important;
+  color: var(--text-primary) !important;
+}
+
+.el-table th.el-table__cell {
+  background-color: var(--bg-dark-primary) !important;
+  color: var(--text-primary) !important;
+  font-weight: 600;
+  padding: var(--spacing-md) var(--spacing-sm) !important;
+}
+
+.el-table td.el-table__cell {
+  padding: var(--spacing-md) var(--spacing-sm) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+.el-table__row {
+  background-color: var(--bg-dark-secondary) !important;
+  transition: background-color var(--transition-fast) !important;
+}
+
+.el-table__row:hover {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.el-table__row.el-table__row--striped {
+  background-color: rgba(255, 255, 255, 0.02) !important;
+}
+
+.el-table__row.el-table__row--striped:hover {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Input Fields */
+.el-input__wrapper {
+  background-color: var(--bg-dark-tertiary) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  transition: all var(--transition-fast) !important;
+}
+
+.el-input__wrapper:hover {
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.el-input__wrapper.is-focus {
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+}
+
+.el-input__inner {
+  color: var(--text-primary) !important;
+}
+
+.el-textarea__inner {
+  background-color: var(--bg-dark-tertiary) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: var(--text-primary) !important;
+  transition: all var(--transition-fast) !important;
+}
+
+.el-textarea__inner:hover {
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.el-textarea__inner:focus {
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+}
+
+/* Select Dropdown */
+.el-select-dropdown {
+  background-color: var(--bg-dark-secondary) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.el-select-dropdown__item {
+  color: var(--text-primary) !important;
+  transition: background-color var(--transition-fast) !important;
+}
+
+.el-select-dropdown__item:hover {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.el-select-dropdown__item.selected {
+  background-color: rgba(59, 130, 246, 0.2) !important;
+  color: var(--primary-color) !important;
+}
+
+/* Menu Items */
+.el-menu {
+  background-color: transparent !important;
+  border: none !important;
+}
+
+.el-menu-item {
+  color: var(--text-secondary) !important;
+  transition: all var(--transition-fast) !important;
+  margin: var(--spacing-xs) 0 !important;
+  border-radius: var(--radius-md) !important;
+}
+
+.el-menu-item:hover {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  color: var(--text-primary) !important;
+}
+
+.el-menu-item.is-active {
+  background-color: rgba(59, 130, 246, 0.15) !important;
+  color: var(--primary-color) !important;
+  font-weight: 600;
+}
+
+/* Tags */
+.el-tag {
+  border: none !important;
+  font-weight: 500;
+  padding: var(--spacing-xs) var(--spacing-md) !important;
+}
+
+/* Steps Component */
+.el-steps {
+  margin-bottom: var(--spacing-2xl);
+}
+
+.el-step__icon {
+  width: 40px !important;
+  height: 40px !important;
+  font-size: 18px !important;
+  transition: all var(--transition-base) !important;
+}
+
+.el-step.is-process .el-step__icon {
+  transform: scale(1.2);
+  border-width: 3px !important;
+}
+
+.el-step__title {
+  font-weight: 600 !important;
+  color: var(--text-primary) !important;
+}
+
+.el-step__title.is-wait {
+  color: var(--text-muted) !important;
+}
+
+.el-step__description {
+  color: var(--text-secondary) !important;
+}
+
+.el-step__description.is-wait {
+  color: var(--text-muted) !important;
+}
+
+/* Pagination */
+.el-pagination {
+  padding: var(--spacing-lg) 0 !important;
+}
+
+.el-pagination button,
+.el-pager li {
+  background-color: var(--bg-dark-secondary) !important;
+  color: var(--text-primary) !important;
+  transition: all var(--transition-fast) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.el-pagination button:hover,
+.el-pager li:hover {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  color: var(--primary-color) !important;
+}
+
+.el-pager li.is-active {
+  background-color: var(--primary-color) !important;
+  color: white !important;
+}
+
+/* Dialog */
+.el-dialog {
+  background-color: var(--bg-dark-secondary) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.el-dialog__header {
+  background-color: var(--bg-dark-primary) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  padding: var(--spacing-lg) !important;
+}
+
+.el-dialog__title {
+  color: var(--text-primary) !important;
+  font-weight: 600;
+}
+
+.el-dialog__body {
+  padding: var(--spacing-lg) !important;
+  color: var(--text-primary) !important;
+}
+
+/* ===== Utility Classes ===== */
+.spacing-xs { margin: var(--spacing-xs); }
+.spacing-sm { margin: var(--spacing-sm); }
+.spacing-md { margin: var(--spacing-md); }
+.spacing-lg { margin: var(--spacing-lg); }
+.spacing-xl { margin: var(--spacing-xl); }
+
+.p-xs { padding: var(--spacing-xs); }
+.p-sm { padding: var(--spacing-sm); }
+.p-md { padding: var(--spacing-md); }
+.p-lg { padding: var(--spacing-lg); }
+.p-xl { padding: var(--spacing-xl); }
+
+.mt-xs { margin-top: var(--spacing-xs); }
+.mt-sm { margin-top: var(--spacing-sm); }
+.mt-md { margin-top: var(--spacing-md); }
+.mt-lg { margin-top: var(--spacing-lg); }
+.mt-xl { margin-top: var(--spacing-xl); }
+
+.mb-xs { margin-bottom: var(--spacing-xs); }
+.mb-sm { margin-bottom: var(--spacing-sm); }
+.mb-md { margin-bottom: var(--spacing-md); }
+.mb-lg { margin-bottom: var(--spacing-lg); }
+.mb-xl { margin-bottom: var(--spacing-xl); }
