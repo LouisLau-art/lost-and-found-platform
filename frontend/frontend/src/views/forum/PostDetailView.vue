@@ -365,6 +365,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { postAPI, claimAPI } from '@/api'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { formatRelative as formatRelativeTime, formatLocal } from '@/utils/time'
 import ImageGallery from '@/components/ImageGallery.vue'
 // 动态导入Element Plus图标组件
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
@@ -411,7 +412,7 @@ const isAuthor = computed(() => {
 // 编辑帖子 - 函数定义在文件后续部分
 
 const canClaim = computed(() => {
-  return authStore.isAuthenticated && !isAuthor.value && post.value?.item_type !== 'general'
+  return authStore.isAuthenticated && !isAuthor.value && post.value?.item_type === 'found'
 })
 
 const canViewContact = computed(() => {
@@ -449,8 +450,8 @@ const getTypeColor = (type) => ({
   general: 'info'
 })[type] || ''
 
-const formatDate = (date) => new Date(date).toLocaleDateString('zh-CN')
-const formatDateTime = (date) => new Date(date).toLocaleString('zh-CN')
+const formatDate = (date) => formatRelativeTime(date)
+const formatDateTime = (date) => formatLocal(date)
 
 const loadPost = async () => {
   loading.value = true

@@ -13,7 +13,7 @@
     <div class="max-w-7xl mx-auto py-8 px-4">
       <h1 class="text-3xl font-bold text-fg-primary mb-6">📦 我的认领</h1>
 
-      <el-tabs v-model="activeTab" @tab-change="handleTabChange" class="claims-tabs">
+      <el-tabs v-model="activeTab" class="claims-tabs">
         <!-- 我发出的认领 -->
         <el-tab-pane label="我发出的认领" name="submitted">
           <template #label>
@@ -241,16 +241,18 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { claimAPI, postAPI } from '@/api'
+import { claimAPI } from '@/api'
 import { useAuthStore } from '@/stores/auth'
 import RatingDialog from '@/components/RatingDialog.vue'
+import { formatRelative as formatRelativeTime } from '@/utils/time'
 
-const activeTab = ref('submitted')
+const route = useRoute()
+const activeTab = ref(route.query.tab === 'received' ? 'received' : 'submitted')
 const submittedClaims = ref([])
 const receivedClaims = ref([])
-const receivedClaimsByPost = ref({})
 const loadingSubmitted = ref(false)
 const loadingReceived = ref(false)
 const showRatingDialog = ref(false)
@@ -279,37 +281,9 @@ const loadSubmittedClaims = async () => {
 const loadReceivedClaims = async () => {
   loadingReceived.value = true
   try {
-    // 获取我的所有帖子
-    const postsResponse = await postAPI.getAll()
-    // Ensure allPosts is always an array
-    let allPosts = postsResponse.data.posts || postsResponse.data || []
-    if (!Array.isArray(allPosts)) {
-      allPosts = []
-    }
-    
-    // 从authStore获取当前用户ID
-    const authStore = useAuthStore()
-    const myPosts = allPosts.filter(post => post.author_id === authStore.user?.id)
-    
-    // 获取每个帖子的认领请求
-    const claimsPromises = myPosts.map(post => 
-      claimAPI.getPostClaims(post.id).catch(() => ({ data: [] }))
-    )
-    const claimsResponses = await Promise.all(claimsPromises)
-    
-    // 合并所有认领请求
-    const allClaims = []
-    claimsResponses.forEach((response, index) => {
-      const claims = response.data || []
-      claims.forEach(claim => {
-        claim.post = myPosts[index] // 添加帖子信息
-        allClaims.push(claim)
-      })
-    })
-    
-    receivedClaims.value = allClaims.sort((a, b) => 
-      new Date(b.created_at) - new Date(a.created_at)
-    )
+    const response = await claimAPI.getReceived()
+    const data = response.data || []
+    receivedClaims.value = Array.isArray(data) ? data : []
   } catch (error) {
     ElMessage.error('加载失败：' + (error.response?.data?.detail || error.message))
   } finally {
@@ -317,14 +291,15 @@ const loadReceivedClaims = async () => {
   }
 }
 
-// Tab切换
-const handleTabChange = (tab) => {
+// Tab切换侦听，确保正确加载
+watch(activeTab, (tab) => {
   if (tab === 'submitted' && submittedClaims.value.length === 0) {
     loadSubmittedClaims()
-  } else if (tab === 'received' && receivedClaims.value.length === 0) {
+  }
+  if (tab === 'received' && receivedClaims.value.length === 0) {
     loadReceivedClaims()
   }
-}
+})
 
 // 取消认领
 const handleCancel = async (claimId) => {
@@ -412,28 +387,7 @@ const hasRated = (claimId) => {
 }
 
 // 格式化日期
-const formatDate = (dateString) => {
-  if (!dateString) return ''
-  const date = new Date(dateString)
-  const now = new Date()
-  const diff = now - date
-  const seconds = Math.floor(diff / 1000)
-  const minutes = Math.floor(seconds / 60)
-  const hours = Math.floor(minutes / 60)
-  const days = Math.floor(hours / 24)
-  
-  if (days > 7) {
-    return date.toLocaleDateString('zh-CN')
-  } else if (days > 0) {
-    return `${days}天前`
-  } else if (hours > 0) {
-    return `${hours}小时前`
-  } else if (minutes > 0) {
-    return `${minutes}分钟前`
-  } else {
-    return '刚刚'
-  }
-}
+const formatDate = (dateString) => formatRelativeTime(dateString)
 
 // 状态标签
 const getStatusLabel = (status) => {
@@ -465,7 +419,12 @@ const getCreditType = (score) => {
 }
 
 onMounted(() => {
-  loadSubmittedClaims()
+  // 预取当前激活tab数据
+  if (activeTab.value === 'submitted') {
+    loadSubmittedClaims()
+  } else {
+    loadReceivedClaims()
+  }
 })
 </script>
 

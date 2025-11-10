@@ -81,6 +81,28 @@ def get_my_claims(
     ).all()
     return claims
 
+@router.get("/received", response_model=List[ClaimRead])
+def get_received_claims(
+    current_user: User = Depends(get_current_user),
+    session: Session = Depends(get_session)
+):
+    """获取我作为帖子作者收到的所有认领请求（聚合所有我的帖子）。"""
+    # 获取当前用户的所有帖子ID
+    post_ids = [pid for (pid,) in session.exec(
+        select(Post.id).where(Post.author_id == current_user.id)
+    ).all()]
+
+    if not post_ids:
+        return []
+
+    claims = session.exec(
+        select(Claim)
+        .options(selectinload(Claim.post), selectinload(Claim.claimer))
+        .where(Claim.post_id.in_(post_ids))
+        .order_by(Claim.created_at.desc())
+    ).all()
+    return claims
+
 @router.get("/post/{post_id}", response_model=List[ClaimRead])
 def get_post_claims(
     post_id: int,

@@ -71,6 +71,18 @@ export const useUserStore = defineStore('user', {
       }
     },
 
+    async markAllNotificationsRead() {
+      try {
+        const unread = this.notifications.filter(n => !n.is_read)
+        await Promise.all(unread.map(n => notificationAPI.markRead(n.id).catch(() => null)))
+        // Update local state
+        this.notifications.forEach(n => { n.is_read = true })
+        this.unreadCount = 0
+      } catch (error) {
+        console.error('Mark all notifications read error:', error)
+      }
+    },
+
     clearError() {
       this.error = null
     }

@@ -332,9 +332,10 @@ const getStatusColor = (status) => ({
 })[status] || ''
 
 // 格式化日期
+import { formatLocal } from '@/utils/time'
 const formatDate = (dateString) => {
   if (!dateString) return '-'
-  return new Date(dateString).toLocaleString('zh-CN')
+  return formatLocal(dateString)
 }
 
 onMounted(() => {

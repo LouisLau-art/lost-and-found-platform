@@ -22,7 +22,12 @@ export default defineConfig({
     vue(),
     vueDevTools(),
     Components({
-      resolvers: [ElementPlusResolver()],
+      resolvers: [
+        ElementPlusResolver({
+          importStyle: 'css',
+          resolveIcons: true
+        })
+      ],
     }),
     // 启用gzip压缩
     viteCompression({

@@ -262,6 +262,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { formatRelative as formatRelativeTime, formatLocal } from '@/utils/time'
 import { useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { 
@@ -352,36 +353,10 @@ const loadUserRatings = async () => {
 }
 
 // 格式化日期
-const formatDate = (dateString) => {
-  if (!dateString) return ''
-  const date = new Date(dateString)
-  const now = new Date()
-  const diff = now - date
-  const days = Math.floor(diff / (1000 * 60 * 60 * 24))
-  
-  if (days > 30) {
-    return date.toLocaleDateString('zh-CN')
-  } else if (days > 0) {
-    return `${days}天前`
-  } else {
-    const hours = Math.floor(diff / (1000 * 60 * 60))
-    if (hours > 0) return `${hours}小时前`
-    const minutes = Math.floor(diff / (1000 * 60))
-    if (minutes > 0) return `${minutes}分钟前`
-    return '刚刚'
-  }
-}
+const formatDate = (dateString) => formatRelativeTime(dateString)
 
 // 格式化加入日期
-const formatJoinDate = (dateString) => {
-  if (!dateString) return ''
-  const date = new Date(dateString)
-  return date.toLocaleDateString('zh-CN', { 
-    year: 'numeric', 
-    month: 'long', 
-    day: 'numeric' 
-  })
-}
+const formatJoinDate = (dateString) => formatLocal(dateString, 'LL')
 
 // 信用分类型
 const getCreditType = (score) => {

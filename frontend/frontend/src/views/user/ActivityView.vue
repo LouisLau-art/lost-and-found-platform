@@ -149,6 +149,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { formatRelative as formatRelativeTime } from '@/utils/time'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { useForumStore } from '@/stores/forum'
@@ -192,9 +193,7 @@ const getClaimStatusColor = (status) => ({
   cancelled: 'info'
 })[status] || ''
 
-const formatDate = (dateString) => {
-  return new Date(dateString).toLocaleString('zh-CN')
-}
+const formatDate = (dateString) => formatRelativeTime(dateString)
 
 const loadMyPosts = async () => {
   loadingPosts.value = true

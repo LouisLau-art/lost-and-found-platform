@@ -103,11 +103,13 @@
                       <el-option
                         v-for="cat in categories"
                         :key="cat.id"
-                        :label="`${cat.icon} ${cat.name}`"
+                        :label="cat.name"
                         :value="cat.id"
                       >
-                        <span>{{ cat.icon }} {{ cat.name }}</span>
-                        <span class="text-xs text-fg-muted ml-2">{{ cat.description }}</span>
+                        <span>
+                          <template v-if="cat.icon">{{ cat.icon }} </template>{{ cat.name }}
+                        </span>
+                        <span class="text-xs text-fg-muted ml-2" v-if="cat.description">{{ cat.description }}</span>
                       </el-option>
                     </el-select>
                   </el-form-item>

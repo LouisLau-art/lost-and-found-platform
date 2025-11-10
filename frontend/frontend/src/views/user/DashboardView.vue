@@ -259,7 +259,7 @@
           Mark All as Read
         </el-button>
         <div v-for="notification in userStore.notifications" :key="notification.id" class="notification-item">
-          <el-card :body-style="{ padding: '12px' }" shadow="hover" @click="markAsRead(notification.id)" class="notification-card">
+          <el-card :body-style="{ padding: '12px' }" shadow="hover" @click="openNotification(notification)" class="notification-card">
             <div class="notification-content">
               <el-icon v-if="!notification.is_read" class="unread-icon"><Bell /></el-icon>
               <div class="notification-text">
@@ -287,6 +287,7 @@ import {
   Sunny, Moon, Picture, Location
 } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
+import { formatRelative as formatRelativeTime } from '@/utils/time'
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -311,6 +312,30 @@ const handleCommand = (command) => {
     router.push('/profile')
   } else if (command === 'admin') {
     router.push('/admin/users')
+  }
+}
+
+// Open notification and navigate
+const openNotification = async (notification) => {
+  try {
+    // mark as read without blocking
+    userStore.markNotificationRead(notification.id).catch(() => {})
+    if (notification.link) {
+      router.push(notification.link)
+    } else if (notification.related_post_id) {
+      router.push(`/forum/${notification.related_post_id}`)
+    } else if (notification.related_claim_id) {
+      const t = (notification.type || '').toLowerCase()
+      if (t.includes('claim_created')) {
+        router.push({ path: '/claims', query: { tab: 'received' } })
+      } else if (t.includes('claim_approved') || t.includes('claim_rejected') || t.includes('claim_cancelled')) {
+        router.push({ path: '/claims', query: { tab: 'submitted' } })
+      } else {
+        router.push('/claims')
+      }
+    }
+  } catch (e) {
+    // noop
   }
 }
 
@@ -354,26 +379,8 @@ const markAllAsRead = async () => {
   }
 }
 
-const formatRelativeTime = (dateString) => {
-  const date = new Date(dateString)
-  const now = new Date()
-  const diffInSeconds = Math.floor((now - date) / 1000)
-  
-  if (diffInSeconds < 60) {
-    return `${diffInSeconds}s ago`
-  } else if (diffInSeconds < 3600) {
-    const minutes = Math.floor(diffInSeconds / 60)
-    return `${minutes}m ago`
-  } else if (diffInSeconds < 86400) {
-    const hours = Math.floor(diffInSeconds / 3600)
-    return `${hours}h ago`
-  } else if (diffInSeconds < 604800) {
-    const days = Math.floor(diffInSeconds / 86400)
-    return `${days}d ago`
-  } else {
-    return date.toLocaleDateString()
-  }
-}
+// dayjs-based relative time
+// import from utils above as formatRelativeTime
 
 // Load recently found items
 const loadRecentFoundItems = async () => {
@@ -994,8 +1001,25 @@ onUnmounted(() => {})
 
 .notification-time {
   font-size: 0.75rem;
-  color: var(--text-secondary);
+  color: var(--text-tertiary);
   margin: 0;
+}
+
+/* Drawer dark theme overrides */
+:deep(.el-drawer) {
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
+  border-left: 1px solid var(--border-base);
+}
+
+:deep(.el-drawer__header) {
+  margin-bottom: 0;
+  border-bottom: 1px solid var(--border-base);
+  padding: 1rem 1rem 0.75rem 1rem;
+}
+
+:deep(.el-drawer__body) {
+  background-color: var(--bg-surface);
 }
 
 /* ===== Animations ===== */

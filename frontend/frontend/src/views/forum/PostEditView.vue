@@ -245,7 +245,7 @@ const loadPostData = async () => {
   isLoading.value = true
   error.value = ''
   try {
-    const response = await postAPI.get(postId.value)
+    const response = await postAPI.getById(postId.value)
     const post = response.data
     
     // 检查权限

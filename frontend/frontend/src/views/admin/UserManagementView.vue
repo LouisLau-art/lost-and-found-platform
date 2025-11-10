@@ -195,6 +195,7 @@ import {
   User, UserFilled, Monitor, List, Search, Refresh, View 
 } from '@element-plus/icons-vue'
 import axios from 'axios'
+import { formatLocal } from '@/utils/time'
 
 const router = useRouter()
 const users = ref([])
@@ -245,9 +246,7 @@ const getCreditScoreType = (score) => {
   return 'danger'
 }
 
-const formatDate = (dateString) => {
-  return new Date(dateString).toLocaleString('zh-CN')
-}
+const formatDate = (dateString) => (dateString ? formatLocal(dateString) : '')
 
 const viewUser = (user) => {
   selectedUser.value = user

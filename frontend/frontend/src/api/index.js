@@ -85,6 +85,7 @@ export const postAPI = {
 export const claimAPI = {
   create: (data) => api.post('/api/claims/', data),
   getMyClaims: () => api.get('/api/claims/my-claims'),
+  getReceived: () => api.get('/api/claims/received'),
   getPostClaims: (postId) => api.get(`/api/claims/post/${postId}`),
   approve: (claimId, data) => api.post(`/api/claims/${claimId}/approve`, data),
   reject: (claimId, data) => api.post(`/api/claims/${claimId}/reject`, data),

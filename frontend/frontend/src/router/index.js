@@ -81,20 +81,26 @@ const router = createRouter({
     {
       path: '/forum/:id/edit',
       name: 'edit-post',
-      component: () => import('../views/forum/CreatePostView.vue')
+      component: () => import('../views/forum/PostEditView.vue')
     },
     // Admin routes
     {
-      path: '/admin/users',
-      name: 'user-management',
-      component: () => import('../views/admin/UserManagementView.vue'),
-      meta: { requiresAuth: true, requiresAdmin: true }
-    },
-    {
-      path: '/admin/posts',
-      name: 'admin-posts',
-      component: () => import('../views/admin/AdminPostsView.vue'),
-      meta: { requiresAuth: true, requiresAdmin: true }
+      path: '/admin',
+      component: () => import('../layouts/AdminLayout.vue'),
+      meta: { requiresAuth: true, requiresAdmin: true },
+      children: [
+        {
+          path: 'users',
+          name: 'user-management',
+          component: () => import('../views/admin/UserManagementView.vue')
+        },
+        {
+          path: 'posts',
+          name: 'admin-posts',
+          component: () => import('../views/admin/AdminPostsView.vue')
+        },
+        { path: '', redirect: '/admin/users' }
+      ]
     },
     // Test route
     {

@@ -121,6 +121,29 @@ The API will be available at `http://localhost:8000`
 
 The frontend will be available at `http://localhost:5173`
 
+### Seed the Database with Test Data
+
+To quickly populate the database with realistic test data (users, posts, claims, comments, ratings):
+
+1. Ensure backend dependencies are installed (Faker is required):
+   ```bash
+   cd backend
+   pip install -r requirements.txt
+   ```
+
+2. Run the seeding script:
+   ```bash
+   python seed_database.py
+   ```
+
+Notes:
+
+- This script is DESTRUCTIVE. It clears existing Users, Posts, Claims, Comments, Notifications, Ratings, and Categories before inserting fresh data.
+- By default, it uses the DATABASE_URL from environment or falls back to a local SQLite file under `backend/`.
+- Admin credentials after seeding:
+  - Email: `admin@example.com`
+  - Password: `admin123`
+
 ## API Endpoints
 
 ### Authentication

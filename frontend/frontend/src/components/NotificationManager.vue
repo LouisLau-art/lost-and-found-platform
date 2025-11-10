@@ -117,8 +117,18 @@ const handleToastClick = async (toast) => {
       if (notification.link) {
         router.push(notification.link);
       } else if (notification.related_post_id) {
-        // 如果有关联帖子，跳转到帖子详情
-        router.push(`/posts/${notification.related_post_id}`);
+        // 帖子详情
+        router.push(`/forum/${notification.related_post_id}`);
+      } else if (notification.related_claim_id) {
+        // 认领相关：根据通知类型跳转到合适的标签页
+        const t = (notification.type || '').toLowerCase();
+        if (t.includes('claim_created')) {
+          router.push({ path: '/claims', query: { tab: 'received' } });
+        } else if (t.includes('claim_approved') || t.includes('claim_rejected') || t.includes('claim_cancelled')) {
+          router.push({ path: '/claims', query: { tab: 'submitted' } });
+        } else {
+          router.push('/claims');
+        }
       }
     }
   }

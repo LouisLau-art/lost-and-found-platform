@@ -166,6 +166,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { formatLocal } from '@/utils/time'
 import { useAuthStore } from '@/stores/auth'
 import { postAPI } from '@/api'
 import SearchFilter from '@/components/SearchFilter.vue'
@@ -195,10 +196,7 @@ const getTypeColor = (type) => ({
   general: 'info'
 })[type] || ''
 
-const formatDate = (date) => {
-  if (!date) return ''
-  return new Date(date).toLocaleString('zh-CN')
-}
+const formatDate = (date) => (date ? formatLocal(date) : '')
 
 const loadPosts = async () => {
   loading.value = true
