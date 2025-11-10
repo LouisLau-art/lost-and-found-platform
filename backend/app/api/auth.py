@@ -13,26 +13,29 @@ router = APIRouter()
 
 @router.post("/register", response_model=UserRead)
 def register(user: UserCreate, session: Session = Depends(get_session)):
-    # Check if user already exists
-    statement = select(User).where(User.email == user.email)
-    existing_user = session.exec(statement).first()
-    if existing_user:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Email already registered"
+    try:
+        statement = select(User).where(User.email == user.email)
+        existing_user = session.exec(statement).first()
+        if existing_user:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Email already registered"
+            )
+        hashed_password = get_password_hash(user.password)
+        db_user = User(
+            name=user.name,
+            email=user.email,
+            password_hash=hashed_password
         )
-    
-    # Create new user
-    hashed_password = get_password_hash(user.password)
-    db_user = User(
-        name=user.name,
-        email=user.email,
-        password_hash=hashed_password
-    )
-    session.add(db_user)
-    session.commit()
-    session.refresh(db_user)
-    return db_user
+        session.add(db_user)
+        session.commit()
+        session.refresh(db_user)
+        return db_user
+    except HTTPException:
+        raise
+    except Exception as e:
+        # Surface the error to the diagnostic client
+        raise HTTPException(status_code=500, detail=f"register_error: {repr(e)}")
 
 @router.post("/login", response_model=Token)
 def login(user_credentials: UserLogin, session: Session = Depends(get_session)):

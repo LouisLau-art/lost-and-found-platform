@@ -8,46 +8,81 @@
 
 /* Light Theme (Default) */
 :root {
-  /* Background Colors */
-  --bg-color: #f9fafb;           /* Light grey page background */
-  --bg-color-page: #ffffff;      /* White page background */
-  --card-bg-color: #ffffff;      /* White card background */
-  --sidebar-bg-color: #ffffff;   /* White sidebar */
-  --nav-bg-color: #ffffff;       /* White navigation */
-  
+  /* Background and surface - Dark default */
+  --bg-base: #111827;
+  --bg-surface: #1f2937;
+  --bg-muted: #374151;
+
   /* Text Colors */
-  --text-primary: #1f2937;       /* Dark grey - primary text */
-  --text-secondary: #6b7280;     /* Medium grey - secondary text */
-  --text-muted: #9ca3af;         /* Light grey - muted text */
-  --text-inverse: #ffffff;       /* White text for dark backgrounds */
-  
+  --text-primary: #f9fafb;
+  --text-secondary: #d1d5db;
+  --text-muted: #9ca3af;
+  --text-inverse: #111827;
+
   /* Border & Divider Colors */
-  --border-color: #e5e7eb;       /* Light grey border */
-  --border-color-dark: #d1d5db;  /* Darker border for emphasis */
-  
-  /* Input & Form Colors */
-  --input-bg-color: #ffffff;     /* White input background */
-  --input-border-color: #d1d5db; /* Grey input border */
-  --input-text-color: #1f2937;   /* Dark text in inputs */
-  --input-placeholder-color: #9ca3af; /* Grey placeholder */
-  
-  /* Primary Brand Colors */
-  --primary-color: #3b82f6;      /* Blue */
-  --primary-hover: #2563eb;      /* Darker blue on hover */
-  --primary-light: #60a5fa;      /* Light blue */
-  
-  /* Status Colors */
-  --success-color: #10b981;      /* Green */
-  --warning-color: #f59e0b;      /* Orange */
-  --danger-color: #ef4444;       /* Red */
-  --info-color: #6366f1;         /* Indigo */
-  
+  --border-base: #374151;
+
+  /* Brand & Status Colors */
+  --primary: #3b82f6;
+  --success: #10b981;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+
+  /* Compatibility mappings with existing tokens */
+  --bg-color: var(--bg-base);
+  --bg-color-page: var(--bg-base);
+  --bg-page: var(--bg-base);
+  --card-bg-color: var(--bg-surface);
+  --bg-card: var(--bg-surface);
+  --sidebar-bg-color: var(--bg-surface);
+  --nav-bg-color: var(--bg-surface);
+
+  --border-color: var(--border-base);
+  --border-color-dark: var(--border-base);
+
+  --input-bg-color: var(--bg-muted);
+  --input-border-color: var(--border-base);
+  --input-text-color: var(--text-primary);
+  --input-placeholder-color: var(--text-muted);
+
+  --primary-color: var(--primary);
+  --primary-hover: var(--primary);
+  --primary-light: var(--primary);
+  --brand-primary: var(--primary);
+  --brand-primary-hover: var(--primary);
+  --brand-primary-light: rgba(59,130,246,0.2);
+
+  --success-color: var(--success);
+  --warning-color: var(--warning);
+  --danger-color: var(--danger);
+  --info-color: var(--primary);
+  --text-tertiary: var(--text-muted);
+
   /* Shadow */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.5);
 }
 
+/* Global theme utility classes */
+.bg-page { background-color: var(--bg-base) !important; }
+.bg-surface { background-color: var(--bg-surface) !important; }
+.bg-card { background-color: var(--bg-surface) !important; }
+.bg-muted { background-color: var(--bg-muted) !important; }
+.border-base { border-color: var(--border-base) !important; }
+.text-fg-primary { color: var(--text-primary) !important; }
+.text-fg-secondary { color: var(--text-secondary) !important; }
+.text-fg-muted { color: var(--text-muted) !important; }
+.text-primary { color: var(--brand-primary) !important; }
+.icon-primary { color: var(--brand-primary) !important; }
+.icon-muted { color: var(--text-muted) !important; }
+.text-success { color: var(--success) !important; }
+.text-danger { color: var(--danger) !important; }
+.text-warning { color: var(--warning) !important; }
+.themed-header { background-color: var(--bg-surface) !important; border-bottom: 1px solid var(--border-base) !important; }
+.hover-card { background-color: var(--bg-card); border: 1px solid var(--border-base); }
+.hover-card:hover { background-color: var(--bg-muted); }
+.hover-text-primary:hover { color: var(--brand-primary) !important; }
 /* ===========================
    PROFESSIONAL DARK THEME PALETTE
    - Harmonious grey-based color system
@@ -127,7 +162,7 @@ body {
   font-size: 16px;
   line-height: 1.6;
   color: var(--text-primary);
-  background-color: var(--bg-color);
+  background-color: var(--bg-base);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   transition: background-color 0.3s ease, color 0.3s ease;

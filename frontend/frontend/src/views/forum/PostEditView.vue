@@ -1,8 +1,8 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
-    <el-header class="bg-white shadow">
+  <div class="min-h-screen bg-page">
+    <el-header class="themed-header shadow">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <router-link to="/" class="text-xl font-bold text-gray-900">Lost & Found Platform</router-link>
+        <router-link to="/" class="text-xl font-bold text-fg-primary hover-text-primary">Lost & Found Platform</router-link>
         <div class="space-x-2">
           <el-button text @click="goBack">← 返回详情</el-button>
           <el-button text @click="$router.push('/dashboard')">Dashboard</el-button>
@@ -62,7 +62,7 @@
                       :value="cat.id"
                     >
                       <span>{{ cat.icon }} {{ cat.name }}</span>
-                      <span class="text-xs text-gray-400 ml-2">{{ cat.description }}</span>
+                      <span class="text-xs text-fg-muted ml-2">{{ cat.description }}</span>
                     </el-option>
                   </el-select>
                 </el-form-item>
@@ -100,8 +100,8 @@
                 maxlength="100"
               >
                 <template #prefix>
-                  <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <svg class="w-4 h-4 text-gray-400 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 111.314 0z" />
                   </svg>
                 </template>
               </el-input>
@@ -127,7 +127,7 @@
                 maxlength="100"
               >
                 <template #prefix>
-                  <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg class="w-4 h-4 icon-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                   </svg>
                 </template>
@@ -137,7 +137,7 @@
             <!-- 图片上传 -->
             <el-form-item label="📷 物品图片">
               <ImageUpload v-model="form.images" :max-images="9" />
-              <p class="text-xs text-gray-500 mt-2">提示：上传清晰的物品照片有助于快速找回</p>
+              <p class="text-xs text-fg-muted mt-2">提示：上传清晰的物品照片有助于快速找回</p>
             </el-form-item>
             
             <el-alert v-if="error" :title="error" type="error" show-icon class="mb-4" />

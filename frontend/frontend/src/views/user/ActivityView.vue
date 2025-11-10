@@ -1,22 +1,22 @@
 <template>
-  <div class="min-h-screen" style="background-color: #f9fafb;">
+  <div class="min-h-screen" style="background-color: var(--bg-page);">
     <!-- Navigation -->
-    <nav class="bg-white/95 backdrop-blur-sm border-b border-gray-200">
+    <nav class="themed-header backdrop-blur-sm">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
           <div class="flex items-center">
-            <router-link to="/" class="text-xl font-bold text-gray-800 hover:text-indigo-600 transition-all">
+            <router-link to="/" class="text-xl font-bold text-fg-primary hover-text-primary transition-all">
               Lost & Found Platform
             </router-link>
           </div>
           <div class="flex items-center space-x-4">
-            <router-link to="/dashboard" class="text-gray-600 hover:text-gray-800 transition-all">
+            <router-link to="/dashboard" class="text-fg-secondary hover-text-primary transition-all">
               Dashboard
             </router-link>
-            <router-link to="/forum" class="text-gray-600 hover:text-gray-800 transition-all">
+            <router-link to="/forum" class="text-fg-secondary hover-text-primary transition-all">
               Forum
             </router-link>
-            <el-button text class="text-gray-600 hover:text-gray-800" @click="handleLogout">
+            <el-button text class="text-fg-secondary hover-text-primary" @click="handleLogout">
               Sign out
             </el-button>
           </div>
@@ -26,7 +26,7 @@
 
     <!-- Main content -->
     <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-      <h1 class="text-3xl font-bold text-gray-800 mb-6">My Activity</h1>
+      <h1 class="text-3xl font-bold text-fg-primary mb-6">My Activity</h1>
       
       <el-tabs v-model="activeTab" type="border-card" class="activity-tabs">
         <!-- My Posts Tab -->
@@ -73,9 +73,9 @@
                     </el-tag>
                     <el-tag v-if="post.is_claimed" type="success" size="small">已认领</el-tag>
                   </div>
-                  <h3 class="text-lg font-semibold text-gray-800 mb-1">{{ post.title }}</h3>
-                  <p class="text-gray-600 text-sm line-clamp-2">{{ post.content }}</p>
-                  <div class="flex items-center gap-4 mt-2 text-sm text-gray-500">
+                  <h3 class="text-lg font-semibold text-fg-primary mb-1">{{ post.title }}</h3>
+                  <p class="text-fg-secondary text-sm line-clamp-2">{{ post.content }}</p>
+                  <div class="flex items-center gap-4 mt-2 text-sm text-fg-secondary">
                     <span>{{ formatDate(post.created_at) }}</span>
                     <span v-if="post.location">
                       <el-icon><Location /></el-icon> {{ post.location }}
@@ -122,11 +122,11 @@
                       {{ getClaimStatusLabel(claim.status) }}
                     </el-tag>
                   </div>
-                  <h3 class="text-lg font-semibold text-gray-800 mb-1">
+                  <h3 class="text-lg font-semibold text-fg-primary mb-1">
                     Claim for: {{ claim.post?.title }}
                   </h3>
-                  <p class="text-gray-400 text-sm mb-2">{{ claim.description }}</p>
-                  <div class="text-sm text-gray-500">
+                  <p class="text-fg-muted text-sm mb-2">{{ claim.description }}</p>
+                  <div class="text-sm text-fg-secondary">
                     Submitted: {{ formatDate(claim.created_at) }}
                   </div>
                 </div>
@@ -242,40 +242,40 @@ onMounted(() => {
 
 <style scoped>
 .activity-tabs {
-  background: white;
-  border: 1px solid #e5e7eb;
+  background: var(--bg-card);
+  border: 1px solid var(--border-base);
 }
 
 .activity-tabs :deep(.el-tabs__header) {
-  background: white;
-  border-bottom: 1px solid #e5e7eb;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border-base);
 }
 
 .activity-tabs :deep(.el-tabs__item) {
-  color: #6b7280;
+  color: var(--text-secondary);
 }
 
 .activity-tabs :deep(.el-tabs__item.is-active) {
-  color: #4f46e5;
-  background: #f9fafb;
+  color: var(--brand-primary);
+  background: var(--bg-muted);
 }
 
 .activity-tabs :deep(.el-tabs__content) {
   padding: 24px;
-  background: white;
-  color: #1f2937;
+  background: var(--bg-card);
+  color: var(--text-primary);
 }
 
 .post-card,
 .claim-card {
-  background: white;
-  border: 1px solid #e5e7eb;
+  background: var(--bg-card);
+  border: 1px solid var(--border-base);
   transition: all 0.3s ease;
 }
 
 .post-card:hover,
 .claim-card:hover {
-  border-color: #4f46e5;
+  border-color: var(--brand-primary);
   transform: translateY(-2px);
 }
 

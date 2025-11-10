@@ -225,7 +225,7 @@ def get_matching_posts(
     - 匹配条件：相同分类、相似时间、相似地点
     - 新增：文本相似度匹配（基于内容描述）
     """
-    # 获取原帖子
+    # 1) 获取原帖子，仅支持处于可见状态的帖子
     statement = select(Post).where(Post.id == post_id, Post.status == "published")
     original_post = session.exec(statement).first()
     
@@ -235,14 +235,14 @@ def get_matching_posts(
             detail="Post not found"
         )
     
-    # 只为 lost 和 found 类型的帖子提供匹配
+    # 2) 只为 lost 和 found 类型的帖子提供匹配（普通帖子不进行匹配）
     if original_post.item_type not in ["lost", "found"]:
         return []
     
     # 确定要匹配的类型（lost <-> found）
     target_type = "found" if original_post.item_type == "lost" else "lost"
     
-    # 基础查询条件
+    # 3) 构建目标查询：目标类型（lost<->found）、未被认领、排除自身、状态可见
     statement = select(Post).where(
         and_(
             Post.status.in_(["published", "active"]),
@@ -252,11 +252,11 @@ def get_matching_posts(
         )
     )
     
-    # 条件 1：相同分类
+    # 4) 条件 1：相同分类（优先匹配同一分类）
     if original_post.category_id:
         statement = statement.where(Post.category_id == original_post.category_id)
     
-    # 条件 2：时间范围匹配
+    # 5) 条件 2：时间范围匹配（原帖时间的±N天）
     if original_post.item_time:
         time_start = original_post.item_time - timedelta(days=time_range_days)
         time_end = original_post.item_time + timedelta(days=time_range_days)
@@ -268,12 +268,12 @@ def get_matching_posts(
             )
         )
     
-    # 条件 3：地点匹配（简单的模糊匹配）
+    # 6) 条件 3：地点匹配（简单 LIKE 模糊匹配）
     if original_post.location:
         location_pattern = f"%{original_post.location}%"
         statement = statement.where(Post.location.like(location_pattern))
     
-    # 获取基础匹配结果
+    # 7) 获取初步候选（扩大范围以便后续排序，取limit的3倍）
     statement = statement.order_by(Post.created_at.desc()).limit(limit * 3)  # 获取更多结果用于排序
     matching_posts = list(session.exec(statement).all())
     

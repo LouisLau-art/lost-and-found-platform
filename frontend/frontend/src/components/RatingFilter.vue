@@ -1,11 +1,11 @@
 <template>
-  <div class="bg-white rounded-lg border p-4 mb-4">
-    <h3 class="text-lg font-semibold mb-3">筛选评价</h3>
+  <div class="rounded-lg p-4 mb-4" style="background: var(--bg-card); border: 1px solid var(--border-base);">
+    <h3 class="text-lg font-semibold mb-3" style="color: var(--text-primary);">筛选评价</h3>
     
     <div class="space-y-4">
       <!-- 评分筛选 -->
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">评分</label>
+        <label class="block text-sm font-medium text-fg-primary mb-2">评分</label>
         <div class="flex flex-wrap gap-2">
           <el-tag
             v-for="score in [5, 4, 3, 2, 1]"
@@ -29,7 +29,7 @@
       
       <!-- 时间筛选 -->
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">时间范围</label>
+        <label class="block text-sm font-medium text-fg-primary mb-2">时间范围</label>
         <el-select v-model="filters.timeRange" class="w-full">
           <el-option label="全部时间" value="" />
           <el-option label="最近一周" value="week" />
@@ -41,7 +41,7 @@
       
       <!-- 排序方式 -->
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">排序方式</label>
+        <label class="block text-sm font-medium text-fg-primary mb-2">排序方式</label>
         <el-select v-model="filters.sortBy" class="w-full">
           <el-option label="最新优先" value="newest" />
           <el-option label="最早优先" value="oldest" />

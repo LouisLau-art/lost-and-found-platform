@@ -1,8 +1,8 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
-    <el-header class="bg-white shadow">
+  <div class="min-h-screen bg-page">
+    <el-header class="themed-header shadow">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <router-link to="/" class="text-xl font-bold text-gray-900">🎯 Lost & Found</router-link>
+        <router-link to="/" class="text-xl font-bold text-fg-primary">🎯 Lost & Found</router-link>
         <div class="space-x-2">
           <el-button text @click="$router.push('/dashboard')">← 返回Dashboard</el-button>
           <el-button text @click="$router.push('/forum')">论坛</el-button>
@@ -11,7 +11,7 @@
     </el-header>
 
     <div class="max-w-7xl mx-auto py-8 px-4">
-      <h1 class="text-3xl font-bold text-gray-900 mb-6">📦 我的认领</h1>
+      <h1 class="text-3xl font-bold text-fg-primary mb-6">📦 我的认领</h1>
 
       <el-tabs v-model="activeTab" @tab-change="handleTabChange">
         <!-- 我提交的认领 -->
@@ -31,10 +31,10 @@
           </div>
 
           <div v-else-if="submittedClaims.length === 0" class="text-center py-16">
-            <svg class="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-16 h-16 mx-auto icon-muted mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
             </svg>
-            <p class="text-gray-500">你还没有提交过任何认领请求</p>
+            <p class="text-fg-secondary">你还没有提交过任何认领请求</p>
             <el-button type="primary" class="mt-4" @click="$router.push('/forum')">
               去论坛看看
             </el-button>
@@ -47,11 +47,11 @@
                 <div class="flex-1">
                   <div class="flex items-start justify-between mb-3">
                     <div>
-                      <h3 class="text-lg font-semibold text-gray-900 mb-1 cursor-pointer hover:text-blue-600"
+                      <h3 class="text-lg font-semibold text-fg-primary mb-1 cursor-pointer hover-text-primary"
                           @click="$router.push(`/forum/${claim.post.id}`)">
                         {{ claim.post.title }}
                       </h3>
-                      <div class="flex items-center gap-2 text-sm text-gray-500">
+                      <div class="flex items-center gap-2 text-sm text-fg-secondary">
                         <el-tag :type="getStatusType(claim.status)" size="small">
                           {{ getStatusLabel(claim.status) }}
                         </el-tag>
@@ -61,21 +61,21 @@
                   </div>
 
                   <!-- 我的留言 -->
-                  <div v-if="claim.message" class="bg-gray-50 rounded p-3 mb-3">
-                    <div class="text-xs text-gray-500 mb-1">我的留言：</div>
-                    <p class="text-sm text-gray-700">{{ claim.message }}</p>
+                  <div v-if="claim.message" class="bg-muted rounded p-3 mb-3">
+                    <div class="text-xs text-fg-secondary mb-1">我的留言：</div>
+                    <p class="text-sm text-fg-primary">{{ claim.message }}</p>
                   </div>
 
                   <!-- 物主回复 -->
-                  <div v-if="claim.owner_reply" class="bg-blue-50 rounded p-3 mb-3">
-                    <div class="text-xs text-blue-600 mb-1">物主回复：</div>
-                    <p class="text-sm text-gray-700">{{ claim.owner_reply }}</p>
+                  <div v-if="claim.owner_reply" class="bg-muted rounded p-3 mb-3">
+                    <div class="text-xs text-primary mb-1">物主回复：</div>
+                    <p class="text-sm text-fg-primary">{{ claim.owner_reply }}</p>
                   </div>
 
                   <!-- 时间信息 -->
-                  <div class="flex flex-wrap gap-4 text-xs text-gray-400">
+                  <div class="flex flex-wrap gap-4 text-xs text-fg-muted">
                     <span v-if="claim.updated_at">更新于 {{ formatDate(claim.updated_at) }}</span>
-                    <span v-if="claim.confirmed_at" class="text-green-600">确认于 {{ formatDate(claim.confirmed_at) }}</span>
+                    <span v-if="claim.confirmed_at" class="text-success">确认于 {{ formatDate(claim.confirmed_at) }}</span>
                   </div>
                 </div>
 
@@ -127,10 +127,10 @@
           </div>
 
           <div v-else-if="receivedClaims.length === 0" class="text-center py-16">
-            <svg class="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-16 h-16 mx-auto icon-muted mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
-            <p class="text-gray-500">还没有人认领你的帖子</p>
+            <p class="text-fg-secondary">还没有人认领你的帖子</p>
           </div>
 
           <div v-else class="space-y-4">
@@ -140,10 +140,10 @@
                 <div class="flex-1">
                   <div class="flex items-start justify-between mb-3">
                     <div>
-                      <h3 class="text-lg font-semibold text-gray-900 mb-1">
-                        来自 <span class="text-blue-600">{{ claim.claimer.name }}</span> 的认领请求
+                      <h3 class="text-lg font-semibold text-fg-primary mb-1">
+                        来自 <span class="text-primary">{{ claim.claimer.name }}</span> 的认领请求
                       </h3>
-                      <div class="flex items-center gap-2 text-sm text-gray-500">
+                      <div class="flex items-center gap-2 text-sm text-fg-secondary">
                         <el-tag :type="getStatusType(claim.status)" size="small">
                           {{ getStatusLabel(claim.status) }}
                         </el-tag>
@@ -153,29 +153,29 @@
                   </div>
 
                   <!-- 帖子信息 -->
-                  <div class="bg-gray-50 rounded p-3 mb-3">
-                    <div class="text-xs text-gray-500 mb-1">关于帖子：</div>
-                    <p class="text-sm font-medium text-gray-900 cursor-pointer hover:text-blue-600"
+                  <div class="bg-muted rounded p-3 mb-3">
+                    <div class="text-xs text-fg-secondary mb-1">关于帖子：</div>
+                    <p class="text-sm font-medium text-fg-primary cursor-pointer hover-text-primary"
                        @click="$router.push(`/forum/${claim.post.id}`)">
                       {{ claim.post.title }}
                     </p>
                   </div>
 
                   <!-- 认领者留言 -->
-                  <div v-if="claim.message" class="bg-blue-50 rounded p-3 mb-3">
-                    <div class="text-xs text-blue-600 mb-1">认领者留言：</div>
-                    <p class="text-sm text-gray-700">{{ claim.message }}</p>
+                  <div v-if="claim.message" class="bg-muted rounded p-3 mb-3">
+                    <div class="text-xs text-primary mb-1">认领者留言：</div>
+                    <p class="text-sm text-fg-primary">{{ claim.message }}</p>
                   </div>
 
                   <!-- 我的回复 -->
-                  <div v-if="claim.owner_reply" class="bg-gray-50 rounded p-3 mb-3">
-                    <div class="text-xs text-gray-500 mb-1">我的回复：</div>
-                    <p class="text-sm text-gray-700">{{ claim.owner_reply }}</p>
+                  <div v-if="claim.owner_reply" class="bg-muted rounded p-3 mb-3">
+                    <div class="text-xs text-fg-secondary mb-1">我的回复：</div>
+                    <p class="text-sm text-fg-primary">{{ claim.owner_reply }}</p>
                   </div>
 
                   <!-- 认领者信用分 -->
                   <div class="flex items-center gap-2 text-sm">
-                    <span class="text-gray-500">认领者信用分：</span>
+                    <span class="text-fg-secondary">认领者信用分：</span>
                     <el-tag :type="getCreditType(claim.claimer.credit_score)" size="small">
                       {{ claim.claimer.credit_score }} 分
                     </el-tag>

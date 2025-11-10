@@ -1,19 +1,19 @@
 <template>
-  <div class="min-h-screen" style="background-color: #f9fafb;">
+  <div class="min-h-screen" style="background-color: var(--bg-page);">
     <!-- Header with navigation -->
-    <el-header class="bg-white/95 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-10">
+    <el-header class="themed-header backdrop-blur-sm sticky top-0 z-10">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <router-link to="/" class="text-2xl font-bold text-gray-800 hover:text-indigo-600 transition-all flex items-center">
+        <router-link to="/" class="text-2xl font-bold text-fg-primary hover-text-primary transition-all flex items-center">
           Lost & Found Platform
         </router-link>
         <div class="space-x-4">
-          <el-button text class="text-gray-600 hover:text-gray-800" @click="$router.push('/dashboard')">
+          <el-button text class="text-fg-secondary hover-text-primary" @click="$router.push('/dashboard')">
             Dashboard
           </el-button>
-          <el-button text class="text-gray-600 hover:text-gray-800" @click="$router.push('/forum')">
+          <el-button text class="text-fg-secondary hover-text-primary" @click="$router.push('/forum')">
             Forum
           </el-button>
-          <el-button text type="danger" @click="handleLogout" class="text-gray-600 hover:text-red-600">
+          <el-button text type="danger" @click="handleLogout" class="text-fg-secondary hover-text-primary">
             Sign out
           </el-button>
         </div>
@@ -35,7 +35,7 @@
         <el-card shadow="hover" class="form-card">
           <template #header>
             <div class="flex items-center justify-between">
-              <h2 class="text-xl font-bold text-gray-800 flex items-center">
+              <h2 class="text-xl font-bold text-fg-primary flex items-center">
                 发布信息
               </h2>
               <el-tag 
@@ -107,7 +107,7 @@
                         :value="cat.id"
                       >
                         <span>{{ cat.icon }} {{ cat.name }}</span>
-                        <span class="text-xs text-gray-400 ml-2">{{ cat.description }}</span>
+                        <span class="text-xs text-fg-muted ml-2">{{ cat.description }}</span>
                       </el-option>
                     </el-select>
                   </el-form-item>
@@ -139,7 +139,7 @@
                   show-word-limit
                   class="resize-none"
                 />
-                <div class="text-xs text-gray-400 mt-1">提示：详细的描述能大大提高物品找回几率</div>
+                <div class="text-xs text-fg-muted mt-1">提示：详细的描述能大大提高物品找回几率</div>
               </el-form-item>
               </div>
             </div>
@@ -190,12 +190,12 @@
               
               <!-- 图片上传 -->
               <el-form-item label="📸 上传物品照片 (关键信息)">
-                <div class="upload-hint mb-3 p-3 bg-blue-100 border border-blue-300 rounded-lg">
+                <div class="upload-hint mb-3 p-3 bg-muted border rounded-lg" style="border-color: var(--border-base);">
                   <div class="flex items-start">
-                    <el-icon class="text-blue-400 mt-1 mr-2"><InfoFilled /></el-icon>
-                    <div class="text-sm text-blue-200">
+                    <el-icon class="icon-primary mt-1 mr-2"><InfoFilled /></el-icon>
+                    <div class="text-sm text-fg-secondary">
                       <p>提示：上传清晰的物品照片有助于快速找回</p>
-                      <p class="text-xs mt-1">支持 JPG、PNG、GIF 格式，最多 9 张，每张不超过 5MB</p>
+                      <p class="text-xs mt-1 text-fg-muted">支持 JPG、PNG、GIF 格式，最多 9 张，每张不超过 5MB</p>
                     </div>
                   </div>
                 </div>
@@ -442,51 +442,51 @@ onMounted(() => {
 <style scoped>
 /* 浅色主题 */
 .form-card {
-  background: white;
-  border: 1px solid #e5e7eb;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-base);
 }
 
 .form-card :deep(.el-card__header) {
-  background: #f9fafb;
-  border-bottom: 1px solid #e5e7eb;
+  background: var(--bg-muted);
+  border-bottom: 1px solid var(--border-base);
 }
 
 .form-card :deep(.el-form-item__label) {
-  color: #1f2937;
+  color: var(--text-primary);
   font-weight: 600;
   font-size: 0.95rem;
 }
 
 .form-card :deep(.el-input__wrapper) {
-  background-color: white;
-  border-color: #e5e7eb;
+  background-color: var(--input-bg-color);
+  border-color: var(--input-border-color);
 }
 
 .form-card :deep(.el-input__inner) {
-  color: #1f2937;
+  color: var(--input-text-color);
 }
 
 .form-card :deep(.el-textarea__inner) {
-  background-color: white;
-  border-color: #e5e7eb;
-  color: #1f2937;
+  background-color: var(--input-bg-color);
+  border-color: var(--input-border-color);
+  color: var(--input-text-color);
 }
 
 .form-card :deep(.el-select .el-input__wrapper) {
-  background-color: white;
-  border-color: #e5e7eb;
+  background-color: var(--input-bg-color);
+  border-color: var(--input-border-color);
 }
 
 .form-card :deep(.el-radio-button__inner) {
-  background-color: white;
-  border-color: #e5e7eb;
-  color: #1f2937;
+  background-color: var(--input-bg-color);
+  border-color: var(--input-border-color);
+  color: var(--text-primary);
 }
 
 .form-card :deep(.el-radio-button__original-radio:checked + .el-radio-button__inner) {
-  background-color: #3b82f6;
-  border-color: #3b82f6;
-  color: white;
+  background-color: var(--primary);
+  border-color: var(--primary);
+  color: var(--text-inverse);
 }
 
 /* Enhanced Steps Component */
@@ -509,54 +509,54 @@ onMounted(() => {
 }
 
 .enhanced-steps :deep(.el-step__title) {
-  color: #1f2937 !important;
+  color: var(--text-primary) !important;
   font-weight: 600;
   font-size: 1rem;
 }
 
 .enhanced-steps :deep(.el-step__title.is-wait) {
-  color: #6b7280 !important;
+  color: var(--text-secondary) !important;
 }
 
 .enhanced-steps :deep(.el-step__title.is-process) {
-  color: #3b82f6 !important;
+  color: var(--primary) !important;
   font-weight: 700;
 }
 
 .enhanced-steps :deep(.el-step__description) {
-  color: #6b7280 !important;
+  color: var(--text-secondary) !important;
   font-size: 0.875rem;
 }
 
 .enhanced-steps :deep(.el-step__description.is-wait) {
-  color: #9ca3af !important;
+  color: var(--text-muted) !important;
 }
 
 /* Form Grouping */
 .form-group {
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
+  background: var(--bg-muted);
+  border: 1px solid var(--border-base);
   border-radius: var(--radius-lg);
   padding: var(--spacing-lg);
   margin-bottom: var(--spacing-lg);
 }
 
 .group-title {
-  color: #1f2937;
+  color: var(--text-primary);
   font-size: 1.1rem;
   font-weight: 600;
   margin-bottom: var(--spacing-md);
   padding-bottom: var(--spacing-sm);
-  border-bottom: 2px solid rgba(59, 130, 246, 0.3);
+  border-bottom: 2px solid var(--primary);
 }
 
 .step-title {
-  color: #1f2937;
+  color: var(--text-primary);
   font-size: 1.25rem;
   font-weight: 700;
   margin-bottom: var(--spacing-lg);
   padding-bottom: var(--spacing-md);
-  border-bottom: 2px solid #e5e7eb;
+  border-bottom: 2px solid var(--border-base);
 }
 
 .step-content {
@@ -572,7 +572,7 @@ onMounted(() => {
   align-items: center;
   padding-top: var(--spacing-xl);
   margin-top: var(--spacing-xl);
-  border-top: 2px solid #e5e7eb;
+  border-top: 2px solid var(--border-base);
 }
 
 .action-btn {
@@ -589,7 +589,7 @@ onMounted(() => {
 }
 
 .submit-btn {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+  background: var(--success) !important;
   font-size: 1.1rem;
 }
 
@@ -622,21 +622,21 @@ onMounted(() => {
 
 /* Steps 样式 */
 :deep(.el-step__title) {
-  color: #1f2937;
+  color: var(--text-primary);
 }
 
 :deep(.el-step__description) {
-  color: #6b7280;
+  color: var(--text-secondary);
 }
 
 :deep(.el-step__head.is-finish) {
-  color: #10b981;
-  border-color: #10b981;
+  color: var(--success);
+  border-color: var(--success);
 }
 
 :deep(.el-step__head.is-process) {
-  color: #3b82f6;
-  border-color: #3b82f6;
+  color: var(--primary);
+  border-color: var(--primary);
 }
 
 /* 响应式设计调整 */

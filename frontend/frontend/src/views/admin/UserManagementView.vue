@@ -1,20 +1,20 @@
 <template>
-  <div class="min-h-screen" style="background-color: #f9fafb;">
+  <div class="min-h-screen" style="background-color: var(--bg-base);">
     <!-- Navigation -->
-    <nav class="bg-white/95 backdrop-blur-sm border-b border-gray-200">
+    <nav class="themed-header backdrop-blur-sm">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
           <div class="flex items-center">
-            <router-link to="/" class="flex items-center text-xl font-bold text-gray-800 hover:text-indigo-600 transition-all">
+            <router-link to="/" class="flex items-center text-xl font-bold text-fg-primary hover:text-primary transition-all">
               <el-icon class="mr-2" :size="28"><User /></el-icon>
               用户管理
             </router-link>
           </div>
           <div class="flex items-center space-x-4">
-            <el-button text class="text-gray-600 hover:text-gray-800" @click="$router.push('/dashboard')">
+            <el-button text class="text-fg-secondary hover:text-primary" @click="$router.push('/dashboard')">
               <el-icon><Monitor /></el-icon> Dashboard
             </el-button>
-            <el-button text class="text-gray-600 hover:text-gray-800" @click="$router.push('/forum')">
+            <el-button text class="text-fg-secondary hover:text-primary" @click="$router.push('/forum')">
               <el-icon><List /></el-icon> Forum
             </el-button>
           </div>
@@ -63,7 +63,7 @@
           v-loading="loading"
           stripe
           class="users-table enhanced-table"
-          :header-cell-style="{ background: '#f3f4f6', color: '#1f2937' }"
+          :header-cell-style="{ background: 'var(--bg-surface)', color: 'var(--text-primary)' }"
           :row-style="{ cursor: 'pointer' }"
         >
           <el-table-column prop="id" label="ID" width="80" />
@@ -74,8 +74,8 @@
                   {{ row.name.charAt(0).toUpperCase() }}
                 </el-avatar>
                 <div>
-                  <div class="font-semibold text-gray-800">{{ row.name }}</div>
-                  <div class="text-sm text-gray-500">{{ row.email }}</div>
+                  <div class="font-semibold text-fg-primary">{{ row.name }}</div>
+                  <div class="text-sm text-fg-secondary">{{ row.email }}</div>
                 </div>
               </div>
             </template>
@@ -103,7 +103,7 @@
           </el-table-column>
           <el-table-column label="注册时间" width="180">
             <template #default="{ row }">
-              <div class="text-gray-600">
+              <div class="text-fg-secondary">
                 {{ formatDate(row.created_at) }}
               </div>
             </template>
@@ -291,13 +291,13 @@ onMounted(() => {
   align-items: center;
   font-size: 2.5rem;
   font-weight: 700;
-  color: #1f2937;
+  color: var(--text-primary);
   margin-bottom: var(--spacing-sm);
 }
 
 .admin-page-subtitle {
   font-size: 1.125rem;
-  color: #6b7280;
+  color: var(--text-secondary);
   font-weight: 500;
 }
 
@@ -313,21 +313,21 @@ onMounted(() => {
 .header-title {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #1f2937;
+  color: var(--text-primary);
 }
 
 .search-input :deep(.el-input__wrapper) {
-  background: white;
-  border-color: #e5e7eb;
+  background: var(--input-bg-color);
+  border-color: var(--input-border-color);
   transition: all 0.3s ease;
 }
 
 .search-input :deep(.el-input__wrapper):hover {
-  border-color: #60a5fa;
+  border-color: var(--primary);
 }
 
 .search-input :deep(.el-input__inner) {
-  color: #1f2937;
+  color: var(--input-text-color);
 }
 
 .refresh-btn {
@@ -336,33 +336,33 @@ onMounted(() => {
 
 /* Admin Card */
 .admin-card {
-  background: white;
-  border: 1px solid #e5e7eb;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-base);
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
 }
 
 .admin-card :deep(.el-card__header) {
-  background: white;
-  border-bottom: 1px solid #e5e7eb;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-base);
   padding: var(--spacing-lg);
 }
 
 /* Enhanced Table */
 .enhanced-table {
-  --el-table-bg-color: white;
-  --el-table-tr-bg-color: white;
-  --el-table-row-hover-bg-color: #f9fafb;
-  --el-table-text-color: #1f2937;
-  --el-table-border-color: #e5e7eb;
+  --el-table-bg-color: var(--bg-surface);
+  --el-table-tr-bg-color: var(--bg-surface);
+  --el-table-row-hover-bg-color: var(--bg-muted);
+  --el-table-text-color: var(--text-primary);
+  --el-table-border-color: var(--border-base);
 }
 
 .enhanced-table :deep(.el-table__body tr) {
-  background-color: white;
+  background-color: var(--bg-surface);
   transition: all 0.3s ease;
 }
 
 .enhanced-table :deep(.el-table__body tr:hover > td) {
-  background-color: #f9fafb !important;
+  background-color: var(--bg-muted) !important;
 }
 
 .enhanced-table :deep(.el-table__header th) {
@@ -374,7 +374,7 @@ onMounted(() => {
 .enhanced-table :deep(.el-table__body td) {
   padding: var(--spacing-md) var(--spacing-sm) !important;
   vertical-align: middle !important;
-  color: #1f2937;
+  color: var(--text-primary);
 }
 
 /* User Info Cell - Ensure Perfect Vertical Alignment */
@@ -402,30 +402,30 @@ onMounted(() => {
 
 /* Pagination */
 :deep(.el-pagination) {
-  --el-text-color-primary: #1f2937;
-  --el-text-color-regular: #6b7280;
+  --el-text-color-primary: var(--text-primary);
+  --el-text-color-regular: var(--text-secondary);
   padding: var(--spacing-lg) 0;
 }
 
 :deep(.el-pagination.is-background .btn-next),
 :deep(.el-pagination.is-background .btn-prev),
 :deep(.el-pagination.is-background .el-pager li) {
-  background-color: white;
-  color: #1f2937;
-  border: 1px solid #e5e7eb;
+  background-color: var(--bg-muted);
+  color: var(--text-primary);
+  border: 1px solid var(--border-base);
   transition: all 0.3s ease;
 }
 
 :deep(.el-pagination.is-background .el-pager li:hover) {
-  color: #60a5fa;
-  border-color: #60a5fa;
+  color: var(--primary);
+  border-color: var(--primary);
   transform: translateY(-1px);
 }
 
 :deep(.el-pagination.is-background .el-pager li.is-active) {
-  background-color: #3b82f6;
-  color: white;
-  border-color: #3b82f6;
+  background-color: var(--primary);
+  color: var(--text-inverse);
+  border-color: var(--primary);
   font-weight: 700;
 }
 

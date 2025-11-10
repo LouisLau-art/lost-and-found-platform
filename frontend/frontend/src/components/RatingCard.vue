@@ -1,16 +1,16 @@
 <template>
-  <div class="bg-white rounded-lg border p-4 hover:shadow-md transition">
+  <div class="rounded-lg p-4 hover:shadow-md transition" style="background: var(--bg-card); border: 1px solid var(--border-base);">
     <!-- 评价者信息 -->
     <div class="flex items-start justify-between mb-3">
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center">
-          <span class="text-white font-semibold text-sm">
+        <div class="w-10 h-10 rounded-full flex items-center justify-center" style="background: linear-gradient(135deg, rgba(59,130,246,0.7) 0%, rgba(59,130,246,1) 100%);">
+          <span class="font-semibold text-sm" style="color: var(--text-inverse, #fff);">
             {{ raterInitial }}
           </span>
         </div>
         <div>
-          <div class="font-medium text-gray-900">{{ rating.rater?.name || 'Unknown' }}</div>
-          <div class="text-xs text-gray-500">{{ formatDate(rating.created_at) }}</div>
+          <div class="font-medium text-fg-primary">{{ rating.rater?.name || 'Unknown' }}</div>
+          <div class="text-xs text-fg-secondary">{{ formatDate(rating.created_at) }}</div>
         </div>
       </div>
       
@@ -28,8 +28,8 @@
     </div>
 
     <!-- 评价内容 -->
-    <div v-if="rating.comment" class="bg-gray-50 rounded p-3 mb-2">
-      <p class="text-sm text-gray-700 whitespace-pre-wrap">{{ rating.comment }}</p>
+    <div v-if="rating.comment" class="bg-muted rounded p-3 mb-2">
+      <p class="text-sm text-fg-primary whitespace-pre-wrap">{{ rating.comment }}</p>
     </div>
 
     <!-- 评分说明 -->
@@ -37,7 +37,7 @@
       <el-tag :type="getScoreType(rating.score)" size="small">
         {{ getScoreLabel(rating.score) }}
       </el-tag>
-      <span class="text-gray-400">
+      <span class="text-fg-muted">
         {{ getScoreImpact(rating.score) }}
       </span>
     </div>

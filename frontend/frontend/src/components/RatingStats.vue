@@ -1,12 +1,12 @@
 <template>
-  <div class="bg-white rounded-lg border p-4 mb-4">
-    <h3 class="text-lg font-semibold mb-3">评价统计</h3>
+  <div class="rounded-lg p-4 mb-4" style="background: var(--bg-card); border: 1px solid var(--border-base);">
+    <h3 class="text-lg font-semibold mb-3" style="color: var(--text-primary);">评价统计</h3>
     
     <div v-if="loading" class="flex justify-center py-4">
       <el-skeleton :rows="3" animated />
     </div>
     
-    <div v-else-if="error" class="text-center py-4 text-red-500">
+    <div v-else-if="error" class="text-center py-4 text-danger">
       加载评价统计失败
     </div>
     
@@ -14,8 +14,8 @@
       <!-- 总体评分 -->
       <div class="flex items-center justify-between mb-4">
         <div>
-          <div class="text-3xl font-bold">{{ stats.average_score.toFixed(1) }}</div>
-          <div class="text-sm text-gray-500">{{ stats.total_count }} 条评价</div>
+          <div class="text-3xl font-bold" style="color: var(--text-primary);">{{ stats.average_score.toFixed(1) }}</div>
+          <div class="text-sm text-fg-secondary">{{ stats.total_count }} 条评价</div>
         </div>
         <div class="flex items-center">
           <el-rate
@@ -33,33 +33,34 @@
         <div v-for="(count, score) in stats.star_distribution" :key="score" class="flex items-center mb-1">
           <div class="w-12 text-sm">{{ score }}星</div>
           <div class="flex-1 mx-2">
-            <div class="bg-gray-200 h-2 rounded-full overflow-hidden">
+            <div class="h-2 rounded-full overflow-hidden" style="background: var(--bg-muted);">
               <div 
-                class="bg-yellow-400 h-full" 
+                class="h-full" 
+                style="background: #f59e0b;" 
                 :style="{ width: `${getPercentage(count)}%` }"
               ></div>
             </div>
           </div>
-          <div class="w-12 text-right text-sm text-gray-500">{{ count }}</div>
+          <div class="w-12 text-right text-sm text-fg-secondary">{{ count }}</div>
         </div>
       </div>
       
       <!-- 好评率 -->
-      <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-        <div class="text-sm text-gray-700">好评率</div>
+      <div class="flex items-center justify-between p-3 bg-muted rounded-lg">
+        <div class="text-sm text-fg-primary">好评率</div>
         <div class="font-semibold">{{ stats.positive_percentage }}%</div>
       </div>
     </div>
     
     <!-- 最近评价 -->
     <div v-if="!loading && !error && stats.recent_ratings.length > 0" class="mt-4">
-      <h4 class="text-md font-medium mb-2">最近评价</h4>
+      <h4 class="text-md font-medium mb-2" style="color: var(--text-primary)">最近评价</h4>
       <div class="space-y-3">
         <rating-card 
           v-for="rating in stats.recent_ratings" 
           :key="rating.id" 
           :rating="rating"
-          class="border-0 shadow-none p-0 hover:bg-gray-50"
+          class="border-0 shadow-none p-0 hover:bg-muted"
         />
       </div>
       <div v-if="stats.total_count > stats.recent_ratings.length" class="mt-3 text-center">

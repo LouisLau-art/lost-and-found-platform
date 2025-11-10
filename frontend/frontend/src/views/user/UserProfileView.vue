@@ -249,7 +249,7 @@
                   <el-icon :size="60" class="empty-icon"><TrendCharts /></el-icon>
                 </template>
                 <template #extra>
-                  <p class="text-sm text-gray-400">未来将显示用户信用分的变更记录</p>
+                  <p class="text-sm text-fg-secondary">未来将显示用户信用分的变更记录</p>
                 </template>
               </el-empty>
             </el-card>

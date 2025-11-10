@@ -7,24 +7,24 @@
   >
     <div v-if="claim" class="space-y-4">
       <!-- 评价对象 -->
-      <div class="bg-gray-50 rounded p-4">
-        <div class="text-sm text-gray-500 mb-2">评价对象</div>
+      <div class="bg-muted rounded p-4">
+        <div class="text-sm text-fg-secondary mb-2">评价对象</div>
         <div class="flex items-center gap-3">
-          <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="w-12 h-12 rounded-full flex items-center justify-center" style="background: var(--bg-surface);">
+            <svg class="w-6 h-6 icon-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
           </div>
           <div>
-            <div class="font-medium text-gray-900">{{ rateeUser?.name }}</div>
-            <div class="text-sm text-gray-500">信用分：{{ rateeUser?.credit_score }}</div>
+            <div class="font-medium text-fg-primary">{{ rateeUser?.name }}</div>
+            <div class="text-sm text-fg-secondary">信用分：{{ rateeUser?.credit_score }}</div>
           </div>
         </div>
       </div>
 
       <!-- 星级评分 -->
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-3">
+        <label class="block text-sm font-medium text-fg-primary mb-3">
           评分 <span class="text-red-500">*</span>
         </label>
         <div class="flex items-center gap-4">
@@ -35,14 +35,14 @@
             size="large"
           />
         </div>
-        <div class="mt-2 text-xs text-gray-500">
-          <div v-if="form.score >= 4" class="text-green-600">
+        <div class="mt-2 text-xs text-fg-secondary">
+          <div v-if="form.score >= 4" class="text-success">
             ✓ 好评将为对方增加 5 信用分
           </div>
-          <div v-else-if="form.score === 3" class="text-gray-600">
+          <div v-else-if="form.score === 3" class="text-fg-secondary">
             中评不影响信用分
           </div>
-          <div v-else-if="form.score > 0" class="text-red-600">
+          <div v-else-if="form.score > 0" class="text-danger">
             ⚠ 差评将扣除对方 5 信用分
           </div>
         </div>
@@ -50,7 +50,7 @@
 
       <!-- 评价标签 -->
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">
+        <label class="block text-sm font-medium text-fg-primary mb-2">
           评价标签（可选，最多选择3个）
         </label>
         <div class="flex flex-wrap gap-2 mb-3">
@@ -69,7 +69,7 @@
 
       <!-- 评价内容 -->
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">
+        <label class="block text-sm font-medium text-fg-primary mb-2">
           评价内容（可选）
         </label>
         <el-input
@@ -83,9 +83,9 @@
       </div>
 
       <!-- 评价示例 -->
-      <div class="bg-blue-50 rounded p-3">
-        <div class="text-xs text-blue-600 mb-2">💡 评价建议</div>
-        <div class="text-xs text-gray-600 space-y-1">
+      <div class="bg-muted rounded p-3">
+        <div class="text-xs text-primary mb-2">💡 评价建议</div>
+        <div class="text-xs text-fg-secondary space-y-1">
           <div>• 好评：态度友好、及时响应、物归原主</div>
           <div>• 中评：沟通一般、基本满意</div>
           <div>• 差评：态度不佳、沟通困难、信息不实</div>

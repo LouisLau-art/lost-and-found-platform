@@ -1,22 +1,22 @@
 <template>
-  <div class="min-h-screen" style="background-color: #f9fafb;">
+  <div class="min-h-screen" style="background-color: var(--bg-page);">
     <!-- Navigation -->
-    <nav class="bg-white/95 backdrop-blur-sm border-b border-gray-200">
+    <nav class="themed-header backdrop-blur-sm">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
           <div class="flex items-center">
-            <router-link to="/" class="text-xl font-bold text-gray-800 hover:text-indigo-600 transition-all">
+            <router-link to="/" class="text-xl font-bold text-fg-primary hover:text-primary transition-all">
               Lost & Found Platform
             </router-link>
           </div>
           <div class="flex items-center space-x-4">
-            <router-link to="/forum" class="text-gray-600 hover:text-gray-800 transition-all">
+            <router-link to="/forum" class="text-fg-secondary hover:text-primary transition-all">
               Forum
             </router-link>
-            <router-link to="/dashboard" class="text-gray-600 hover:text-gray-800 transition-all">
+            <router-link to="/dashboard" class="text-fg-secondary hover:text-primary transition-all">
               Dashboard
             </router-link>
-            <el-button text class="text-gray-600 hover:text-gray-800" @click="handleLogout">
+            <el-button text class="text-fg-secondary hover:text-primary" @click="handleLogout">
               Sign out
             </el-button>
           </div>
@@ -28,7 +28,7 @@
     <div class="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
       <el-card shadow="hover" class="profile-card">
         <template #header>
-          <h1 class="text-2xl font-bold text-gray-800">Profile Settings</h1>
+          <h1 class="text-2xl font-bold text-fg-primary">Profile Settings</h1>
         </template>
         
         <!-- Editable Profile Form -->
@@ -85,7 +85,7 @@
 
         <!-- Account Information (Read-only) -->
         <div class="mt-6">
-          <h2 class="text-lg font-semibold text-gray-800 mb-4">Account Information</h2>
+          <h2 class="text-lg font-semibold text-fg-primary mb-4">Account Information</h2>
           <el-descriptions :column="2" border class="account-info">
             <el-descriptions-item label="Credit Score">
               <el-tag type="success" size="large">
@@ -187,41 +187,45 @@ onMounted(() => {
 <style scoped>
 /* Profile Card Styling */
 .profile-card {
-  background: white;
-  border: 1px solid #e5e7eb;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-base);
 }
 
 .profile-card :deep(.el-card__header) {
-  background: #f9fafb;
-  border-bottom: 1px solid #e5e7eb;
+  background-color: var(--bg-surface);
+  border-bottom: 1px solid var(--border-base);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(8px);
 }
 
 .profile-card :deep(.el-form-item__label) {
-  color: #1f2937;
+  color: var(--text-primary);
   font-weight: 600;
 }
 
 .profile-card :deep(.el-input__wrapper) {
-  background-color: white;
-  border-color: #e5e7eb;
+  background-color: var(--bg-surface);
+  border-color: var(--border-base);
 }
 
 .profile-card :deep(.el-input__inner) {
-  color: #1f2937;
+  color: var(--text-primary);
 }
 
 .profile-card :deep(.el-divider) {
-  border-color: #e5e7eb;
+  border-color: var(--border-base);
 }
 
 /* Account Info */
 .account-info :deep(.el-descriptions__label) {
-  color: #6b7280;
-  background: #f9fafb;
+  color: var(--text-secondary);
+  background: var(--bg-surface);
 }
 
 .account-info :deep(.el-descriptions__content) {
-  color: #1f2937;
-  background: white;
+  color: var(--text-primary);
+  background: var(--bg-card);
 }
 </style>

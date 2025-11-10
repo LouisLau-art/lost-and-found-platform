@@ -1,12 +1,12 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
-    <el-header class="bg-white shadow-sm fixed w-full z-10">
+  <div class="min-h-screen bg-page">
+    <el-header class="fixed w-full z-10 themed-header">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <router-link to="/" class="text-xl font-bold text-[var(--brand-primary)] flex items-center gap-2">
+        <router-link to="/" class="text-xl font-bold text-primary flex items-center gap-2">
           <el-icon><Target /></el-icon> Lost & Found
         </router-link>
         <div class="space-x-2">
-          <el-button text @click="$router.push('/forum')" class="text-[var(--text-primary)]">
+          <el-button text @click="$router.push('/forum')" class="text-fg-primary">
             <el-icon><ArrowLeft /></el-icon> 返回列表
           </el-button>
           <el-button v-if="authStore.isAuthenticated" text @click="$router.push('/dashboard')">Dashboard</el-button>
@@ -89,15 +89,15 @@
               </h3>
               <el-descriptions :column="2" border size="large" class="custom-descriptions">
                 <el-descriptions-item v-if="post.location" label="地点">
-                  <el-icon class="text-blue-600"><Location /></el-icon>
+                  <el-icon class="icon-primary"><Location /></el-icon>
                   <span class="ml-2">{{ post.location }}</span>
                 </el-descriptions-item>
                 <el-descriptions-item v-if="post.item_time" :label="post.item_type === 'lost' ? '丢失时间' : '拾取时间'">
-                  <el-icon class="text-blue-600"><Time /></el-icon>
+                  <el-icon class="icon-primary"><Time /></el-icon>
                   <span class="ml-2">{{ formatDateTime(post.item_time) }}</span>
                 </el-descriptions-item>
                 <el-descriptions-item v-if="post.contact_info && canViewContact" label="联系方式" :span="2">
-                  <el-icon class="text-blue-600"><Phone /></el-icon>
+                  <el-icon class="icon-primary"><Phone /></el-icon>
                   <span class="ml-2">{{ post.contact_info }}</span>
                 </el-descriptions-item>
               </el-descriptions>
@@ -105,7 +105,7 @@
 
             <!-- 内容 -->
             <div class="mb-6">
-              <p class="text-gray-700 whitespace-pre-wrap text-base leading-relaxed">{{ post.content }}</p>
+              <p class="content-text whitespace-pre-wrap text-base leading-relaxed">{{ post.content }}</p>
             </div>
 
             <!-- 图片画廊 -->
@@ -114,7 +114,7 @@
             </div>
 
             <!-- 操作按钮 -->
-            <div class="flex flex-wrap items-center justify-between mt-6 pt-6 border-t border-gray-200 gap-4">
+            <div class="flex flex-wrap items-center justify-between mt-6 pt-6 card-footer gap-4">
               <div class="flex gap-2">
                 <el-button
                   v-if="!post.is_claimed && canClaim"
@@ -147,14 +147,14 @@
             </div>
             
             <!-- 认领状态信息 -->
-            <div v-if="post.is_claimed && claimedBy" class="mt-6 p-4 bg-green-50 rounded-lg shadow-sm">
-              <div class="flex items-center gap-2 text-green-800">
+            <div v-if="post.is_claimed && claimedBy" class="mt-6 p-4 claimed-box rounded-lg shadow-sm">
+              <div class="flex items-center gap-2 claimed-box-title">
                 <el-icon class="text-lg"><Check /></el-icon>
                 <h3 class="font-semibold">该物品已被认领</h3>
               </div>
-              <div class="mt-2 text-gray-700">
+              <div class="mt-2 claimed-box-text">
                 <p>认领者：{{ claimedBy.name }}</p>
-                <p v-if="claimedAt" class="text-sm text-gray-500">认领时间：{{ formatDateTime(claimedAt) }}</p>
+                <p v-if="claimedAt" class="text-sm claimed-box-time">认领时间：{{ formatDateTime(claimedAt) }}</p>
               </div>
             </div>
           </el-card>
@@ -187,15 +187,15 @@
 
             <!-- 评论列表 -->
             <div v-if="comments.length > 0" class="space-y-4">
-              <div v-for="comment in comments" :key="comment.id" class="border-l-2 border-gray-200 pl-4 hover:border-[var(--brand-primary)]/30 transition-colors animate-fade-in">
+              <div v-for="comment in comments" :key="comment.id" class="border-l-2 comment-border pl-4 hover-border-primary transition-colors animate-fade-in">
                 <div class="flex items-start justify-between">
                   <div class="flex-1">
                     <div class="flex items-center gap-2 mb-2">
-                      <el-icon class="text-gray-400"><User /></el-icon>
+                      <el-icon class="icon-muted"><User /></el-icon>
                       <span class="font-medium">{{ comment.author?.name }}</span>
-                      <span class="text-xs text-gray-400">{{ formatDate(comment.created_at) }}</span>
+                      <span class="text-xs text-muted">{{ formatDate(comment.created_at) }}</span>
                     </div>
-                    <p class="text-gray-700">{{ comment.content }}</p>
+                    <p class="content-text">{{ comment.content }}</p>
                   </div>
                   <el-button
                     v-if="authStore.user?.id === comment.author_id"
@@ -211,7 +211,7 @@
                 </div>
               </div>
             </div>
-            <div v-else class="text-center py-10 text-gray-400">
+            <div v-else class="text-center py-10 text-fg-muted">
               <el-empty description="暂无评论，快来抢沙发吧！" />
             </div>
           </el-card>
@@ -223,7 +223,7 @@
           <el-card v-if="matchedPosts.length > 0" class="shadow-md sticky top-20 hover:shadow-lg transition-shadow duration-300">
             <template #header>
               <div class="flex items-center gap-2">
-                <el-icon class="text-blue-600"><RefreshRight /></el-icon>
+                <el-icon class="icon-primary"><RefreshRight /></el-icon>
                 <span class="font-semibold">智能匹配推荐</span>
               </div>
             </template>
@@ -231,7 +231,7 @@
               <div
                 v-for="matched in matchedPosts"
                 :key="matched.id"
-                class="border rounded p-3 cursor-pointer hover:bg-gray-50 transition-all hover:shadow-sm hover:translate-y-[-2px] animate-fade-in"
+                class="border rounded p-3 cursor-pointer hover-card transition-all hover:shadow-sm animate-fade-in"
                 @click="$router.push(`/forum/${matched.id}`)"
               >
                 <div class="flex items-start gap-2 mb-1">
@@ -240,8 +240,8 @@
                   </el-tag>
                 </div>
                 <h4 class="font-medium text-sm mb-1 line-clamp-2">{{ matched.title }}</h4>
-                <p class="text-xs text-gray-500 line-clamp-1 flex items-center gap-1">
-                  <el-icon class="w-3 h-3"><Location /></el-icon>
+                <p class="text-xs text-muted line-clamp-1 flex items-center gap-1">
+                  <el-icon class="w-3 h-3 icon-primary"><Location /></el-icon>
                   {{ matched.location }}
                 </p>
               </div>
@@ -253,15 +253,15 @@
             <template #header>
               <span class="font-semibold">发布者</span>
             </template>
-            <div class="text-center cursor-pointer hover:bg-gray-50 transition-all rounded p-2 hover:shadow-sm"
+            <div class="text-center cursor-pointer hover-card transition-all rounded p-2 hover:shadow-sm"
                  @click="$router.push(`/users/${post.author.id}`)">
-              <div class="w-16 h-16 bg-gradient-to-br from-blue-100 to-blue-200 rounded-full mx-auto mb-3 flex items-center justify-center shadow-sm hover:scale-105 transition-transform">
-                  <el-icon class="w-8 h-8 text-blue-600"><User /></el-icon>
+              <div class="w-16 h-16 author-avatar rounded-full mx-auto mb-3 flex items-center justify-center shadow-sm hover:scale-105 transition-transform">
+                  <el-icon class="w-8 h-8 icon-primary"><User /></el-icon>
                 </div>
               <h3 class="font-semibold mb-1">{{ post.author.name }}</h3>
               <div v-if="post.author.credit_score" class="mt-3 text-sm">
-                <span class="text-gray-500">信用分：</span>
-                <span class="font-semibold text-blue-600">{{ post.author.credit_score }}</span>
+                <span class="text-muted">信用分：</span>
+                <span class="font-semibold text-primary">{{ post.author.credit_score }}</span>
               </div>
               <el-button type="primary" size="small" class="mt-3 shadow hover:shadow-md transition-all">
                 <el-icon><User /></el-icon>
@@ -291,7 +291,7 @@
       :close-on-click-modal="false"
       class="animate-fade-in"
     >
-      <div v-if="claimRequests.length === 0" class="text-center py-10 text-gray-400">
+      <div v-if="claimRequests.length === 0" class="text-center py-10 text-fg-muted">
         暂无认领请求
       </div>
       
@@ -299,16 +299,16 @@
         <div
           v-for="claim in claimRequests"
           :key="claim.id"
-          class="p-4 border rounded-lg hover:bg-gray-50 transition"
+          class="p-4 border rounded-lg hover:bg-muted transition"
         >
           <div class="flex items-center justify-between mb-3">
             <div class="flex items-center gap-2">
-            <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-              <el-icon class="w-4 h-4 text-blue-600"><User /></el-icon>
+            <div class="w-8 h-8 rounded-full flex items-center justify-center author-avatar">
+              <el-icon class="w-4 h-4 icon-primary"><User /></el-icon>
             </div>
               <div>
                 <div class="font-medium">{{ claim.requester.name }}</div>
-                <div class="text-xs text-gray-500">
+                <div class="text-xs text-fg-secondary">
                   {{ formatDateTime(claim.created_at) }}
                   <span v-if="claim.requester.credit_score" class="ml-2">
                     信用分：{{ claim.requester.credit_score }}
@@ -322,13 +322,13 @@
           </div>
           
           <div v-if="claim.message" class="mb-3">
-            <div class="text-xs text-gray-500 mb-1">认领理由：</div>
-            <div class="text-gray-700 whitespace-pre-wrap">{{ claim.message }}</div>
+            <div class="text-xs text-fg-secondary mb-1">认领理由：</div>
+            <div class="text-fg-primary whitespace-pre-wrap">{{ claim.message }}</div>
           </div>
           
           <div v-if="claim.owner_reply" class="mb-3">
-            <div class="text-xs text-gray-500 mb-1">我的回复：</div>
-            <div class="text-gray-700 whitespace-pre-wrap">{{ claim.owner_reply }}</div>
+            <div class="text-xs text-fg-secondary mb-1">我的回复：</div>
+            <div class="text-fg-primary whitespace-pre-wrap">{{ claim.owner_reply }}</div>
           </div>
           
           <div v-if="claim.status === 'pending'" class="flex gap-2 justify-end">
@@ -645,6 +645,12 @@ onMounted(() => loadPost())
   padding: var(--spacing-2xl) !important;
 }
 
+/* Themed header using variables */
+.themed-header {
+  background-color: var(--bg-surface);
+  border-bottom: 1px solid var(--border-base);
+}
+
 .post-header {
   margin-bottom: var(--spacing-xl);
   padding-bottom: var(--spacing-xl);
@@ -723,6 +729,33 @@ onMounted(() => loadPost())
 .custom-descriptions :deep(.el-descriptions__cell) {
   padding: var(--spacing-md) var(--spacing-lg) !important;
 }
+
+/* Generic text colors */
+.content-text { color: var(--text-primary); }
+.text-muted { color: var(--text-secondary); }
+.text-primary { color: var(--brand-primary); }
+.icon-muted { color: var(--text-muted); }
+.icon-primary { color: var(--brand-primary); }
+
+/* Footer and dividers */
+.card-footer {
+  border-top: 1px solid var(--border-base);
+}
+
+/* Claimed status panel */
+.claimed-box { background-color: var(--bg-muted); border: 1px solid var(--border-base); }
+.claimed-box-title { color: var(--success-color); }
+.claimed-box-text { color: var(--text-primary); }
+.claimed-box-time { color: var(--text-secondary); }
+
+/* Comments */
+.comment-border { border-color: var(--border-base); }
+.hover-border-primary:hover { border-color: var(--brand-primary); }
+
+/* Sidebar hover cards and avatar */
+.hover-card { background-color: var(--bg-card); border: 1px solid var(--border-base); }
+.hover-card:hover { background-color: var(--bg-muted); }
+.author-avatar { background-color: var(--bg-muted); }
 
 /* 动画效果 */
 .animate-fade-in {
@@ -818,6 +851,7 @@ onMounted(() => loadPost())
 .line-clamp-1 {
   display: -webkit-box;
   -webkit-line-clamp: 1;
+  line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -825,6 +859,7 @@ onMounted(() => loadPost())
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }

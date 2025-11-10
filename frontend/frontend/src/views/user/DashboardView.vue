@@ -274,7 +274,7 @@
         <div v-for="notification in userStore.notifications" :key="notification.id" class="notification-item">
           <el-card :body-style="{ padding: '12px' }" shadow="hover" @click="markAsRead(notification.id)" class="notification-card">
             <div class="notification-content">
-              <el-icon v-if="!notification.is_read" class="unread-icon" color="#409eff"><Bell /></el-icon>
+              <el-icon v-if="!notification.is_read" class="unread-icon"><Bell /></el-icon>
               <div class="notification-text">
                 <p class="notification-message">{{ notification.content }}</p>
                 <p class="notification-time">{{ formatRelativeTime(notification.created_at) }}</p>
@@ -425,14 +425,14 @@ onUnmounted(() => {})
 /* ===== Dashboard Container ===== */
 .dashboard-container {
   min-height: 100vh;
-  background-color: #f9fafb;
-  color: #1f2937;
+  background-color: var(--bg-base);
+  color: var(--text-primary);
 }
 
 /* ===== Top Navigation ===== */
 .top-nav {
-  background-color: rgba(255, 255, 255, 0.95);
-  border-bottom: 1px solid #e5e7eb;
+  background-color: var(--bg-surface);
+  border-bottom: 1px solid var(--border-base);
   backdrop-filter: blur(10px);
   position: sticky;
   top: 0;
@@ -458,14 +458,14 @@ onUnmounted(() => {})
   display: flex;
   align-items: center;
   text-decoration: none;
-  color: #1f2937;
+  color: var(--text-primary);
   font-size: 1.25rem;
   font-weight: 700;
   transition: color 0.3s ease;
 }
 
 .logo-link:hover {
-  color: #3b82f6;
+  color: var(--primary);
 }
 
 .logo-icon {
@@ -484,15 +484,15 @@ onUnmounted(() => {})
 }
 
 .theme-toggle-btn {
-  background-color: #f3f4f6;
-  border-color: #e5e7eb;
+  background-color: var(--bg-muted);
+  border-color: var(--border-base);
 }
 
 .admin-link {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: #d1d5db;
+  color: var(--text-secondary);
   text-decoration: none;
   font-weight: 500;
   padding: 0.5rem 1rem;
@@ -501,18 +501,18 @@ onUnmounted(() => {})
 }
 
 .admin-link:hover {
-  color: #818cf8;
-  background-color: rgba(129, 140, 248, 0.1);
+  color: var(--primary);
+  background-color: var(--bg-muted);
 }
 
 .notification-btn {
-  background-color: rgba(55, 65, 81, 0.5);
-  border-color: #4b5563;
+  background-color: var(--bg-muted);
+  border-color: var(--border-base);
 }
 
 .user-avatar {
   cursor: pointer;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--primary);
   font-weight: 600;
 }
 
@@ -529,7 +529,7 @@ onUnmounted(() => {})
 .sidebar {
   width: 280px;
   flex-shrink: 0;
-  background-color: #ffffff;
+  background-color: var(--bg-surface);
   border-radius: 1rem;
   padding: 2rem;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
@@ -552,19 +552,19 @@ onUnmounted(() => {})
 .user-name {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #1f2937;
+  color: var(--text-primary);
   margin: 0.5rem 0;
 }
 
 .user-email {
   font-size: 0.875rem;
-  color: #6b7280;
+  color: var(--text-secondary);
   margin: 0;
 }
 
 .sidebar-divider {
   margin: 1.5rem 0;
-  border-color: #e5e7eb;
+  border-color: var(--border-base);
 }
 
 .credit-score {
@@ -592,7 +592,7 @@ onUnmounted(() => {})
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  color: #10b981;
+  color: var(--success);
   font-size: 0.875rem;
   margin-top: 0.5rem;
 }
@@ -618,13 +618,13 @@ onUnmounted(() => {})
 }
 
 .sidebar-menu :deep(.el-menu-item:hover) {
-  background-color: rgba(59, 130, 246, 0.1);
-  color: #1f2937;
+  background-color: var(--bg-muted);
+  color: var(--text-primary);
 }
 
 .sidebar-menu :deep(.el-menu-item.is-active) {
-  background-color: rgba(59, 130, 246, 0.2);
-  color: #3b82f6;
+  background-color: var(--bg-muted);
+  color: var(--primary);
   font-weight: 500;
 }
 
@@ -642,13 +642,13 @@ onUnmounted(() => {})
 .welcome-title {
   font-size: 2.5rem;
   font-weight: 700;
-  color: #1f2937;
+  color: var(--text-primary);
   margin-bottom: 0.75rem;
 }
 
 .welcome-subtitle {
   font-size: 1.125rem;
-  color: #6b7280;
+  color: var(--text-secondary);
   line-height: 1.75;
 }
 
@@ -680,8 +680,8 @@ onUnmounted(() => {})
 }
 
 .cta-lost {
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-  color: #ffffff;
+  background: var(--primary);
+  color: var(--text-inverse);
 }
 
 .cta-lost:hover {
@@ -691,13 +691,13 @@ onUnmounted(() => {})
 
 .cta-found {
   background-color: transparent;
-  border: 2px solid #10b981 !important;
-  color: #10b981;
+  border: 2px solid var(--success) !important;
+  color: var(--success);
 }
 
 .cta-found:hover {
-  background-color: #10b981;
-  color: #ffffff;
+  background-color: var(--success);
+  color: var(--text-inverse);
   transform: translateY(-4px);
   box-shadow: 0 12px 24px -4px rgba(16, 185, 129, 0.4);
 }
@@ -721,6 +721,7 @@ onUnmounted(() => {})
 /* ===== Admin Panel ===== */
 .admin-panel {
   background-color: #ffffff;
+  background-color: var(--bg-surface);
   border-radius: 1rem;
   padding: 1.5rem;
   margin-bottom: 2rem;
@@ -736,13 +737,13 @@ onUnmounted(() => {})
 
 .panel-icon {
   font-size: 1.25rem;
-  color: #818cf8;
+  color: var(--primary);
 }
 
 .panel-title {
   font-size: 1.125rem;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--text-primary);
 }
 
 .admin-buttons {
@@ -784,13 +785,13 @@ onUnmounted(() => {})
 }
 
 .admin-btn-active {
-  background-color: #f59e0b !important;
-  border-color: #f59e0b !important;
-  color: white !important;
+  background-color: var(--warning) !important;
+  border-color: var(--warning) !important;
+  color: var(--text-inverse) !important;
 }
 
 .admin-btn-active .el-icon {
-  color: white !important;
+  color: var(--text-inverse) !important;
 }
 
 .btn-icon {
@@ -802,7 +803,7 @@ onUnmounted(() => {})
 
 /* ===== Activity Section ===== */
 .activity-section {
-  background-color: #ffffff;
+  background-color: var(--bg-surface);
   border-radius: 1rem;
   padding: 1.5rem;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
@@ -810,7 +811,7 @@ onUnmounted(() => {})
 
 .activity-tabs :deep(.el-tabs__header) {
   background-color: transparent;
-  border-bottom: 2px solid #e5e7eb;
+  border-bottom: 2px solid var(--border-base);
   margin-bottom: 1.5rem;
 }
 
@@ -819,7 +820,7 @@ onUnmounted(() => {})
 }
 
 .activity-tabs :deep(.el-tabs__item) {
-  color: #94A3B8;
+  color: var(--text-muted);
   border: none;
   padding: 1rem 1.5rem;
   font-weight: 500;
@@ -828,16 +829,16 @@ onUnmounted(() => {})
 }
 
 .activity-tabs :deep(.el-tabs__item:hover) {
-  color: #d1d5db;
+  color: var(--text-secondary);
 }
 
 .activity-tabs :deep(.el-tabs__item.is-active) {
-  color: #3b82f6;
+  color: var(--primary);
   font-weight: 600;
 }
 
 .activity-tabs :deep(.el-tabs__active-bar) {
-  background-color: #3b82f6;
+  background-color: var(--primary);
   height: 3px;
 }
 
@@ -852,28 +853,28 @@ onUnmounted(() => {})
 }
 
 .empty-state :deep(.el-empty__description) {
-  color: #9ca3af;
+  color: var(--text-muted);
 }
 
 .list-info {
-  color: #374151;
+  color: var(--text-primary);
   font-size: 1rem;
   margin-bottom: 1rem;
   font-weight: 500;
 }
 
 .list-info strong {
-  color: #60A5FA;
+  color: var(--primary);
   font-size: 1.25rem;
   font-weight: 700;
 }
 
 .activity-feed :deep(.el-timeline-item__timestamp) {
-  color: #9ca3af;
+  color: var(--text-muted);
 }
 
 .activity-feed :deep(.el-text) {
-  color: #374151;
+  color: var(--text-primary);
 }
 
 .explore-btn {
@@ -890,14 +891,14 @@ onUnmounted(() => {})
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  color: #818cf8;
+  color: var(--primary);
   font-size: 1.125rem;
   font-weight: 600;
   transition: all 0.3s ease;
 }
 
 .forum-link:hover {
-  color: #a5b4fc;
+  color: var(--primary);
   transform: translateX(4px);
 }
 
@@ -928,17 +929,17 @@ onUnmounted(() => {})
   margin-bottom: 0.75rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  background-color: #f3f4f6;
-  border: 1px solid #e5e7eb;
+  background-color: var(--bg-muted);
+  border: 1px solid var(--border-base);
 }
 
 .notification-item.unread {
-  background-color: rgba(59, 130, 246, 0.1);
-  border: 1px solid rgba(59, 130, 246, 0.3);
+  background-color: var(--bg-muted);
+  border: 1px solid var(--border-base);
 }
 
 .notification-item:hover {
-  background-color: #e5e7eb;
+  background-color: var(--bg-muted);
 }
 
 .notification-card {
@@ -968,13 +969,13 @@ onUnmounted(() => {})
 .notification-message {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--text-primary);
   margin: 0 0 0.25rem 0;
 }
 
 .notification-time {
   font-size: 0.75rem;
-  color: #6b7280;
+  color: var(--text-secondary);
   margin: 0;
 }
 

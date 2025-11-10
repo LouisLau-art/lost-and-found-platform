@@ -33,10 +33,10 @@
           @click="triggerFileInput"
           class="add-more-btn"
         >
-          <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-8 h-8 icon-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
           </svg>
-          <span class="text-sm text-gray-500">添加图片</span>
+          <span class="text-sm text-fg-secondary">添加图片</span>
         </div>
       </div>
       
@@ -46,22 +46,22 @@
         @click="triggerFileInput"
         class="upload-placeholder"
       >
-        <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-12 h-12 icon-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
         </svg>
-        <p class="mt-2 text-sm text-gray-600">点击上传图片</p>
-        <p class="mt-1 text-xs text-gray-500">支持 JPG、PNG、GIF，最多 {{ maxImages }} 张，每张不超过 5MB</p>
+        <p class="mt-2 text-sm text-fg-secondary">点击上传图片</p>
+        <p class="mt-1 text-xs text-fg-muted">支持 JPG、PNG、GIF，最多 {{ maxImages }} 张，每张不超过 5MB</p>
       </div>
       
       <!-- 上传进度提示 -->
       <div v-if="uploading" class="upload-progress">
         <div class="spinner"></div>
-        <span class="ml-2 text-sm text-gray-600">上传中...</span>
+        <span class="ml-2 text-sm text-fg-secondary">上传中...</span>
       </div>
     </div>
     
     <!-- 提示信息 -->
-    <p v-if="imageList.length > 0" class="mt-2 text-xs text-gray-500">
+    <p v-if="imageList.length > 0" class="mt-2 text-xs text-fg-muted">
       已上传 {{ imageList.length }} / {{ maxImages }} 张图片
     </p>
   </div>
@@ -179,14 +179,14 @@ const removeImage = (index) => {
   padding-bottom: 100%;
   border-radius: 8px;
   overflow: hidden;
-  border: 2px solid #e5e7eb;
+  border: 2px solid var(--border-base);
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .image-preview-item:hover {
-  border-color: #3b82f6;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-color: var(--brand-primary);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
 }
 
 .image-preview-item img {
@@ -217,8 +217,8 @@ const removeImage = (index) => {
 }
 
 .delete-btn {
-  background: #ef4444;
-  color: white;
+  background: var(--danger);
+  color: var(--text-inverse, #fff);
   border: none;
   border-radius: 50%;
   width: 32px;
@@ -231,7 +231,7 @@ const removeImage = (index) => {
 }
 
 .delete-btn:hover {
-  background: #dc2626;
+  background: var(--danger);
   transform: scale(1.1);
 }
 
@@ -239,7 +239,7 @@ const removeImage = (index) => {
   position: relative;
   width: 100%;
   padding-bottom: 100%;
-  border: 2px dashed #d1d5db;
+  border: 2px dashed var(--border-base);
   border-radius: 8px;
   display: flex;
   flex-direction: column;
@@ -247,12 +247,12 @@ const removeImage = (index) => {
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s;
-  background: #f9fafb;
+  background: var(--bg-muted);
 }
 
 .add-more-btn:hover {
-  border-color: #3b82f6;
-  background: #eff6ff;
+  border-color: var(--brand-primary);
+  background: var(--bg-surface);
 }
 
 .add-more-btn > * {
@@ -267,18 +267,18 @@ const removeImage = (index) => {
 }
 
 .upload-placeholder {
-  border: 2px dashed #d1d5db;
+  border: 2px dashed var(--border-base);
   border-radius: 12px;
   padding: 48px 24px;
   text-align: center;
   cursor: pointer;
   transition: all 0.2s;
-  background: #f9fafb;
+  background: var(--bg-muted);
 }
 
 .upload-placeholder:hover {
-  border-color: #3b82f6;
-  background: #eff6ff;
+  border-color: var(--brand-primary);
+  background: var(--bg-surface);
 }
 
 .upload-progress {
@@ -287,7 +287,7 @@ const removeImage = (index) => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(17, 24, 39, 0.85);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -295,8 +295,8 @@ const removeImage = (index) => {
 }
 
 .spinner {
-  border: 3px solid #f3f4f6;
-  border-top: 3px solid #3b82f6;
+  border: 3px solid var(--border-base);
+  border-top: 3px solid var(--brand-primary);
   border-radius: 50%;
   width: 24px;
   height: 24px;

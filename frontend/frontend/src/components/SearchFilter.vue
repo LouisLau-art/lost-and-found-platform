@@ -279,9 +279,10 @@ onMounted(() => {
 .search-filter-container {
   width: 100%;
   padding: 16px;
-  background-color: #f5f7fa;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-base);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
 }
 
 .modern-filter-form :deep(.el-form-item) {
@@ -298,22 +299,22 @@ onMounted(() => {
 .modern-filter-form :deep(.el-input__wrapper),
 .modern-filter-form :deep(.el-select .el-input__wrapper),
 .modern-filter-form :deep(.el-date-editor .el-input__wrapper) {
-  background-color: #ffffff;
-  border-color: #dcdfe6;
+  background-color: var(--input-bg-color);
+  border-color: var(--input-border-color);
   transition: all 0.3s ease;
 }
 
 .modern-filter-form :deep(.el-input__wrapper:hover),
 .modern-filter-form :deep(.el-select .el-input__wrapper:hover),
 .modern-filter-form :deep(.el-date-editor .el-input__wrapper:hover) {
-  border-color: #c0c4cc;
+  border-color: var(--border-base);
 }
 
 .modern-filter-form :deep(.el-input__wrapper.is-focus),
 .modern-filter-form :deep(.el-select .el-input__wrapper.is-focus),
 .modern-filter-form :deep(.el-date-editor .el-input__wrapper.is-focus) {
-  border-color: #2196F3;
-  box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.1);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(59,130,246,0.15);
 }
 
 .modern-filter-form :deep(.el-input__inner) {
@@ -333,14 +334,14 @@ onMounted(() => {
 }
 
 .search-btn {
-  background-color: #2196F3;
-  border-color: #2196F3;
+  background-color: var(--primary);
+  border-color: var(--primary);
   flex: 2;
 }
 
 .search-btn:hover {
-  background-color: #1976D2;
-  border-color: #1976D2;
+  background-color: var(--primary);
+  border-color: var(--primary);
 }
 
 .reset-btn {
@@ -348,8 +349,8 @@ onMounted(() => {
 }
 
 .reset-btn:hover {
-  color: #2196F3;
-  border-color: #2196F3;
+  color: var(--primary);
+  border-color: var(--primary);
 }
 
 /* 响应式设计 */

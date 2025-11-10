@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen" style="background-color: #f9fafb;">
+  <div class="min-h-screen" style="background-color: var(--bg-base);">
     <!-- 导航栏 -->
     <nav class="bg-white/95 backdrop-blur-sm border-b border-gray-200">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -49,7 +49,7 @@
           stripe
           style="width: 100%"
           class="admin-table enhanced-table"
-          :header-cell-style="{ background: '#f3f4f6', color: '#1f2937' }"
+          :header-cell-style="{ background: 'var(--bg-muted)', color: 'var(--text-primary)' }"
         >
           <el-table-column prop="id" label="ID" width="80" />
           
@@ -354,13 +354,13 @@ onMounted(() => {
   align-items: center;
   font-size: 2.5rem;
   font-weight: 700;
-  color: #1f2937;
+  color: var(--text-primary);
   margin-bottom: var(--spacing-sm);
 }
 
 .admin-page-subtitle {
   font-size: 1.125rem;
-  color: #6b7280;
+  color: var(--text-secondary);
   font-weight: 500;
 }
 
@@ -374,18 +374,18 @@ onMounted(() => {
 .header-title {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #1f2937;
+  color: var(--text-primary);
 }
 
 /* 浅色主题 */
 .admin-card {
-  background: white;
-  border: 1px solid #e5e7eb;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-base);
 }
 
 .admin-card :deep(.el-card__header) {
-  background: white;
-  border-bottom: 1px solid #e5e7eb;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-base);
   padding: var(--spacing-lg);
 }
 
@@ -395,16 +395,16 @@ onMounted(() => {
 
 /* Enhanced Table */
 .enhanced-table {
-  --el-table-bg-color: white;
-  --el-table-tr-bg-color: white;
-  --el-table-row-hover-bg-color: #f9fafb;
-  --el-table-text-color: #1f2937;
-  --el-table-border-color: #e5e7eb;
+  --el-table-bg-color: var(--bg-surface);
+  --el-table-tr-bg-color: var(--bg-surface);
+  --el-table-row-hover-bg-color: var(--bg-muted);
+  --el-table-text-color: var(--text-primary);
+  --el-table-border-color: var(--border-base);
 }
 
 .enhanced-table :deep(.el-table__header th) {
-  background: #f3f4f6 !important;
-  color: #1f2937;
+  background: var(--bg-muted) !important;
+  color: var(--text-primary);
   font-weight: 700;
   font-size: 0.95rem;
   padding: var(--spacing-md) var(--spacing-sm) !important;
@@ -412,22 +412,22 @@ onMounted(() => {
 
 .enhanced-table :deep(.el-table__body tr) {
   background: transparent;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border-base);
   transition: all 0.3s ease;
 }
 
 .enhanced-table :deep(.el-table__body tr:hover) {
-  background: #f9fafb !important;
+  background: var(--bg-muted) !important;
 }
 
 .enhanced-table :deep(.el-table__body td) {
-  border-color: #e5e7eb;
-  color: #1f2937;
+  border-color: var(--border-base);
+  color: var(--text-primary);
   padding: var(--spacing-md) var(--spacing-sm) !important;
 }
 
 .enhanced-table :deep(.el-table__row--striped td) {
-  background: #f9fafb;
+  background: var(--bg-muted);
 }
 
 /* Action Buttons */
@@ -448,42 +448,42 @@ onMounted(() => {
 
 /* 对话框样式 */
 .edit-dialog :deep(.el-dialog) {
-  background: white;
-  border: 1px solid #e5e7eb;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-base);
 }
 
 .edit-dialog :deep(.el-dialog__header) {
-  background: white;
-  border-bottom: 1px solid #e5e7eb;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-base);
 }
 
 .edit-dialog :deep(.el-dialog__title) {
-  color: #1f2937;
+  color: var(--text-primary);
   font-weight: 700;
 }
 
 .edit-dialog :deep(.el-form-item__label) {
-  color: #1f2937;
+  color: var(--text-primary);
   font-weight: 600;
 }
 
 .edit-dialog :deep(.el-input__wrapper) {
-  background-color: white;
-  border-color: #e5e7eb;
+  background-color: var(--input-bg-color);
+  border-color: var(--input-border-color);
 }
 
 .edit-dialog :deep(.el-input__inner),
 .edit-dialog :deep(.el-textarea__inner) {
-  color: #1f2937;
-  background-color: white;
+  color: var(--input-text-color);
+  background-color: var(--input-bg-color);
 }
 
 /* 分页样式 */
 :deep(.el-pagination) {
-  --el-text-color-primary: #1f2937;
-  --el-text-color-regular: #6b7280;
+  --el-text-color-primary: var(--text-primary);
+  --el-text-color-regular: var(--text-secondary);
   padding: var(--spacing-lg) 0;
-  background-color: white;
+  background-color: var(--bg-surface);
   border-radius: var(--radius-md);
   padding: var(--spacing-md);
 }
@@ -491,22 +491,22 @@ onMounted(() => {
 :deep(.el-pagination.is-background .btn-next),
 :deep(.el-pagination.is-background .btn-prev),
 :deep(.el-pagination.is-background .el-pager li) {
-  background-color: #f3f4f6;
-  color: #1f2937;
+  background-color: var(--bg-muted);
+  color: var(--text-primary);
   transition: all 0.3s ease;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border-base);
 }
 
 :deep(.el-pagination.is-background .el-pager li:hover) {
-  color: var(--primary-color);
+  color: var(--primary);
   transform: translateY(-1px);
 }
 
 :deep(.el-pagination.is-background .el-pager li.is-active) {
-  background-color: var(--primary-color);
-  color: white;
+  background-color: var(--primary);
+  color: var(--text-inverse);
   font-weight: 700;
-  border-color: var(--primary-color);
+  border-color: var(--primary);
 }
 
 @keyframes fadeIn {

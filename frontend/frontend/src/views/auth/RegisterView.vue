@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8" style="background: var(--bg-page);">
     <div class="max-w-md w-full">
       <el-card>
         <template #header>
@@ -35,9 +35,9 @@
           </el-form-item>
         </el-form>
 
-        <div class="text-center text-sm text-gray-600">
+        <div class="text-center text-sm text-fg-secondary">
           已有账号？
-          <router-link to="/login" class="text-indigo-600">去登录</router-link>
+          <router-link to="/login" class="text-primary">去登录</router-link>
         </div>
       </el-card>
     </div>
