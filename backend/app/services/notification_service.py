@@ -114,6 +114,37 @@ class NotificationService:
             )
     
     @staticmethod
+    async def create_matching_notification(
+        session: Session,
+        user_id: int,
+        new_post: "Post",
+        matched_post: "Post",
+        similarity_score: float
+    ):
+        """创建智能匹配通知"""
+        title = "发现可能的匹配物品"
+        item_type_label = "丢失" if matched_post.item_type == "lost" else "拾到"
+        new_type_label = "拾到" if new_post.item_type == "found" else "丢失"
+        
+        content = f"您{item_type_label}的物品《{matched_post.title}》可能与新发布的{new_type_label}物品《{new_post.title}》匹配（相似度：{int(similarity_score * 100)}%）"
+        
+        await create_notification(
+            session=session,
+            user_id=user_id,
+            title=title,
+            content=content,
+            notification_type=NotificationType.SYSTEM_ANNOUNCEMENT,
+            related_post_id=new_post.id,
+            extra_data={
+                "matched_post_id": matched_post.id,
+                "matched_post_title": matched_post.title,
+                "new_post_id": new_post.id,
+                "new_post_title": new_post.title,
+                "similarity_score": similarity_score
+            }
+        )
+    
+    @staticmethod
     async def create_system_notification(
         session: Session,
         user_id: int,

@@ -75,13 +75,13 @@
                     </div>
                     <div class="flex-1">
                       <div class="card-tags-row">
-                        <el-tag :type="getTypeColor(post.item_type)" size="small">
+                        <el-tag :type="getTypeColor(post.item_type)" size="small" effect="dark">
                           {{ getTypeLabel(post.item_type) }}
                         </el-tag>
-                        <el-tag v-if="post.category" type="info" size="small">
+                        <el-tag v-if="post.category" type="info" size="small" effect="dark">
                           {{ post.category.icon }} {{ post.category.name }}
                         </el-tag>
-                        <el-tag v-if="post.is_claimed" type="success" size="small">已认领</el-tag>
+                        <el-tag v-if="post.is_claimed" type="success" size="small" effect="dark">已认领</el-tag>
                       </div>
                       <h3 class="post-title">
                         {{ post.title }}
@@ -103,10 +103,10 @@
                       
                       <!-- Metadata Tags -->
                       <div class="metadata-tags">
-                        <el-tag size="small" type="info" v-if="post.location">
+                        <el-tag size="small" type="info" effect="dark" v-if="post.location">
                           <el-icon><Location /></el-icon> {{ post.location }}
                         </el-tag>
-                        <el-tag size="small" v-if="post.item_time">
+                        <el-tag size="small" effect="dark" v-if="post.item_time">
                           <el-icon><Calendar /></el-icon> {{ formatDate(post.item_time) }}
                         </el-tag>
                       </div>

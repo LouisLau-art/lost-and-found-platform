@@ -185,6 +185,27 @@ The application uses the following main entities:
 - **Claims** ✨: Claim requests for lost and found items
 - **Ratings** ✨: User ratings after successful claims
 
+## Admin Setup
+
+To create an administrator account, run the admin creation script:
+
+```bash
+cd backend
+source .venv/bin/activate  # Activate virtual environment
+python3 create_admin.py
+```
+
+The script will prompt you to enter:
+- Username
+- Full Name
+- Email
+- Password (minimum 6 characters)
+
+Once created, you can login with these credentials and access admin features including:
+- User management (`/admin/users`)
+- Post moderation (`/admin/posts`)
+- System-wide content management
+
 ## Development
 
 ### Running Tests

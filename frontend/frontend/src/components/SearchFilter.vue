@@ -312,8 +312,8 @@ onMounted(() => {
 .modern-filter-form :deep(.el-input__wrapper),
 .modern-filter-form :deep(.el-select .el-input__wrapper),
 .modern-filter-form :deep(.el-date-editor .el-input__wrapper) {
-  background-color: var(--input-bg-color);
-  border-color: var(--input-border-color);
+  background-color: var(--bg-muted);
+  border-color: var(--border-base);
   transition: all 0.3s ease;
 }
 
@@ -333,6 +333,62 @@ onMounted(() => {
 .modern-filter-form :deep(.el-input__inner) {
   color: var(--text-primary);
   font-size: 14px;
+}
+
+.modern-filter-form :deep(.el-input__inner::placeholder),
+.modern-filter-form :deep(.el-date-editor .el-input__inner::placeholder) {
+  color: var(--text-tertiary);
+}
+
+.modern-filter-form :deep(.el-select__placeholder) {
+  color: var(--text-tertiary);
+}
+
+/* Fix select dropdown background */
+.modern-filter-form :deep(.el-select__popper) {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-base);
+}
+
+.modern-filter-form :deep(.el-select-dropdown__item) {
+  color: var(--text-primary);
+  background-color: var(--bg-surface);
+}
+
+.modern-filter-form :deep(.el-select-dropdown__item:hover) {
+  background-color: var(--bg-muted);
+}
+
+.modern-filter-form :deep(.el-select-dropdown__item.selected) {
+  color: var(--brand-primary);
+  font-weight: 600;
+}
+
+/* Fix date picker dropdown background */
+.modern-filter-form :deep(.el-picker-panel) {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-base);
+  color: var(--text-primary);
+}
+
+.modern-filter-form :deep(.el-date-picker__header-label),
+.modern-filter-form :deep(.el-date-table th),
+.modern-filter-form :deep(.el-date-table td.available) {
+  color: var(--text-primary);
+}
+
+.modern-filter-form :deep(.el-date-table td.current:not(.disabled) span) {
+  background-color: var(--brand-primary);
+  color: white;
+}
+
+.modern-filter-form :deep(.el-date-table td.today span) {
+  color: var(--brand-primary);
+  font-weight: 600;
+}
+
+.modern-filter-form :deep(.el-picker-panel__icon-btn) {
+  color: var(--text-primary);
 }
 
 .date-picker {

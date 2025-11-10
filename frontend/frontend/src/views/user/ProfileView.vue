@@ -206,12 +206,31 @@ onMounted(() => {
 }
 
 .profile-card :deep(.el-input__wrapper) {
-  background-color: var(--bg-surface);
+  background-color: var(--bg-muted);
   border-color: var(--border-base);
 }
 
 .profile-card :deep(.el-input__inner) {
   color: var(--text-primary);
+}
+
+/* Ensure textarea uses dark background */
+.profile-card :deep(.el-textarea__inner) {
+  background-color: var(--bg-muted);
+  color: var(--text-primary);
+  border-color: var(--border-base);
+}
+
+/* Override browser autofill yellow background */
+.profile-card :deep(input:-webkit-autofill),
+.profile-card :deep(input:-webkit-autofill:hover),
+.profile-card :deep(input:-webkit-autofill:focus),
+.profile-card :deep(textarea:-webkit-autofill),
+.profile-card :deep(select:-webkit-autofill) {
+  -webkit-box-shadow: 0 0 0px 1000px var(--bg-muted) inset !important;
+  -webkit-text-fill-color: var(--text-primary) !important;
+  caret-color: var(--text-primary);
+  transition: background-color 9999s ease-in-out 0s;
 }
 
 .profile-card :deep(.el-divider) {

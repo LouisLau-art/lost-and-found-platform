@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-page">
+  <div class="min-h-screen" style="background-color: var(--bg-base);">
     <el-header class="themed-header shadow">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         <router-link to="/" class="text-xl font-bold text-fg-primary">🎯 Lost & Found</router-link>
@@ -13,15 +13,12 @@
     <div class="max-w-7xl mx-auto py-8 px-4">
       <h1 class="text-3xl font-bold text-fg-primary mb-6">📦 我的认领</h1>
 
-      <el-tabs v-model="activeTab" @tab-change="handleTabChange">
-        <!-- 我提交的认领 -->
-        <el-tab-pane label="我提交的认领" name="submitted">
+      <el-tabs v-model="activeTab" @tab-change="handleTabChange" class="claims-tabs">
+        <!-- 我发出的认领 -->
+        <el-tab-pane label="我发出的认领" name="submitted">
           <template #label>
             <span class="flex items-center gap-2">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-              </svg>
-              我提交的认领
+              我发出的认领
               <el-badge v-if="submittedClaims.length > 0" :value="submittedClaims.length" class="ml-2" />
             </span>
           </template>
@@ -30,14 +27,12 @@
             <el-skeleton :rows="5" animated />
           </div>
 
-          <div v-else-if="submittedClaims.length === 0" class="text-center py-16">
-            <svg class="w-16 h-16 mx-auto icon-muted mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
-            </svg>
-            <p class="text-fg-secondary">你还没有提交过任何认领请求</p>
-            <el-button type="primary" class="mt-4" @click="$router.push('/forum')">
-              去论坛看看
-            </el-button>
+          <div v-else-if="submittedClaims.length === 0" class="py-8">
+            <el-empty description="你还没有发出任何认领">
+              <el-button type="primary" @click="$router.push('/forum')">
+                去论坛看看
+              </el-button>
+            </el-empty>
           </div>
 
           <div v-else class="space-y-4">
@@ -47,9 +42,15 @@
                 <div class="flex-1">
                   <div class="flex items-start justify-between mb-3">
                     <div>
-                      <h3 class="text-lg font-semibold text-fg-primary mb-1 cursor-pointer hover-text-primary"
-                          @click="$router.push(`/forum/${claim.post.id}`)">
+                      <h3
+                        v-if="claim.post"
+                        class="text-lg font-semibold text-fg-primary mb-1 cursor-pointer hover-text-primary"
+                        @click="$router.push(`/forum/${claim.post.id}`)"
+                      >
                         {{ claim.post.title }}
+                      </h3>
+                      <h3 v-else class="text-lg font-semibold text-fg-secondary mb-1">
+                        关联的帖子不可用
                       </h3>
                       <div class="flex items-center gap-2 text-sm text-fg-secondary">
                         <el-tag :type="getStatusType(claim.status)" size="small">
@@ -100,6 +101,7 @@
                   </el-button>
                   <el-button
                     size="small"
+                    :disabled="!claim.post"
                     @click="$router.push(`/forum/${claim.post.id}`)"
                   >
                     查看帖子
@@ -110,14 +112,11 @@
           </div>
         </el-tab-pane>
 
-        <!-- 收到的认领请求 -->
-        <el-tab-pane label="收到的认领请求" name="received">
+        <!-- 我收到的认领 -->
+        <el-tab-pane label="我收到的认领" name="received">
           <template #label>
             <span class="flex items-center gap-2">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-              </svg>
-              收到的认领请求
+              我收到的认领
               <el-badge v-if="pendingReceived > 0" :value="pendingReceived" type="warning" class="ml-2" />
             </span>
           </template>
@@ -126,11 +125,8 @@
             <el-skeleton :rows="5" animated />
           </div>
 
-          <div v-else-if="receivedClaims.length === 0" class="text-center py-16">
-            <svg class="w-16 h-16 mx-auto icon-muted mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            <p class="text-fg-secondary">还没有人认领你的帖子</p>
+          <div v-else-if="receivedClaims.length === 0" class="py-8">
+            <el-empty description="你的帖子还没有收到任何认领" />
           </div>
 
           <div v-else class="space-y-4">
@@ -155,10 +151,14 @@
                   <!-- 帖子信息 -->
                   <div class="bg-muted rounded p-3 mb-3">
                     <div class="text-xs text-fg-secondary mb-1">关于帖子：</div>
-                    <p class="text-sm font-medium text-fg-primary cursor-pointer hover-text-primary"
-                       @click="$router.push(`/forum/${claim.post.id}`)">
+                    <p
+                      v-if="claim.post"
+                      class="text-sm font-medium text-fg-primary cursor-pointer hover-text-primary"
+                      @click="$router.push(`/forum/${claim.post.id}`)"
+                    >
                       {{ claim.post.title }}
                     </p>
+                    <p v-else class="text-sm text-fg-secondary">关联的帖子不可用</p>
                   </div>
 
                   <!-- 认领者留言 -->
@@ -281,7 +281,11 @@ const loadReceivedClaims = async () => {
   try {
     // 获取我的所有帖子
     const postsResponse = await postAPI.getAll()
-    const allPosts = postsResponse.data.posts || postsResponse.data
+    // Ensure allPosts is always an array
+    let allPosts = postsResponse.data.posts || postsResponse.data || []
+    if (!Array.isArray(allPosts)) {
+      allPosts = []
+    }
     
     // 从authStore获取当前用户ID
     const authStore = useAuthStore()
@@ -468,5 +472,52 @@ onMounted(() => {
 <style scoped>
 .el-header {
   padding: 0;
+}
+
+.claims-tabs :deep(.el-tabs__header) {
+  background-color: var(--bg-surface);
+  border-bottom: 2px solid var(--border-base);
+  margin-bottom: 1.5rem;
+  padding: 0 1rem;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.claims-tabs :deep(.el-tabs__nav) {
+  border: none;
+}
+
+.claims-tabs :deep(.el-tabs__item) {
+  color: var(--text-secondary);
+  border: none;
+  padding: 1rem 1.5rem;
+  font-weight: 500;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.claims-tabs :deep(.el-tabs__item:hover) {
+  color: var(--text-primary);
+}
+
+.claims-tabs :deep(.el-tabs__item.is-active) {
+  color: var(--brand-primary);
+  font-weight: 600;
+}
+
+.claims-tabs :deep(.el-tabs__active-bar) {
+  background-color: var(--brand-primary);
+  height: 3px;
+}
+
+.el-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-base);
+  transition: all 0.3s ease;
+}
+
+.el-card:hover {
+  border-color: var(--brand-primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 </style>

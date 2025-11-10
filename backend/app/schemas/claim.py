@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime
 from .user import UserRead
 
@@ -8,6 +8,15 @@ class ClaimBase(BaseModel):
 
 class ClaimCreate(ClaimBase):
     post_id: int = Field(gt=0)
+
+class PostReadInClaim(BaseModel):
+    """Minimal Post fields embedded in Claim responses"""
+    id: int
+    title: str
+    images: Optional[List[str]] = None
+
+    class Config:
+        from_attributes = True
 
 class ClaimRead(ClaimBase):
     id: int
@@ -19,6 +28,7 @@ class ClaimRead(ClaimBase):
     post_id: int
     claimer_id: int
     claimer: Optional[UserRead] = None
+    post: Optional[PostReadInClaim] = None
     
     class Config:
         from_attributes = True

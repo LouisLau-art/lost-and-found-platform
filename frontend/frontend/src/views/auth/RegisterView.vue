@@ -9,6 +9,10 @@
         </template>
 
         <el-form :model="form" :rules="rules" ref="formRef" label-position="top" @submit.prevent>
+          <el-form-item label="用户名" prop="username">
+            <el-input v-model="form.username" placeholder="请输入用户名" />
+          </el-form-item>
+
           <el-form-item label="姓名" prop="name">
             <el-input v-model="form.name" placeholder="请输入姓名" />
           </el-form-item>
@@ -54,6 +58,7 @@ const authStore = useAuthStore()
 
 const formRef = ref()
 const form = ref({
+  username: '',
   name: '',
   email: '',
   password: '',
@@ -61,6 +66,9 @@ const form = ref({
 })
 
 const rules = {
+  username: [
+    { required: true, message: '请输入用户名', trigger: 'blur' }
+  ],
   name: [
     { required: true, message: '请输入姓名', trigger: 'blur' }
   ],
@@ -94,6 +102,7 @@ const onSubmit = async () => {
     if (!valid) return
     authStore.clearError()
     const result = await authStore.register({
+      username: form.value.username,
       name: form.value.name,
       email: form.value.email,
       password: form.value.password

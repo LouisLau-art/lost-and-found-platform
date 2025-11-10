@@ -2,6 +2,11 @@ from sqlmodel import SQLModel, create_engine, Session
 from app.core.config import settings
 import os
 
+# Import all models to register them with SQLModel metadata
+from app.models import User, Post, Comment, Notification, Category, Claim, Rating
+from app.models.claim_status_log import ClaimStatusLog
+from app.models.notification import NotificationSettings
+
 # Prefer env var DATABASE_URL; fallback to local SQLite
 DATABASE_URL = os.getenv("DATABASE_URL") or getattr(settings, "DATABASE_URL", "sqlite:///./lostandfound.db")
 

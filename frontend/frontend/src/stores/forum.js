@@ -173,6 +173,10 @@ export const useForumStore = defineStore('forum', {
       }
     },
 
+    setError(errorMessage) {
+      this.error = errorMessage
+    },
+
     clearError() {
       this.error = null
     },

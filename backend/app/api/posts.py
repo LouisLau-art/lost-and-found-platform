@@ -18,7 +18,7 @@ router = APIRouter()
 
 # Post endpoints
 @router.post("/", response_model=PostRead)
-def create_post(
+async def create_post(
     post: PostCreate,
     current_user: User = Depends(get_current_user),
     session: Session = Depends(get_session)
@@ -37,6 +37,69 @@ def create_post(
     session.add(db_post)
     session.commit()
     session.refresh(db_post)
+    
+    # Smart matching: Find potential matches and notify relevant users
+    if db_post.item_type in ["lost", "found"]:
+        # Determine target type (lost <-> found)
+        target_type = "found" if db_post.item_type == "lost" else "lost"
+        
+        # Build query for matching posts
+        match_query = select(Post).where(
+            and_(
+                Post.status.in_(["published", "active"]),
+                Post.item_type == target_type,
+                Post.is_claimed == False,
+                Post.id != db_post.id
+            )
+        )
+        
+        # Filter by category if available
+        if db_post.category_id:
+            match_query = match_query.where(Post.category_id == db_post.category_id)
+        
+        # Filter by location if available
+        if db_post.location:
+            location_pattern = f"%{db_post.location}%"
+            match_query = match_query.where(Post.location.like(location_pattern))
+        
+        # Filter by time range (7 days) if available
+        if db_post.item_time:
+            time_start = db_post.item_time - timedelta(days=7)
+            time_end = db_post.item_time + timedelta(days=7)
+            match_query = match_query.where(
+                and_(
+                    Post.item_time.isnot(None),
+                    Post.item_time >= time_start,
+                    Post.item_time <= time_end
+                )
+            )
+        
+        # Get potential matches
+        match_query = match_query.order_by(Post.created_at.desc()).limit(10)
+        potential_matches = list(session.exec(match_query).all())
+        
+        # Calculate similarity scores and notify if high match found
+        if potential_matches:
+            new_post_text = f"{db_post.title} {db_post.content}"
+            
+            for match_post in potential_matches:
+                match_text = f"{match_post.title} {match_post.content}"
+                similarity_score = TextSimilarityService.calculate_combined_similarity(
+                    new_post_text,
+                    match_text
+                )
+                
+                # Notify if similarity is above threshold (0.3 = 30%)
+                if similarity_score > 0.3:
+                    # Notify the author of the matching post
+                    await NotificationService.create_matching_notification(
+                        session=session,
+                        user_id=match_post.author_id,
+                        new_post=db_post,
+                        matched_post=match_post,
+                        similarity_score=similarity_score
+                    )
+    
     return db_post
 
 @router.get("/")

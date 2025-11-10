@@ -2,6 +2,7 @@ from fastapi import APIRouter
 
 # Import subrouters
 from . import auth, users, categories, posts, upload, claims, ratings, notifications
+from .admin import posts as admin_posts
 
 # Aggregate API router
 router = APIRouter()
@@ -17,3 +18,6 @@ router.include_router(upload.router, prefix="/upload", tags=["Upload"])
 router.include_router(claims.router, prefix="/claims", tags=["Claims"])
 router.include_router(ratings.router, prefix="/ratings", tags=["Ratings"])
 router.include_router(notifications.router, prefix="/notifications", tags=["Notifications"])
+
+# Admin routes
+router.include_router(admin_posts.router, prefix="/admin", tags=["Admin"])

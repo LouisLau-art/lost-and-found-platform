@@ -256,7 +256,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { useForumStore } from '@/stores/forum'
 import { categoryAPI, postAPI } from '@/api'
@@ -265,6 +265,7 @@ import ImageUpload from '@/components/ImageUpload.vue'
 import { InfoFilled, ArrowLeft, ArrowRight } from '@element-plus/icons-vue'
 
 const router = useRouter()
+const route = useRoute()
 const authStore = useAuthStore()
 const forumStore = useForumStore()
 
@@ -435,6 +436,11 @@ onMounted(() => {
   // 自动填充用户联系方式（如果有）
   if (authStore.user) {
     form.value.contact_info = authStore.user.phone || authStore.user.email || ''
+  }
+  
+  // 根据URL查询参数设置物品类型
+  if (route.query.type && ['lost', 'found', 'general'].includes(route.query.type)) {
+    form.value.item_type = route.query.type
   }
 })
 </script>

@@ -97,6 +97,10 @@
             <el-icon><TrendCharts /></el-icon>
             <span>My Activity</span>
           </el-menu-item>
+          <el-menu-item index="claims">
+            <el-icon><Tickets /></el-icon>
+            <span>My Claims</span>
+          </el-menu-item>
           <el-menu-item index="forum">
             <el-icon><Document /></el-icon>
             <span>Forum</span>
@@ -171,80 +175,63 @@
           </div>
         </div>
 
-        <!-- Activity Tabs -->
-        <div class="activity-section">
-          <el-tabs v-model="activeTab" class="activity-tabs">
-            <!-- Tab 1: My Recent Posts -->
-            <el-tab-pane name="posts">
-              <template #label>
-                <span class="tab-label">
-                  <el-icon class="tab-icon"><Document /></el-icon>
-                  <span>My Recent Posts</span>
-                </span>
-              </template>
-              <div v-if="userPostsCount === 0" class="empty-state">
-                <el-empty description="You haven't posted anything yet. Why not report a found item to help someone?">
-                  <el-button type="primary" @click="$router.push('/forum/create')">
-                    Create Your First Post
-                  </el-button>
-                </el-empty>
+        <!-- Recently Found Items Widget -->
+        <div class="recent-items-widget">
+          <div class="widget-header">
+            <h2 class="widget-title">
+              <el-icon class="widget-icon"><Flag /></el-icon>
+              Recently Found on Campus
+            </h2>
+            <el-button text type="primary" @click="$router.push('/forum?type=found')">
+              View All →
+            </el-button>
+          </div>
+          
+          <div v-if="loadingRecentItems" class="items-loading">
+            <el-skeleton :rows="3" animated />
+          </div>
+          
+          <div v-else-if="recentFoundItems.length === 0" class="items-empty">
+            <el-empty description="No recently found items" />
+          </div>
+          
+          <div v-else class="items-scroll">
+            <div
+              v-for="item in recentFoundItems"
+              :key="item.id"
+              class="item-card hover-lift"
+              @click="$router.push(`/forum/${item.id}`)"
+            >
+              <div v-if="item.images && item.images.length > 0" class="item-image">
+                <el-image
+                  :src="`http://localhost:8000${item.images[0]}`"
+                  fit="cover"
+                  class="w-full h-full"
+                >
+                  <template #error>
+                    <div class="image-placeholder">
+                      <el-icon><Picture /></el-icon>
+                    </div>
+                  </template>
+                </el-image>
               </div>
-              <div v-else class="post-list">
-                <div class="list-info">You have <strong>{{ userPostsCount }}</strong> post(s)</div>
-                <el-button type="primary" size="default" @click="$router.push('/forum')">
-                  <el-icon><Document /></el-icon>
-                  View All Posts
-                </el-button>
+              <div v-else class="item-image image-placeholder">
+                <el-icon><Picture /></el-icon>
               </div>
-            </el-tab-pane>
-
-            <!-- Tab 2: My Recent Claims -->
-            <el-tab-pane name="claims">
-              <template #label>
-                <span class="tab-label">
-                  <el-icon class="tab-icon"><Tickets /></el-icon>
-                  <span>My Recent Claims</span>
-                </span>
-              </template>
-              <div v-if="claimsCount === 0" class="empty-state">
-                <el-empty description="You have no active claims">
-                  <el-button type="success" @click="$router.push('/forum')">
-                    Browse Items to Claim
-                  </el-button>
-                </el-empty>
+              
+              <div class="item-info">
+                <h3 class="item-title">{{ item.title }}</h3>
+                <div class="item-meta">
+                  <el-tag size="small" type="success" effect="dark">Found</el-tag>
+                  <span class="item-location" v-if="item.location">
+                    <el-icon><Location /></el-icon>
+                    {{ item.location }}
+                  </span>
+                </div>
+                <div class="item-time">{{ formatRelativeTime(item.created_at) }}</div>
               </div>
-              <div v-else class="claim-list">
-                <div class="list-info">You have <strong>{{ claimsCount }}</strong> claim(s)</div>
-                <el-button type="success" size="default" @click="$router.push('/claims')">
-                  <el-icon><Tickets /></el-icon>
-                  View All Claims
-                </el-button>
-              </div>
-            </el-tab-pane>
-
-            <!-- Tab 3: Recent Activity -->
-            <el-tab-pane name="activity">
-              <template #label>
-                <span class="tab-label">
-                  <el-icon class="tab-icon"><TrendCharts /></el-icon>
-                  <span>Recent Activity</span>
-                </span>
-              </template>
-              <div class="activity-feed">
-                <el-timeline>
-                  <el-timeline-item timestamp="Recently" placement="top">
-                    <el-text>New items are being posted on the platform</el-text>
-                  </el-timeline-item>
-                  <el-timeline-item timestamp="Today" placement="top">
-                    <el-text>Community members are actively helping each other</el-text>
-                  </el-timeline-item>
-                </el-timeline>
-                <el-button type="info" text class="explore-btn" @click="$router.push('/forum')">
-                  Explore the Community Forum →
-                </el-button>
-              </div>
-            </el-tab-pane>
-          </el-tabs>
+            </div>
+          </div>
         </div>
 
         <!-- Forum Link -->
@@ -297,7 +284,7 @@ import { claimAPI } from '@/api'
 import { 
   Clock, Bell, User, SwitchButton, CircleCheck, Document, 
   Tickets, Search, Flag, TrendCharts, ArrowRight, Monitor,
-  Sunny, Moon
+  Sunny, Moon, Picture, Location
 } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 
@@ -307,10 +294,9 @@ const userStore = useUserStore()
 const forumStore = useForumStore()
 
 const showNotifications = ref(false)
-const activeTab = ref('posts')
 const activeMenu = ref('dashboard')
-const userPostsCount = ref(0)
-const claimsCount = ref(0)
+const recentFoundItems = ref([])
+const loadingRecentItems = ref(false)
 
 const userInitials = computed(() => {
   if (!authStore.user?.name) return 'U'
@@ -334,6 +320,8 @@ const handleMenuSelect = (index) => {
     // Stay on current page
   } else if (index === 'activity') {
     router.push('/user/activity')
+  } else if (index === 'claims') {
+    router.push('/claims')
   } else if (index === 'forum') {
     router.push('/forum')
   } else if (index === 'profile') {
@@ -387,6 +375,21 @@ const formatRelativeTime = (dateString) => {
   }
 }
 
+// Load recently found items
+const loadRecentFoundItems = async () => {
+  loadingRecentItems.value = true
+  try {
+    await forumStore.fetchPosts(1, 5, { item_type: 'found' })
+    const posts = Array.isArray(forumStore.posts) ? forumStore.posts : []
+    recentFoundItems.value = posts.slice(0, 5)
+  } catch (error) {
+    console.error('Failed to load recent found items:', error)
+    recentFoundItems.value = []
+  } finally {
+    loadingRecentItems.value = false
+  }
+}
+
 onMounted(async () => {
   // Dashboard initialization
   
@@ -398,24 +401,8 @@ onMounted(async () => {
     console.error('Failed to load notifications:', error)
   }
   
-  // Load user's posts count
-  try {
-    await forumStore.fetchPosts(1, 100)  // 获取前100个帖子
-    // 确保posts是数组
-    const posts = Array.isArray(forumStore.posts) ? forumStore.posts : []
-    userPostsCount.value = posts.filter(post => post.author_id === authStore.user?.id).length
-  } catch (error) {
-    console.error('Failed to load posts:', error)
-    userPostsCount.value = 0
-  }
-  
-  // Load claims count
-  try {
-    const response = await claimAPI.getMyClaims()
-    claimsCount.value = response.data.length
-  } catch (error) {
-    console.error('Failed to load claims:', error)
-  }
+  // Load recent found items
+  loadRecentFoundItems()
 })
 
 onUnmounted(() => {})
@@ -801,84 +788,116 @@ onUnmounted(() => {})
   justify-content: center;
 }
 
-/* ===== Activity Section ===== */
-.activity-section {
+/* ===== Recently Found Items Widget ===== */
+.recent-items-widget {
   background-color: var(--bg-surface);
-  border-radius: 1rem;
+  border-radius: var(--radius-lg);
   padding: 1.5rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+  box-shadow: var(--shadow-sm);
 }
 
-.activity-tabs :deep(.el-tabs__header) {
-  background-color: transparent;
-  border-bottom: 2px solid var(--border-base);
+.widget-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin-bottom: 1.5rem;
 }
 
-.activity-tabs :deep(.el-tabs__nav) {
-  border: none;
+.widget-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
 }
 
-.activity-tabs :deep(.el-tabs__item) {
-  color: var(--text-muted);
-  border: none;
-  padding: 1rem 1.5rem;
-  font-weight: 500;
-  font-size: 1rem;
+.widget-icon {
+  font-size: 1.5rem;
+  color: var(--brand-primary);
+}
+
+.items-scroll {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+}
+
+.item-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-base);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  cursor: pointer;
   transition: all 0.3s ease;
 }
 
-.activity-tabs :deep(.el-tabs__item:hover) {
-  color: var(--text-secondary);
+.item-card:hover {
+  border-color: var(--brand-primary);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
 }
 
-.activity-tabs :deep(.el-tabs__item.is-active) {
-  color: var(--primary);
+.item-image {
+  width: 100%;
+  height: 140px;
+  overflow: hidden;
+  background-color: var(--bg-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-placeholder {
+  color: var(--text-tertiary);
+  font-size: 2.5rem;
+}
+
+.item-info {
+  padding: 1rem;
+}
+
+.item-title {
+  font-size: 0.95rem;
   font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 0.75rem 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.4;
 }
 
-.activity-tabs :deep(.el-tabs__active-bar) {
-  background-color: var(--primary);
-  height: 3px;
-}
-
-.tab-label {
+.item-meta {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.5rem;
 }
 
-.tab-icon {
-  font-size: 1.125rem;
+.item-location {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
 }
 
-.empty-state :deep(.el-empty__description) {
-  color: var(--text-muted);
+.item-time {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
 }
 
-.list-info {
-  color: var(--text-primary);
-  font-size: 1rem;
-  margin-bottom: 1rem;
-  font-weight: 500;
-}
-
-.list-info strong {
-  color: var(--primary);
-  font-size: 1.25rem;
-  font-weight: 700;
-}
-
-.activity-feed :deep(.el-timeline-item__timestamp) {
-  color: var(--text-muted);
-}
-
-.activity-feed :deep(.el-text) {
-  color: var(--text-primary);
-}
-
-.explore-btn {
-  margin-top: 1rem;
+.items-loading,
+.items-empty {
+  padding: 2rem 0;
 }
 
 /* ===== Forum Link ===== */

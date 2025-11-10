@@ -551,7 +551,12 @@ const handleClaim = async () => {
     await loadPost()
   } catch (err) {
     if (err !== 'cancel') {
-      ElMessage.error(err.response?.data?.detail || '提交失败')
+      const detail = err?.response?.data?.detail
+      if (typeof detail === 'string' && detail.toLowerCase().includes('already have a pending')) {
+        ElMessage.warning('You already have a pending claim on this item.')
+      } else {
+        ElMessage.error(detail || '提交失败')
+      }
     }
   }
 }
@@ -863,3 +868,4 @@ onMounted(() => loadPost())
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+</style>

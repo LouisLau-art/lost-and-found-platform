@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select
+from sqlalchemy.orm import selectinload
 from typing import List
 from datetime import datetime
 from app.database import get_session
@@ -58,7 +59,13 @@ async def create_claim(
     # 发送通知给帖子作者
     await NotificationService.create_claim_notification(session, db_claim, post)
     
-    return db_claim
+    # Reload with relationships for nested serialization
+    created = session.exec(
+        select(Claim)
+        .options(selectinload(Claim.post), selectinload(Claim.claimer))
+        .where(Claim.id == db_claim.id)
+    ).first()
+    return created
 
 @router.get("/my-claims", response_model=List[ClaimRead])
 def get_my_claims(
@@ -67,7 +74,10 @@ def get_my_claims(
 ):
     """获取我提交的认领请求"""
     claims = session.exec(
-        select(Claim).where(Claim.claimer_id == current_user.id).order_by(Claim.created_at.desc())
+        select(Claim)
+        .options(selectinload(Claim.post), selectinload(Claim.claimer))
+        .where(Claim.claimer_id == current_user.id)
+        .order_by(Claim.created_at.desc())
     ).all()
     return claims
 
@@ -86,7 +96,10 @@ def get_post_claims(
         raise HTTPException(status_code=403, detail="Only post owner can view claims")
     
     claims = session.exec(
-        select(Claim).where(Claim.post_id == post_id).order_by(Claim.created_at.desc())
+        select(Claim)
+        .options(selectinload(Claim.post), selectinload(Claim.claimer))
+        .where(Claim.post_id == post_id)
+        .order_by(Claim.created_at.desc())
     ).all()
     return claims
 
@@ -149,7 +162,13 @@ async def approve_claim(
     # 发送通知给认领者（事务提交后）
     await NotificationService.create_claim_approved_notification(session, claim, post)
 
-    return claim
+    # Return with relationships loaded
+    approved = session.exec(
+        select(Claim)
+        .options(selectinload(Claim.post), selectinload(Claim.claimer))
+        .where(Claim.id == claim.id)
+    ).first()
+    return approved
 
 @router.post("/{claim_id}/reject", response_model=ClaimRead)
 async def reject_claim(
@@ -198,7 +217,12 @@ async def reject_claim(
 
     await NotificationService.create_claim_rejected_notification(session, claim, post)
 
-    return claim
+    rejected = session.exec(
+        select(Claim)
+        .options(selectinload(Claim.post), selectinload(Claim.claimer))
+        .where(Claim.id == claim.id)
+    ).first()
+    return rejected
 
 @router.delete("/{claim_id}")
 def cancel_claim(

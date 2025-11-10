@@ -4,6 +4,7 @@ from datetime import datetime
 
 class UserBase(BaseModel):
     name: str
+    username: str
     email: EmailStr
 
 class UserCreate(UserBase):

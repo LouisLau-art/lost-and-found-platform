@@ -352,6 +352,8 @@ onMounted(() => {
   --el-table-bg-color: var(--bg-surface);
   --el-table-tr-bg-color: var(--bg-surface);
   --el-table-row-hover-bg-color: var(--bg-muted);
+  --el-table-striped-row-bg-color: var(--bg-surface);
+  --el-table-header-bg-color: var(--bg-surface);
   --el-table-text-color: var(--text-primary);
   --el-table-border-color: var(--border-base);
 }
