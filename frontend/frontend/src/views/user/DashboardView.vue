@@ -574,7 +574,7 @@ onUnmounted(() => {})
 
 .credit-label {
   font-size: 0.875rem;
-  color: #6b7280;
+  color: var(--text-secondary);
   margin-bottom: 0.5rem;
 }
 
@@ -611,7 +611,7 @@ onUnmounted(() => {})
 }
 
 .sidebar-menu :deep(.el-menu-item) {
-  color: #6b7280;
+  color: var(--text-secondary);
   border-radius: 0.5rem;
   margin-bottom: 0.5rem;
   transition: all 0.3s ease;

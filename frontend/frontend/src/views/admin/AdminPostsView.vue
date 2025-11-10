@@ -1,19 +1,19 @@
 <template>
   <div class="min-h-screen" style="background-color: var(--bg-base);">
     <!-- 导航栏 -->
-    <nav class="bg-white/95 backdrop-blur-sm border-b border-gray-200">
+    <nav class="themed-header backdrop-blur-sm">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
           <div class="flex items-center">
-            <router-link to="/" class="text-xl font-bold text-gray-800 hover:text-indigo-600 transition-all">
+            <router-link to="/" class="text-xl font-bold text-fg-primary hover-text-primary transition-all">
               Lost & Found - Admin
             </router-link>
           </div>
           <div class="flex items-center space-x-4">
-            <router-link to="/dashboard" class="text-gray-600 hover:text-gray-900 transition-all">
+            <router-link to="/dashboard" class="text-fg-secondary hover-text-primary transition-all">
               返回用户面板
             </router-link>
-            <el-button text class="text-gray-600 hover:text-gray-900" @click="handleLogout">
+            <el-button text class="text-fg-secondary hover-text-primary" @click="handleLogout">
               退出登录
             </el-button>
           </div>
@@ -55,7 +55,7 @@
           
           <el-table-column prop="title" label="标题" min-width="200">
             <template #default="{ row }">
-              <router-link :to="`/forum/${row.id}`" class="text-blue-600 hover:text-blue-800">
+              <router-link :to="`/forum/${row.id}`" class="text-primary hover-text-primary">
                 {{ row.title }}
               </router-link>
             </template>

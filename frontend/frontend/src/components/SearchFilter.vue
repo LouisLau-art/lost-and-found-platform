@@ -102,8 +102,8 @@
       </div>
       
       <!-- 当前筛选条件标签 -->
-      <div v-if="hasActiveFilters" class="pt-4 border-t border-gray-200">
-        <div class="text-sm text-gray-500 mb-2">当前筛选条件：</div>
+      <div v-if="hasActiveFilters" class="pt-4 border-t border-base">
+        <div class="text-sm text-fg-secondary mb-2">当前筛选条件：</div>
         <div class="flex flex-wrap gap-2">
           <el-tag
             v-if="filters.search"

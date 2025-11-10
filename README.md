@@ -216,10 +216,10 @@ alembic upgrade head
 
 ## Documentation
 
-- **[Claim System Complete Guide](./CLAIM_SYSTEM_COMPLETE.md)** - Complete implementation report of the claim system
-- **[User Profile Feature](./USER_PROFILE_COMPLETE.md)** - User profile and rating display feature
-- **[Testing Checklist](./TESTING_CHECKLIST.md)** - Comprehensive testing guide
-- **[Development Summary](./DEVELOPMENT_SUMMARY.md)** - Development completion summary
+- **[Claim System Complete Guide](./docs/features/claim/CLAIM_SYSTEM_COMPLETE.md)** - Complete implementation report of the claim system
+- **[User Profile Feature](./docs/features/user-profile/USER_PROFILE_COMPLETE.md)** - User profile and rating display feature
+- **[Testing Checklist](./docs/testing/TESTING_CHECKLIST.md)** - Comprehensive testing guide
+- **[Development Summary](./docs/reports/DEVELOPMENT_SUMMARY.md)** - Development completion summary
 
 ## Current Status
 

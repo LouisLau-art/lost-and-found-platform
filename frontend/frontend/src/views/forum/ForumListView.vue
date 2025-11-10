@@ -1,14 +1,14 @@
 <template>
   <div class="min-h-screen flex flex-col" style="background-color: var(--bg-page);">
     <!-- Header with navigation -->
-    <el-header class="bg-white/95 backdrop-blur-sm border-b border-gray-200">
+    <el-header class="themed-header backdrop-blur-sm">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <router-link to="/" class="text-2xl font-bold text-gray-800 hover:text-indigo-600 transition-all flex items-center">
+        <router-link to="/" class="text-2xl font-bold text-fg-primary hover-text-primary transition-all flex items-center">
           <el-icon class="mr-2" :size="28"><Compass /></el-icon>
           Lost & Found Platform
         </router-link>
         <div class="flex gap-2">
-          <el-button v-if="authStore.isAuthenticated" text class="text-gray-600 hover:text-gray-900" @click="$router.push('/dashboard')">
+          <el-button v-if="authStore.isAuthenticated" text class="text-fg-secondary hover-text-primary" @click="$router.push('/dashboard')">
             <el-icon><Monitor /></el-icon> 仪表盘
           </el-button>
           <el-button v-if="authStore.isAuthenticated" type="primary" @click="$router.push('/forum/create')">
@@ -96,7 +96,7 @@
                           :src="`http://localhost:8000${img}`"
                           class="w-16 h-16 object-cover rounded transition-transform duration-300 hover:scale-110"
                         />
-                        <div v-if="post.images.length > 4" class="w-16 h-16 bg-gray-100 rounded flex items-center justify-center text-gray-500">
+                        <div v-if="post.images.length > 4" class="w-16 h-16 bg-muted rounded flex items-center justify-center text-fg-secondary">
                           +{{ post.images.length - 4 }}
                         </div>
                       </div>
@@ -343,6 +343,7 @@ onMounted(() => loadPosts())
   margin-bottom: var(--spacing-md);
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }

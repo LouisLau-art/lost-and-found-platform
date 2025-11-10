@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-50">
+  <div class="min-h-screen flex items-center justify-center bg-page">
     <n-card class="w-full max-w-md" title="登录到失物招领平台">
       <n-form
         ref="formRef"
