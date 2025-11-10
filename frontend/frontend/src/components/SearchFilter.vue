@@ -1,3 +1,22 @@
+watch(
+  () => props.modelValue,
+  (newValue) => {
+    const incoming = newValue || {}
+    const merged = { ...createDefaultFilters(), ...incoming }
+    filters.value = { ...merged }
+
+    if (merged.start_date && merged.end_date) {
+      try {
+        dateRange.value = [new Date(merged.start_date), new Date(merged.end_date)]
+      } catch (error) {
+        dateRange.value = null
+      }
+    } else {
+      dateRange.value = null
+    }
+  },
+  { immediate: true, deep: true }
+)
 <template>
   <div class="search-filter-container">
     <el-form :model="filters" label-position="top" size="default" class="modern-filter-form">
@@ -164,7 +183,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { categoryAPI } from '@/api'
 import { Search, Location, RefreshLeft } from '@element-plus/icons-vue'
 
@@ -177,7 +196,7 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue', 'search'])
 
-const filters = ref({
+const createDefaultFilters = () => ({
   search: '',
   item_type: null,
   category_id: null,
@@ -186,6 +205,8 @@ const filters = ref({
   start_date: null,
   end_date: null
 })
+
+const filters = ref(createDefaultFilters())
 
 const dateRange = ref(null)
 const categories = ref([])
@@ -241,15 +262,7 @@ const handleSearch = () => {
 
 // 重置筛选
 const resetFilters = () => {
-  filters.value = {
-    search: '',
-    item_type: null,
-    category_id: null,
-    location: '',
-    is_claimed: null,
-    start_date: null,
-    end_date: null
-  }
+  filters.value = createDefaultFilters()
   dateRange.value = null
   handleSearch()
 }

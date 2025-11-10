@@ -17,7 +17,7 @@
       <!-- 星级评分 -->
       <div class="flex items-center gap-1">
         <el-rate
-          v-model="rating.score"
+          :model-value="rating.score"
           disabled
           show-score
           text-color="#ff9900"
