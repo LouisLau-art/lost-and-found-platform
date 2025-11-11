@@ -168,32 +168,34 @@ async def approve_claim(
     logger = logging.getLogger(__name__)
     logger.info(f"[CLAIM_APPROVE] Approving claim {claim_id} by user {current_user.id}")
     try:
-        with session.begin():
-            prev_status = claim.status
-            claim.status = "approved"
-            claim.owner_reply = approve.owner_reply
-            claim.confirmed_at = datetime.utcnow()
-            claim.updated_at = datetime.utcnow()
+        prev_status = claim.status
+        claim.status = "approved"
+        claim.owner_reply = approve.owner_reply
+        claim.confirmed_at = datetime.utcnow()
+        claim.updated_at = datetime.utcnow()
 
-            post.is_claimed = True
-            # 使用已存在的状态集合: published/draft/deleted；保持published并用is_claimed标识
-            # 如果需要展示解决状态，请在前端根据is_claimed渲染。
-            post.updated_at = datetime.utcnow()
+        post.is_claimed = True
+        # 使用已存在的状态集合: published/draft/deleted；保持published并用is_claimed标识
+        # 如果需要展示解决状态，请在前端根据is_claimed渲染。
+        post.updated_at = datetime.utcnow()
 
-            session.add(claim)
-            session.add(post)
+        session.add(claim)
+        session.add(post)
 
-            log = ClaimStatusLog(
-                claim_id=claim.id,
-                post_id=post.id,
-                from_status=prev_status,
-                to_status=claim.status,
-                actor_user_id=current_user.id,
-                actor_role="owner",
-                note=approve.owner_reply
-            )
-            session.add(log)
+        log = ClaimStatusLog(
+            claim_id=claim.id,
+            post_id=post.id,
+            from_status=prev_status,
+            to_status=claim.status,
+            actor_user_id=current_user.id,
+            actor_role="owner",
+            note=approve.owner_reply
+        )
+        session.add(log)
+
+        session.commit()
     except Exception as e:
+        session.rollback()
         logger.exception(f"[CLAIM_APPROVE] DB transaction failed for claim {claim_id}: {e}")
         # 事务会自动回滚，抛出通用错误
         raise HTTPException(status_code=500, detail="Failed to approve claim due to server error")
@@ -242,24 +244,26 @@ async def reject_claim(
         raise HTTPException(status_code=409, detail="Only pending claims can be rejected")
 
     try:
-        with session.begin():
-            prev_status = claim.status
-            claim.status = "rejected"
-            claim.owner_reply = reject.owner_reply
-            claim.updated_at = datetime.utcnow()
-            session.add(claim)
+        prev_status = claim.status
+        claim.status = "rejected"
+        claim.owner_reply = reject.owner_reply
+        claim.updated_at = datetime.utcnow()
+        session.add(claim)
 
-            log = ClaimStatusLog(
-                claim_id=claim.id,
-                post_id=post.id,
-                from_status=prev_status,
-                to_status=claim.status,
-                actor_user_id=current_user.id,
-                actor_role="owner",
-                note=reject.owner_reply
-            )
-            session.add(log)
+        log = ClaimStatusLog(
+            claim_id=claim.id,
+            post_id=post.id,
+            from_status=prev_status,
+            to_status=claim.status,
+            actor_user_id=current_user.id,
+            actor_role="owner",
+            note=reject.owner_reply
+        )
+        session.add(log)
+
+        session.commit()
     except Exception:
+        session.rollback()
         raise HTTPException(status_code=500, detail="Failed to reject claim due to server error")
 
     session.refresh(claim)
@@ -291,23 +295,25 @@ def cancel_claim(
         raise HTTPException(status_code=400, detail="Can only cancel pending claims")
 
     try:
-        with session.begin():
-            prev_status = claim.status
-            claim.status = "cancelled"
-            claim.updated_at = datetime.utcnow()
-            session.add(claim)
+        prev_status = claim.status
+        claim.status = "cancelled"
+        claim.updated_at = datetime.utcnow()
+        session.add(claim)
 
-            log = ClaimStatusLog(
-                claim_id=claim.id,
-                post_id=claim.post_id,
-                from_status=prev_status,
-                to_status=claim.status,
-                actor_user_id=current_user.id,
-                actor_role="claimer",
-                note=None
-            )
-            session.add(log)
+        log = ClaimStatusLog(
+            claim_id=claim.id,
+            post_id=claim.post_id,
+            from_status=prev_status,
+            to_status=claim.status,
+            actor_user_id=current_user.id,
+            actor_role="claimer",
+            note=None
+        )
+        session.add(log)
+
+        session.commit()
     except Exception:
+        session.rollback()
         raise HTTPException(status_code=500, detail="Failed to cancel claim due to server error")
 
     return {"message": "Claim cancelled successfully"}

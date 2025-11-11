@@ -352,6 +352,10 @@ const fetchCategories = async () => {
   }
 }
 
+const setCurrentTime = () => {
+  form.value.item_time = new Date()
+}
+
 // 下一步
 const nextStep = async () => {
   // 验证当前步骤的字段
