@@ -11,8 +11,8 @@
     </el-header>
 
     <!-- Main content -->
-    <div class="max-w-4xl mx-auto py-6 sm:px-6 lg:px-8">
-      <div class="px-4 py-6 sm:px-0">
+    <div class="content-wrapper py-6">
+      <div class="max-w-4xl mx-auto">
         <el-card>
           <template #header>
             <div class="flex items-center justify-between">
@@ -166,7 +166,7 @@ import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { categoryAPI, postAPI } from '@/api'
-import { ElMessage } from 'element-plus'
+import message from '@/utils/message'
 import ImageUpload from '@/components/ImageUpload.vue'
 
 const route = useRoute()
@@ -234,7 +234,7 @@ const loadCategories = async () => {
     const response = await categoryAPI.getAll()
     categories.value = response.data
   } catch (err) {
-    ElMessage.error('加载分类失败')
+    message.error('加载分类失败')
   } finally {
     loadingCategories.value = false
   }
@@ -288,7 +288,7 @@ const onSubmit = async () => {
     }
     
     await postAPI.update(postId.value, submitData)
-    ElMessage.success('帖子更新成功')
+    message.success('帖子更新成功')
     router.push(`/forum/${postId.value}`)
   } catch (err) {
     error.value = err.response?.data?.detail || '更新失败，请重试'

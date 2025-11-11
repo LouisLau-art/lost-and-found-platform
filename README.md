@@ -121,28 +121,53 @@ The API will be available at `http://localhost:8000`
 
 The frontend will be available at `http://localhost:5173`
 
+### Create an Admin User
+
+To create an administrator account for the platform:
+
+```bash
+cd backend
+python create_admin.py
+```
+
+The script will interactively prompt you for:
+- Username
+- Full Name  
+- Email
+- Password (with confirmation)
+
+The created user will have admin privileges and can access the admin panel at `/admin`.
+
 ### Seed the Database with Test Data
 
 To quickly populate the database with realistic test data (users, posts, claims, comments, ratings):
 
-1. Ensure backend dependencies are installed (Faker is required):
+1. **BACKUP YOUR DATABASE FIRST** (optional but recommended):
    ```bash
    cd backend
+   ./backup_database.sh
+   ```
+
+2. Ensure backend dependencies are installed:
+   ```bash
    pip install -r requirements.txt
    ```
 
-2. Run the seeding script:
+3. Run the seeding script:
    ```bash
    python seed_database.py
+   # Type 'yes' when prompted to confirm
    ```
 
-Notes:
+**⚠️ WARNING:** This script is DESTRUCTIVE and will:
+- Delete ALL existing data (users, posts, claims, comments, etc.)
+- Create fresh test data with Faker
+- Create a default admin account (`admin@example.com` / `admin123`)
 
-- This script is DESTRUCTIVE. It clears existing Users, Posts, Claims, Comments, Notifications, Ratings, and Categories before inserting fresh data.
-- By default, it uses the DATABASE_URL from environment or falls back to a local SQLite file under `backend/`.
-- Admin credentials after seeding:
-  - Email: `admin@example.com`
-  - Password: `admin123`
+Notes:
+- The script requires typing 'yes' to proceed as a safety measure
+- Uses the DATABASE_URL from environment or falls back to SQLite
+- Creates ~20 users, ~50 posts, ~30 claims, and related data
 
 ## API Endpoints
 

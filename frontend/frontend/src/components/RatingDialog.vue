@@ -111,7 +111,7 @@
 
 <script setup>
 import { ref, computed, watch } from 'vue'
-import { ElMessage } from 'element-plus'
+import message from '@/utils/message'
 import { ratingAPI } from '@/api'
 import { useAuthStore } from '@/stores/auth'
 
@@ -178,7 +178,7 @@ const handleClose = () => {
 // 提交评价
 const handleSubmit = async () => {
   if (!form.value.score) {
-    ElMessage.warning('请选择评分')
+    message.warning('请选择评分')
     return
   }
 
@@ -195,7 +195,7 @@ const handleSubmit = async () => {
     emit('rated', props.claim.id)
     handleClose()
   } catch (error) {
-    ElMessage.error(error.response?.data?.detail || '提交失败')
+    message.error(error.response?.data?.detail || '提交失败')
   } finally {
     submitting.value = false
   }
@@ -224,7 +224,7 @@ const toggleTag = (tag) => {
     if (selectedTags.value.length < 3) {
       selectedTags.value.push(tag)
     } else {
-      ElMessage.warning('最多只能选择3个标签')
+      message.warning('最多只能选择3个标签')
     }
   }
 }

@@ -1,29 +1,26 @@
 <template>
-  <n-message-provider>
-    <n-notification-provider>
-      <div id="app" class="app-container">
-        <!-- Transition wrapper for page transitions -->
-        <main class="app-content">
-          <router-view v-slot="{ Component }">
-            <transition name="fade" mode="out-in">
-              <component :is="Component" />
-            </transition>
-          </router-view>
-        </main>
-        
-        <!-- Notification manager for authenticated users -->
-        <NotificationManager v-if="authStore.isAuthenticated" />
-      </div>
-    </n-notification-provider>
-  </n-message-provider>
+  <div id="app" class="app-container">
+    <TheNavbar v-if="authStore.isAuthenticated" />
+    <!-- Transition wrapper for page transitions -->
+    <main class="app-content">
+      <router-view v-slot="{ Component }">
+        <transition name="fade" mode="out-in">
+          <component :is="Component" />
+        </transition>
+      </router-view>
+    </main>
+
+    <!-- Notification manager for authenticated users -->
+    <NotificationManager v-if="authStore.isAuthenticated" />
+  </div>
 </template>
 
 <script setup>
 import { onMounted } from 'vue'
 import { RouterView } from 'vue-router'
-import { NMessageProvider, NNotificationProvider } from 'naive-ui'
 import { useAuthStore } from '@/stores/auth'
 import NotificationManager from '@/components/NotificationManager.vue'
+import TheNavbar from '@/components/TheNavbar.vue'
 
 const authStore = useAuthStore()
 

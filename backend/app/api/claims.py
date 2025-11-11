@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+import logging
 from sqlmodel import Session, select
 from sqlalchemy.orm import selectinload
 from typing import List
@@ -87,12 +88,21 @@ def get_received_claims(
     session: Session = Depends(get_session)
 ):
     """获取我作为帖子作者收到的所有认领请求（聚合所有我的帖子）。"""
+    import logging
+    logger = logging.getLogger(__name__)
+    
+    logger.info(f"[RECEIVED_CLAIMS] Current user: {current_user.email} (ID: {current_user.id})")
+    
     # 获取当前用户的所有帖子ID
-    post_ids = [pid for (pid,) in session.exec(
+    # 直接使用 .all() 返回整型ID列表，避免元组解包问题
+    post_ids = session.exec(
         select(Post.id).where(Post.author_id == current_user.id)
-    ).all()]
+    ).all()
+    
+    logger.info(f"[RECEIVED_CLAIMS] Found {len(post_ids)} posts for user {current_user.id}: {post_ids}")
 
     if not post_ids:
+        logger.info(f"[RECEIVED_CLAIMS] No posts found, returning empty list")
         return []
 
     claims = session.exec(
@@ -101,6 +111,11 @@ def get_received_claims(
         .where(Claim.post_id.in_(post_ids))
         .order_by(Claim.created_at.desc())
     ).all()
+    
+    logger.info(f"[RECEIVED_CLAIMS] Found {len(claims)} claims for user's posts")
+    for claim in claims:
+        logger.info(f"[RECEIVED_CLAIMS] Claim ID {claim.id}: Post {claim.post_id}, Claimer {claim.claimer_id}, Status {claim.status}")
+    
     return claims
 
 @router.get("/post/{post_id}", response_model=List[ClaimRead])
@@ -150,6 +165,8 @@ async def approve_claim(
     if post.is_claimed:
         raise HTTPException(status_code=409, detail="Post already claimed")
 
+    logger = logging.getLogger(__name__)
+    logger.info(f"[CLAIM_APPROVE] Approving claim {claim_id} by user {current_user.id}")
     try:
         with session.begin():
             prev_status = claim.status
@@ -159,7 +176,8 @@ async def approve_claim(
             claim.updated_at = datetime.utcnow()
 
             post.is_claimed = True
-            post.status = "resolved"  # 更新帖子状态为已解决
+            # 使用已存在的状态集合: published/draft/deleted；保持published并用is_claimed标识
+            # 如果需要展示解决状态，请在前端根据is_claimed渲染。
             post.updated_at = datetime.utcnow()
 
             session.add(claim)
@@ -175,22 +193,31 @@ async def approve_claim(
                 note=approve.owner_reply
             )
             session.add(log)
-    except Exception:
+    except Exception as e:
+        logger.exception(f"[CLAIM_APPROVE] DB transaction failed for claim {claim_id}: {e}")
         # 事务会自动回滚，抛出通用错误
         raise HTTPException(status_code=500, detail="Failed to approve claim due to server error")
 
-    session.refresh(claim)
-
-    # 发送通知给认领者（事务提交后）
-    await NotificationService.create_claim_approved_notification(session, claim, post)
-
-    # Return with relationships loaded
-    approved = session.exec(
+    # 重新加载claim和post，确保关系已就绪（避免懒加载导致的None属性访问）
+    claim = session.exec(
         select(Claim)
         .options(selectinload(Claim.post), selectinload(Claim.claimer))
         .where(Claim.id == claim.id)
     ).first()
-    return approved
+    post = session.exec(
+        select(Post)
+        .options(selectinload(Post.author))
+        .where(Post.id == claim.post_id)
+    ).first()
+
+    # 发送通知给认领者（事务提交后）；通知失败不影响主流程
+    try:
+        await NotificationService.create_claim_approved_notification(session, claim, post)
+    except Exception as e:
+        logger.exception(f"[CLAIM_APPROVE] Notification create failed for claim {claim_id}: {e}")
+
+    # Return with relationships loaded（已加载）
+    return claim
 
 @router.post("/{claim_id}/reject", response_model=ClaimRead)
 async def reject_claim(

@@ -311,6 +311,22 @@ html.light .el-icon {
   }
 }
 
+/* ===========================
+   GLOBAL FEEDBACK POSITIONING
+   =========================== */
+/* Center Element Plus Message at top-center */
+.el-message {
+  right: auto !important;
+  left: 50% !important;
+  transform: translateX(-50%);
+}
+
+/* Notification drawers and popovers use dark surface */
+.el-drawer__body {
+  background-color: var(--bg-surface) !important;
+  color: var(--text-primary) !important;
+}
+
 @media (min-width: 1024px) {
   .container {
     padding: 0 2rem;
@@ -391,5 +407,132 @@ html.light .el-icon {
   
   h3 {
     font-size: 1.25rem;
+  }
+}
+
+/* ===========================
+   GLOBAL FIXES FOR ELEMENT PLUS
+   =========================== */
+
+/* Fix dialog overlay to be properly dark */
+.el-overlay {
+  background-color: rgba(0, 0, 0, 0.8) !important;
+}
+
+/* Fix dialog background */
+.el-dialog {
+  background-color: var(--bg-surface) !important;
+  border: 1px solid var(--border-base) !important;
+}
+
+.el-dialog__header {
+  border-bottom: 1px solid var(--border-base) !important;
+}
+
+.el-dialog__title {
+  color: var(--text-primary) !important;
+}
+
+.el-dialog__body {
+  color: var(--text-primary) !important;
+}
+
+/* Fix select dropdown backgrounds - FORCE OVERRIDE */
+.el-select__popper,
+.el-select-dropdown {
+  background-color: var(--bg-surface) !important;
+  border: 1px solid var(--border-base) !important;
+}
+
+.el-select__popper .el-select-dropdown__wrap,
+.el-select-dropdown__wrap {
+  background-color: var(--bg-surface) !important;
+}
+
+.el-select__popper .el-scrollbar,
+.el-select-dropdown .el-scrollbar {
+  background-color: var(--bg-surface) !important;
+}
+
+.el-select__popper .el-select-dropdown__list,
+.el-select-dropdown__list {
+  background-color: var(--bg-surface) !important;
+}
+
+.el-select__popper .el-select-dropdown__item,
+.el-select-dropdown__item {
+  color: var(--text-primary) !important;
+  background-color: var(--bg-surface) !important;
+}
+
+.el-select__popper .el-select-dropdown__item:hover,
+.el-select-dropdown__item:hover,
+.el-select__popper .el-select-dropdown__item.hover,
+.el-select-dropdown__item.hover {
+  background-color: var(--bg-muted) !important;
+  color: var(--text-primary) !important;
+}
+
+.el-select__popper .el-select-dropdown__item.selected,
+.el-select-dropdown__item.selected {
+  color: var(--brand-primary) !important;
+  font-weight: 600;
+  background-color: var(--bg-surface) !important;
+}
+
+/* Fix popper arrow */
+.el-popper__arrow::before {
+  background: var(--bg-surface) !important;
+  border: 1px solid var(--border-base) !important;
+}
+
+/* Fix date picker dropdown */
+.el-picker-panel {
+  background-color: var(--bg-surface) !important;
+  border: 1px solid var(--border-base) !important;
+  color: var(--text-primary) !important;
+}
+
+.el-date-picker__header-label,
+.el-date-table th,
+.el-date-table td.available {
+  color: var(--text-primary) !important;
+}
+
+.el-date-table td.current:not(.disabled) span {
+  background-color: var(--brand-primary) !important;
+  color: white !important;
+}
+
+/* Fix message box */
+.el-message-box {
+  background-color: var(--bg-surface) !important;
+  border: 1px solid var(--border-base) !important;
+}
+
+.el-message-box__title {
+  color: var(--text-primary) !important;
+}
+
+.el-message-box__message {
+  color: var(--text-secondary) !important;
+}
+
+/* Global container wrapper for consistent max-width */
+.content-wrapper {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+@media (min-width: 640px) {
+  .content-wrapper {
+    padding: 0 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .content-wrapper {
+    padding: 0 2rem;
   }
 }

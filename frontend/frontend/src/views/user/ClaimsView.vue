@@ -10,7 +10,7 @@
       </div>
     </el-header>
 
-    <div class="max-w-7xl mx-auto py-8 px-4">
+    <div class="content-wrapper py-8">
       <h1 class="text-3xl font-bold text-fg-primary mb-6">📦 我的认领</h1>
 
       <el-tabs v-model="activeTab" class="claims-tabs">
@@ -243,7 +243,8 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElMessageBox } from 'element-plus'
+import message from '@/utils/message'
 import { claimAPI } from '@/api'
 import { useAuthStore } from '@/stores/auth'
 import RatingDialog from '@/components/RatingDialog.vue'
@@ -271,7 +272,7 @@ const loadSubmittedClaims = async () => {
     const response = await claimAPI.getMyClaims()
     submittedClaims.value = response.data
   } catch (error) {
-    ElMessage.error('加载失败：' + (error.response?.data?.detail || error.message))
+    message.error('加载失败：' + (error.response?.data?.detail || error.message))
   } finally {
     loadingSubmitted.value = false
   }
@@ -279,13 +280,27 @@ const loadSubmittedClaims = async () => {
 
 // 加载收到的认领请求
 const loadReceivedClaims = async () => {
+  console.log('[ClaimsView] Loading received claims...')
   loadingReceived.value = true
   try {
+    console.log('[ClaimsView] Calling claimAPI.getReceived()...')
     const response = await claimAPI.getReceived()
+    console.log('[ClaimsView] Raw API response:', response)
+    console.log('[ClaimsView] Response data:', response.data)
+    
     const data = response.data || []
     receivedClaims.value = Array.isArray(data) ? data : []
+    
+    console.log('[ClaimsView] Processed received claims:', receivedClaims.value)
+    console.log('[ClaimsView] Number of received claims:', receivedClaims.value.length)
+    
+    if (receivedClaims.value.length > 0) {
+      console.log('[ClaimsView] First received claim:', receivedClaims.value[0])
+    }
   } catch (error) {
-    ElMessage.error('加载失败：' + (error.response?.data?.detail || error.message))
+    console.error('[ClaimsView] Error loading received claims:', error)
+    console.error('[ClaimsView] Error response:', error.response)
+    message.error('加载失败：' + (error.response?.data?.detail || error.message))
   } finally {
     loadingReceived.value = false
   }
@@ -301,6 +316,22 @@ watch(activeTab, (tab) => {
   }
 })
 
+// 侦听路由查询参数变化，确保与activeTab同步并按需加载
+watch(
+  () => route.query.tab,
+  (tab) => {
+    const normalized = tab === 'received' ? 'received' : 'submitted'
+    if (activeTab.value !== normalized) {
+      activeTab.value = normalized
+    }
+    if (normalized === 'received' && receivedClaims.value.length === 0) {
+      loadReceivedClaims()
+    } else if (normalized === 'submitted' && submittedClaims.value.length === 0) {
+      loadSubmittedClaims()
+    }
+  }
+)
+
 // 取消认领
 const handleCancel = async (claimId) => {
   try {
@@ -311,11 +342,11 @@ const handleCancel = async (claimId) => {
     })
     
     await claimAPI.cancel(claimId)
-    ElMessage.success('已取消认领')
+    message.success('已取消认领')
     loadSubmittedClaims()
   } catch (error) {
     if (error !== 'cancel') {
-      ElMessage.error(error.response?.data?.detail || '操作失败')
+      message.error(error.response?.data?.detail || '操作失败')
     }
   }
 }
@@ -335,11 +366,11 @@ const handleApprove = async (claim) => {
     )
     
     await claimAPI.approve(claim.id, { owner_reply: reply || '' })
-    ElMessage.success('已确认认领')
+    message.success('已确认认领')
     loadReceivedClaims()
   } catch (error) {
     if (error !== 'cancel') {
-      ElMessage.error(error.response?.data?.detail || '操作失败')
+      message.error(error.response?.data?.detail || '操作失败')
     }
   }
 }
@@ -359,11 +390,11 @@ const handleReject = async (claim) => {
     )
     
     await claimAPI.reject(claim.id, { owner_reply: reply || '' })
-    ElMessage.success('已拒绝认领')
+    message.success('已拒绝认领')
     loadReceivedClaims()
   } catch (error) {
     if (error !== 'cancel') {
-      ElMessage.error(error.response?.data?.detail || '操作失败')
+      message.error(error.response?.data?.detail || '操作失败')
     }
   }
 }
@@ -378,7 +409,7 @@ const handleRate = (claim) => {
 const handleRated = (claimId) => {
   ratedClaims.value.add(claimId)
   showRatingDialog.value = false
-  ElMessage.success('评价成功！')
+  message.success('评价成功！')
 }
 
 // 检查是否已评价

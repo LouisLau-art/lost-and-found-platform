@@ -259,20 +259,24 @@
           Mark All as Read
         </el-button>
         <div v-for="notification in userStore.notifications" :key="notification.id" class="notification-item">
-          <el-card :body-style="{ padding: '12px' }" shadow="hover" @click="openNotification(notification)" class="notification-card">
-            <div class="notification-content">
-              <el-icon v-if="!notification.is_read" class="unread-icon"><Bell /></el-icon>
-              <div class="notification-text">
-                <p class="notification-message">{{ notification.content }}</p>
-                <p class="notification-time">{{ formatRelativeTime(notification.created_at) }}</p>
+          <router-link :to="notificationLink(notification)" class="notification-link" @click="markAsRead(notification.id)">
+            <el-card :body-style="{ padding: '12px' }" shadow="hover" class="notification-card">
+              <div class="notification-content">
+                <el-icon v-if="!notification.is_read" class="unread-icon"><Bell /></el-icon>
+                <div class="notification-text">
+                  <p class="notification-message">{{ notification.content }}</p>
+                  <p class="notification-time">{{ formatRelativeTime(notification.created_at) }}</p>
+                </div>
               </div>
-            </div>
-          </el-card>
+            </el-card>
+          </router-link>
         </div>
       </div>
     </el-drawer>
   </div>
 </template>
+
+<!-- ... -->
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
@@ -286,7 +290,7 @@ import {
   Tickets, Search, Flag, TrendCharts, ArrowRight, Monitor,
   Sunny, Moon, Picture, Location
 } from '@element-plus/icons-vue'
-import { ElMessage } from 'element-plus'
+import message from '@/utils/message'
 import { formatRelative as formatRelativeTime } from '@/utils/time'
 
 const router = useRouter()
@@ -313,6 +317,21 @@ const handleCommand = (command) => {
   } else if (command === 'admin') {
     router.push('/admin/users')
   }
+}
+
+// Build router-link destination for a notification
+const notificationLink = (notification) => {
+  if (notification?.link) return notification.link
+  if (notification?.related_post_id) return `/forum/${notification.related_post_id}`
+  if (notification?.related_claim_id) {
+    const t = (notification.type || '').toLowerCase()
+    if (t.includes('claim_created')) return { path: '/claims', query: { tab: 'received' } }
+    if (t.includes('claim_approved') || t.includes('claim_rejected') || t.includes('claim_cancelled')) {
+      return { path: '/claims', query: { tab: 'submitted' } }
+    }
+    return '/claims'
+  }
+  return '/dashboard'
 }
 
 // Open notification and navigate
@@ -359,7 +378,7 @@ const handleCreatePost = (type) => {
     path: '/forum/create',
     query: { type }
   })
-  ElMessage.success(`Creating ${type} post...`)
+  message.success(`Creating ${type} post...`)
 }
 
 const markAsRead = async (notificationId) => {
@@ -971,6 +990,12 @@ onUnmounted(() => {})
 .notification-card {
   cursor: pointer;
   transition: all 0.3s ease;
+}
+
+.notification-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
 }
 
 .notification-card:hover {

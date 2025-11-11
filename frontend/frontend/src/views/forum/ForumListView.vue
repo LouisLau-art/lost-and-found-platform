@@ -19,19 +19,19 @@
       </div>
     </el-header>
 
-    <!-- Main content area -->
-    <main class="flex-grow container mx-auto px-4 py-8">
-      <div class="max-w-7xl mx-auto">
+    <!-- Main Content -->
+    <main class="flex-1 pt-20 pb-12 px-4 sm:px-6 lg:px-8">
+      <div class="content-wrapper">
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          <!-- Left sidebar for filters -->
-          <div class="lg:col-span-1">
-            <el-card shadow="hover" class="sticky top-20 filter-card">
-              <template #header>
-                <div class="filter-header">
-                  <el-icon class="mr-2"><Filter /></el-icon>
-                  <h2 class="filter-title">搜索筛选</h2>
-                </div>
-              </template>
+            <!-- Left sidebar for filters -->
+            <div class="lg:col-span-1">
+              <el-card shadow="hover" class="sticky top-20 filter-card">
+                <template #header>
+                  <div class="filter-header">
+                    <el-icon class="mr-2"><Filter /></el-icon>
+                    <h2 class="filter-title">搜索筛选</h2>
+                  </div>
+                </template>
               <SearchFilter v-model="filters" @search="handleSearch" />
             </el-card>
           </div>
@@ -70,7 +70,7 @@
                         fit="cover"
                         class="w-full h-48 object-cover rounded-lg transition-transform duration-300 hover:scale-105"
                         placeholder="暂无图片"
-                        preview-src-list="[`http://localhost:8000${post.images[0]}`]"
+                        :preview-src-list="toFullUrls(post.images)"
                       />
                     </div>
                     <div class="flex-1">
@@ -184,6 +184,22 @@ const currentPage = ref(1)
 const pageSize = ref(10)
 const total = ref(0)
 
+// Normalize images to an absolute URL array for ElImage preview
+const toFullUrls = (imgs) => {
+  if (!imgs) return []
+  let arr = imgs
+  if (typeof imgs === 'string') {
+    try {
+      arr = JSON.parse(imgs)
+    } catch (e) {
+      console.warn('Invalid images string, expected JSON array:', imgs)
+      arr = []
+    }
+  }
+  if (!Array.isArray(arr)) return []
+  return arr.map(img => `http://localhost:8000${img}`)
+}
+
 const getTypeLabel = (type) => ({
   lost: '🔴 丢失',
   found: '🟢 拾到',
@@ -228,6 +244,13 @@ const loadPosts = async () => {
 
 const handleSearch = (newFilters) => {
   filters.value = newFilters
+  currentPage.value = 1
+  loadPosts()
+}
+
+// Pagination size change handler (remove warning and reload)
+const handleSizeChange = (size) => {
+  pageSize.value = size
   currentPage.value = 1
   loadPosts()
 }

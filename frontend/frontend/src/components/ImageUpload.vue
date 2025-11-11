@@ -70,7 +70,7 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { uploadAPI } from '@/api'
-import { ElMessage } from 'element-plus'
+import message from '@/utils/message'
 
 const props = defineProps({
   modelValue: {
@@ -115,7 +115,7 @@ const handleFileSelect = async (event) => {
   
   // 检查数量限制
   if (imageList.value.length + files.length > props.maxImages) {
-    ElMessage.warning(`最多只能上传 ${props.maxImages} 张图片`)
+    message.warning(`最多只能上传 ${props.maxImages} 张图片`)
     return
   }
   
@@ -123,7 +123,7 @@ const handleFileSelect = async (event) => {
   const maxSize = 5 * 1024 * 1024 // 5MB
   const oversizedFiles = files.filter(file => file.size > maxSize)
   if (oversizedFiles.length > 0) {
-    ElMessage.error('部分图片超过 5MB 限制')
+    message.error('部分图片超过 5MB 限制')
     return
   }
   
@@ -136,10 +136,10 @@ const handleFileSelect = async (event) => {
     imageList.value = [...imageList.value, ...uploadedUrls]
     emit('update:modelValue', imageList.value)
     
-    ElMessage.success(`成功上传 ${files.length} 张图片`)
+    message.success(`成功上传 ${files.length} 张图片`)
   } catch (error) {
     console.error('Upload error:', error)
-    ElMessage.error(error.response?.data?.detail || '上传失败，请重试')
+    message.error(error.response?.data?.detail || '上传失败，请重试')
   } finally {
     uploading.value = false
     // 清空 input，允许重复选择同一文件
@@ -267,9 +267,14 @@ const removeImage = (index) => {
 }
 
 .upload-placeholder {
+  width: 180px;
+  height: 180px;
   border: 2px dashed var(--border-base);
   border-radius: 12px;
-  padding: 48px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   text-align: center;
   cursor: pointer;
   transition: all 0.2s;

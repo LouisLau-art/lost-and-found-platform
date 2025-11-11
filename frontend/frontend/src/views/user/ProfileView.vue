@@ -25,7 +25,8 @@
     </nav>
 
     <!-- Main content -->
-    <div class="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+    <div class="content-wrapper py-8">
+      <div class="max-w-4xl mx-auto">
       <el-card shadow="hover" class="profile-card">
         <template #header>
           <h1 class="text-2xl font-bold text-fg-primary">Profile Settings</h1>
@@ -103,6 +104,7 @@
           </el-descriptions>
         </div>
       </el-card>
+      </div>
     </div>
   </div>
 </template>
@@ -113,7 +115,7 @@ import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { useUserStore } from '@/stores/user'
 import { User, Message, Lock } from '@element-plus/icons-vue'
-import { ElMessage } from 'element-plus'
+import message from '@/utils/message'
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -152,13 +154,13 @@ const handleUpdateProfile = async () => {
     const result = await userStore.updateProfile(form.value)
     
     if (result.success) {
-      ElMessage.success('Profile updated successfully!')
+      message.success('Profile updated successfully!')
       // Update auth store with new user data
       await authStore.getCurrentUser()
       // Clear password field
       form.value.password = ''
     } else {
-      ElMessage.error(result.error || 'Failed to update profile')
+      message.error(result.error || 'Failed to update profile')
     }
   })
 }

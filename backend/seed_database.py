@@ -89,24 +89,27 @@ def create_users(session: Session, count: int = 20) -> List[User]:
 
 # ---- Create categories ----
 def create_categories(session: Session) -> List[Category]:
-    log("Creating categories ...")
-    categories_data = [
-        ("Electronics", "电子产品"),
-        ("Documents", "证件文件"),
-        ("Keys", "钥匙"),
-        ("Clothing", "衣物"),
-        ("Accessories", "配饰"),
-        ("Books", "书籍")
-    ]
-    categories: List[Category] = []
-    for en, zh in categories_data:
-        cat = Category(name=zh, name_en=en, description=fake.sentence(nb_words=6))
-        session.add(cat)
-        categories.append(cat)
+    """Initialize categories using the init_categories module."""
+    from init_categories import init_categories, CATEGORIES
+    
+    log("Initializing categories ...")
+    
+    # Check if categories already exist
+    existing = session.exec(select(Category)).all()
+    if existing:
+        log(f"Using existing {len(existing)} categories")
+        return existing
+    
+    # Create categories from init_categories.py
+    for cat_data in CATEGORIES:
+        category = Category(**cat_data)
+        session.add(category)
+    
     session.commit()
-    for c in categories:
-        session.refresh(c)
-    log(f"Created {len(categories)} categories")
+    
+    # Fetch all categories after creation
+    categories = session.exec(select(Category)).all()
+    log(f"Created {len(categories)} categories with emojis")
     return categories
 
 # ---- Create posts ----
@@ -172,9 +175,8 @@ def create_claims(session: Session, users: List[User], posts: List[Post], count:
         if status == "approved":
             claim.confirmed_at = created + timedelta(hours=random.randint(1, 24))
             claim.owner_reply = fake.sentence(nb_words=8)
-            # update post
+            # update post: keep valid status and mark as claimed
             post.is_claimed = True
-            post.status = "resolved"
             post.updated_at = claim.confirmed_at
             session.add(post)
         elif status == "rejected":

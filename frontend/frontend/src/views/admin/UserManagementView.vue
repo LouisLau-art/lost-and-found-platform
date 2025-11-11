@@ -23,7 +23,7 @@
     </nav>
 
     <!-- Main Content -->
-    <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+    <div class="content-wrapper py-8">
       <!-- Page Title -->
       <div class="page-title-section">
         <h1 class="admin-page-title">
@@ -190,7 +190,8 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElMessageBox } from 'element-plus'
+import message from '@/utils/message'
 import { 
   User, UserFilled, Monitor, List, Search, Refresh, View 
 } from '@element-plus/icons-vue'
@@ -229,7 +230,7 @@ const fetchUsers = async () => {
     }
   } catch (error) {
     console.error('Failed to fetch users:', error)
-    ElMessage.error('获取用户列表失败: ' + (error.response?.data?.detail || error.message))
+    message.error('获取用户列表失败: ' + (error.response?.data?.detail || error.message))
   } finally {
     loading.value = false
   }
@@ -265,11 +266,11 @@ const toggleUserStatus = async (user) => {
       }
     )
     
-    ElMessage.success(`用户 ${user.name} 已${user.is_active ? '禁用' : '启用'}`)
+    message.success(`用户 ${user.name} 已${user.is_active ? '禁用' : '启用'}`)
     // TODO: 实现实际的API调用
     // user.is_active = !user.is_active
   } catch {
-    ElMessage.info('操作已取消')
+    message.info('操作已取消')
   }
 }
 

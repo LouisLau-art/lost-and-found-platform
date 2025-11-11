@@ -22,7 +22,7 @@
     </nav>
 
     <!-- 主要内容区域 -->
-    <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+    <div class="content-wrapper py-8">
       <!-- 页面标题 -->
       <div class="page-title-section">
         <h1 class="admin-page-title">
@@ -208,7 +208,7 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { Edit, Delete } from '@element-plus/icons-vue'
-import { ElMessage } from 'element-plus'
+import message from '@/utils/message'
 import api from '@/api'
 
 const router = useRouter()
@@ -247,10 +247,10 @@ const loadPosts = async () => {
   } catch (error) {
     console.error('Failed to load posts:', error)
     if (error.response?.status === 403) {
-      ElMessage.error('需要管理员权限')
+      message.error('需要管理员权限')
       router.push('/dashboard')
     } else {
-      ElMessage.error('加载帖子失败: ' + (error.response?.data?.detail || error.message))
+      message.error('加载帖子失败: ' + (error.response?.data?.detail || error.message))
     }
   } finally {
     loading.value = false
@@ -265,7 +265,7 @@ const handleDelete = async (postId) => {
     loadPosts()
   } catch (error) {
     console.error('Failed to delete post:', error)
-    ElMessage.error('删除失败: ' + (error.response?.data?.detail || error.message))
+    message.error('删除失败: ' + (error.response?.data?.detail || error.message))
   }
 }
 
@@ -288,12 +288,12 @@ const handleSaveEdit = async () => {
   saving.value = true
   try {
     await api.put(`/api/admin/posts/${editingPost.value.id}`, editForm.value)
-    ElMessage.success('更新成功')
+    message.success('更新成功')
     editDialogVisible.value = false
     loadPosts()
   } catch (error) {
     console.error('Failed to update post:', error)
-    ElMessage.error('更新失败: ' + (error.response?.data?.detail || error.message))
+    message.error('更新失败: ' + (error.response?.data?.detail || error.message))
   } finally {
     saving.value = false
   }

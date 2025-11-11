@@ -7,6 +7,7 @@
       :message="toast.message"
       :duration="toast.duration"
       :notificationId="toast.notificationId"
+      :to="resolveToastLink(toast)"
       @close="removeToast(toast.id)"
       @click="handleToastClick(toast)"
       class="mb-2"
@@ -102,37 +103,32 @@ const removeToast = (id) => {
   }
 };
 
-// 处理通知点击
+// 处理通知点击：仅标记为已读，导航由 router-link 负责
 const handleToastClick = async (toast) => {
   if (toast.notificationId) {
-    // 标记为已读（不等待结果，让用户体验更流畅）
     userStore.markNotificationRead(toast.notificationId).catch(error => {
       console.warn('Failed to mark notification as read, will try again later:', error);
     });
-    
-    // 如果通知有关联链接，可以在这里处理导航
-    const notification = userStore.notifications.find(n => n.id === toast.notificationId);
-    if (notification) {
-      // 检查notification对象中可能的链接字段
-      if (notification.link) {
-        router.push(notification.link);
-      } else if (notification.related_post_id) {
-        // 帖子详情
-        router.push(`/forum/${notification.related_post_id}`);
-      } else if (notification.related_claim_id) {
-        // 认领相关：根据通知类型跳转到合适的标签页
-        const t = (notification.type || '').toLowerCase();
-        if (t.includes('claim_created')) {
-          router.push({ path: '/claims', query: { tab: 'received' } });
-        } else if (t.includes('claim_approved') || t.includes('claim_rejected') || t.includes('claim_cancelled')) {
-          router.push({ path: '/claims', query: { tab: 'submitted' } });
-        } else {
-          router.push('/claims');
-        }
-      }
-    }
   }
 };
+
+// 解析 toast 导航目标
+const resolveToastLink = (toast) => {
+  if (!toast?.notificationId) return null
+  const n = userStore.notifications.find(n => n.id === toast.notificationId)
+  if (!n) return null
+  if (n.link) return n.link
+  if (n.related_post_id) return `/forum/${n.related_post_id}`
+  if (n.related_claim_id) {
+    const t = (n.type || '').toLowerCase()
+    if (t.includes('claim_created')) return { path: '/claims', query: { tab: 'received' } }
+    if (t.includes('claim_approved') || t.includes('claim_rejected') || t.includes('claim_cancelled')) {
+      return { path: '/claims', query: { tab: 'submitted' } }
+    }
+    return '/claims'
+  }
+  return null
+}
 
 // 开始轮询
 const startPolling = () => {

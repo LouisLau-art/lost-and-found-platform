@@ -1,7 +1,6 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8" style="background: var(--bg-page);">
-    <div class="max-w-md w-full">
-      <el-card>
+  <div class="register-wrapper">
+    <el-card class="register-card" shadow="hover">
         <template #header>
           <div class="card-header">
             <span>创建账户</span>
@@ -44,7 +43,6 @@
           <router-link to="/login" class="text-primary">去登录</router-link>
         </div>
       </el-card>
-    </div>
   </div>
 </template>
 
@@ -122,3 +120,36 @@ onMounted(() => {
 })
 </script>
 
+<style scoped>
+.register-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-base);
+  padding: 16px;
+}
+
+.register-card {
+  width: 100%;
+  max-width: 400px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-base);
+}
+
+.card-header {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+/* Dark theme inputs */
+.el-input :deep(.el-input__wrapper) {
+  background-color: var(--bg-muted);
+  border-color: var(--border-base);
+}
+
+.el-input :deep(.el-input__inner) {
+  color: var(--text-primary);
+}
+</style>

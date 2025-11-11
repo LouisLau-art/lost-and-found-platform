@@ -25,7 +25,7 @@
     </nav>
 
     <!-- Main content -->
-    <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+    <div class="content-wrapper py-8">
       <h1 class="text-3xl font-bold text-fg-primary mb-6">My Activity</h1>
       
       <el-tabs v-model="activeTab" type="border-card" class="activity-tabs">
@@ -155,7 +155,7 @@ import { useAuthStore } from '@/stores/auth'
 import { useForumStore } from '@/stores/forum'
 import { postAPI, claimAPI } from '@/api'
 import { Document, Tickets, Location } from '@element-plus/icons-vue'
-import { ElMessage } from 'element-plus'
+import message from '@/utils/message'
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -203,7 +203,7 @@ const loadMyPosts = async () => {
     posts.value = allPosts.filter(post => post.author_id === authStore.user?.id)
   } catch (error) {
     console.error('Failed to load posts:', error)
-    ElMessage.error('Failed to load your posts')
+    message.error('Failed to load your posts')
   } finally {
     loadingPosts.value = false
   }
@@ -216,7 +216,7 @@ const loadMyClaims = async () => {
     claims.value = response.data
   } catch (error) {
     console.error('Failed to load claims:', error)
-    ElMessage.error('Failed to load your claims')
+    message.error('Failed to load your claims')
   } finally {
     loadingClaims.value = false
   }

@@ -15,7 +15,7 @@
       </div>
     </el-header>
 
-    <div class="max-w-7xl mx-auto py-24 px-4">
+    <div class="content-wrapper py-24">
       <!-- Loading -->
       <div v-if="loading" class="py-12">
         <el-skeleton :rows="8" animated class="rounded-lg overflow-hidden" />
@@ -364,7 +364,8 @@ import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { postAPI, claimAPI } from '@/api'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElMessageBox } from 'element-plus'
+import message from '@/utils/message'
 import { formatRelative as formatRelativeTime, formatLocal } from '@/utils/time'
 import ImageGallery from '@/components/ImageGallery.vue'
 // 动态导入Element Plus图标组件
@@ -507,11 +508,11 @@ const submitComment = async () => {
   submittingComment.value = true
   try {
     await postAPI.createComment(post.value.id, commentContent.value)
-    ElMessage.success('评论成功')
+    message.success('评论成功')
     commentContent.value = ''
     await loadPost()
   } catch (err) {
-    ElMessage.error(err.response?.data?.detail || '评论失败')
+    message.error(err.response?.data?.detail || '评论失败')
   } finally {
     submittingComment.value = false
   }
@@ -521,18 +522,18 @@ const deleteComment = async (commentId) => {
   try {
     await ElMessageBox.confirm('确认删除该评论？', '提示', { type: 'warning' })
     await postAPI.deleteComment(commentId)
-    ElMessage.success('删除成功')
+    message.success('删除成功')
     await loadPost()
   } catch (err) {
     if (err !== 'cancel') {
-      ElMessage.error('删除失败')
+      message.error('删除失败')
     }
   }
 }
 
 const handleClaim = async () => {
   try {
-    const { value: message } = await ElMessageBox.prompt(
+    const { value: claimMessage } = await ElMessageBox.prompt(
       '请描述你的认领理由（可选）',
       '提交认领请求',
       {
@@ -545,18 +546,18 @@ const handleClaim = async () => {
     
     await claimAPI.create({
       post_id: post.value.id,
-      message: message || null
+      message: claimMessage || null
     })
     
-    ElMessage.success('认领请求已提交，等待物主确认')
+    message.success('认领请求已提交，等待物主确认')
     await loadPost()
   } catch (err) {
     if (err !== 'cancel') {
       const detail = err?.response?.data?.detail
       if (typeof detail === 'string' && detail.toLowerCase().includes('already have a pending')) {
-        ElMessage.warning('You already have a pending claim on this item.')
+        message.warning('You already have a pending claim on this item.')
       } else {
-        ElMessage.error(detail || '提交失败')
+        message.error(detail || '提交失败')
       }
     }
   }
@@ -577,12 +578,12 @@ const handleApproveClaim = async (claimId) => {
     
     handlingClaim.value = true
     await claimAPI.approve(claimId, { owner_reply: reply || null })
-    ElMessage.success('已批准认领请求')
+    message.success('已批准认领请求')
     await loadPost()
     showClaimRequests.value = false
   } catch (err) {
     if (err !== 'cancel') {
-      ElMessage.error(err.response?.data?.detail || '操作失败')
+      message.error(err.response?.data?.detail || '操作失败')
     }
   } finally {
     handlingClaim.value = false
@@ -614,11 +615,11 @@ const handleRejectClaim = async (claimId) => {
     
     handlingClaim.value = true
     await claimAPI.reject(claimId, { owner_reply: reply || null })
-    ElMessage.success('已拒绝认领请求')
+    message.success('已拒绝认领请求')
     await loadPost()
   } catch (err) {
     if (err !== 'cancel') {
-      ElMessage.error(err.response?.data?.detail || '操作失败')
+      message.error(err.response?.data?.detail || '操作失败')
     }
   } finally {
     handlingClaim.value = false
@@ -633,11 +634,11 @@ const deletePost = async () => {
   try {
     await ElMessageBox.confirm('确认删除该帖子？', '提示', { type: 'warning' })
     await postAPI.delete(post.value.id)
-    ElMessage.success('删除成功')
+    message.success('删除成功')
     router.push('/forum')
   } catch (err) {
     if (err !== 'cancel') {
-      ElMessage.error('删除失败')
+      message.error('删除失败')
     }
   }
 }

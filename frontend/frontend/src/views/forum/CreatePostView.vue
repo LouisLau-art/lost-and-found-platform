@@ -21,8 +21,9 @@
     </el-header>
 
     <!-- Main content area -->
-    <main class="flex-grow container mx-auto px-4 py-8">
-      <div class="max-w-5xl mx-auto">
+    <main class="flex-grow py-8">
+      <div class="content-wrapper">
+        <div class="max-w-5xl mx-auto">
         <!-- Steps -->
         <el-card shadow="hover" class="form-card mb-6 steps-card">
           <el-steps :active="currentStep" finish-status="success" align-center class="enhanced-steps">
@@ -103,7 +104,7 @@
                       <el-option
                         v-for="cat in categories"
                         :key="cat.id"
-                        :label="cat.name"
+                        :label="`${cat.icon || ''} ${cat.name}`.trim()"
                         :value="cat.id"
                       >
                         <span>
@@ -252,6 +253,7 @@
           </el-form>
         </el-card>
       </div>
+      </div>
     </main>
   </div>
 </template>
@@ -262,7 +264,8 @@ import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { useForumStore } from '@/stores/forum'
 import { categoryAPI, postAPI } from '@/api'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElMessageBox } from 'element-plus'
+import message from '@/utils/message'
 import ImageUpload from '@/components/ImageUpload.vue'
 import { InfoFilled, ArrowLeft, ArrowRight } from '@element-plus/icons-vue'
 
@@ -343,16 +346,10 @@ const fetchCategories = async () => {
     categories.value = response.data
   } catch (error) {
     console.error('Failed to fetch categories:', error)
-    ElMessage.error('获取分类失败')
+    message.error('获取分类失败')
   } finally {
     loadingCategories.value = false
   }
-}
-
-// 自动填充当前时间
-const setCurrentTime = () => {
-  const now = new Date()
-  form.value.item_time = now
 }
 
 // 下一步
@@ -383,7 +380,7 @@ const nextStep = async () => {
 const onSubmit = async () => {
   await formRef.value?.validate(async (valid) => {
     if (!valid) {
-      ElMessage.warning('请完善表单信息')
+      message.warning('请完善表单信息')
       return
     }
     
@@ -398,7 +395,7 @@ const onSubmit = async () => {
       
       const response = await postAPI.create(postData)
       
-      ElMessage.success('发布成功！')
+      message.success('发布成功！')
       // 添加延迟，让用户看到成功提示
       setTimeout(() => {
         router.push(`/forum/${response.data.id}`)
@@ -406,7 +403,7 @@ const onSubmit = async () => {
     } catch (error) {
       console.error('Create post error:', error)
       const errorMsg = error.response?.data?.detail || '发布失败，请重试'
-      ElMessage.error(errorMsg)
+      message.error(errorMsg)
       forumStore.setError(errorMsg)
     }
   })
@@ -425,7 +422,7 @@ const handleLogout = () => {
   ).then(() => {
     authStore.logout()
     router.push('/')
-    ElMessage.success('已退出登录')
+    message.success('已退出登录')
   }).catch(() => {
     // 取消退出
   })

@@ -32,7 +32,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-import { ElMessage } from 'element-plus'
+import message from '@/utils/message'
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -57,10 +57,10 @@ const handleLogin = async () => {
     authStore.clearError()
     const result = await authStore.login(form.value)
     if (result.success) {
-      ElMessage.success('登录成功！')
+      message.success('登录成功！')
       router.push('/dashboard')
     } else {
-      ElMessage.error(result.error || '登录失败')
+      message.error(result.error || '登录失败')
     }
   } catch (error) {
     // ignore

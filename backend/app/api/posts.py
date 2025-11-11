@@ -13,6 +13,10 @@ from app.schemas.comment import CommentCreate, CommentRead
 from app.core.deps import get_current_user
 from app.services.notification_service import NotificationService
 from app.services.text_similarity import TextSimilarityService
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+import Levenshtein
+import numpy as np
 
 router = APIRouter()
 
@@ -272,23 +276,24 @@ def delete_comment(
     
     return {"message": "Comment deleted successfully"}
 
-# 智能匹配功能
+# 智能匹配功能 V2.0 - TF-IDF Based Matching
 @router.get("/{post_id}/matches", response_model=List[PostRead])
 def get_matching_posts(
     post_id: int,
     limit: int = Query(10, ge=1, le=50),
     time_range_days: int = Query(7, ge=1, le=30, description="Time range in days for matching"),
-    use_text_similarity: bool = Query(True, description="Enable text similarity matching"),
     session: Session = Depends(get_session)
 ):
     """
-    为指定帖子查找匹配的帖子
-    - 对于'lost'帖子，查找'found'帖子
-    - 对于'found'帖子，查找'lost'帖子
-    - 匹配条件：相同分类、相似时间、相似地点
-    - 新增：文本相似度匹配（基于内容描述）
+    Advanced matching algorithm using TF-IDF and multi-dimensional scoring.
+    
+    Weights:
+    - Text Similarity (TF-IDF): 50%
+    - Category Match: 20%
+    - Location Proximity: 15%
+    - Time Proximity: 15%
     """
-    # 1) 获取原帖子，仅支持处于可见状态的帖子
+    # 1) Get original post
     statement = select(Post).where(Post.id == post_id, Post.status == "published")
     original_post = session.exec(statement).first()
     
@@ -298,75 +303,118 @@ def get_matching_posts(
             detail="Post not found"
         )
     
-    # 2) 只为 lost 和 found 类型的帖子提供匹配（普通帖子不进行匹配）
+    # 2) Only match for lost and found posts
     if original_post.item_type not in ["lost", "found"]:
         return []
     
-    # 确定要匹配的类型（lost <-> found）
+    # Determine target type (lost <-> found)
     target_type = "found" if original_post.item_type == "lost" else "lost"
     
-    # 3) 构建目标查询：目标类型（lost<->found）、未被认领、排除自身、状态可见
+    # 3) Get all potential candidates (broader search)
     statement = select(Post).where(
         and_(
             Post.status.in_(["published", "active"]),
             Post.item_type == target_type,
-            Post.is_claimed == False,  # 只显示未认领的
-            Post.id != post_id  # 排除自身
+            Post.is_claimed == False,
+            Post.id != post_id
         )
     )
     
-    # 4) 条件 1：相同分类（优先匹配同一分类）
-    if original_post.category_id:
-        statement = statement.where(Post.category_id == original_post.category_id)
+    # Get all candidates for scoring (up to 100)
+    statement = statement.order_by(Post.created_at.desc()).limit(100)
+    candidates = list(session.exec(statement).all())
     
-    # 5) 条件 2：时间范围匹配（原帖时间的±N天）
-    if original_post.item_time:
-        time_start = original_post.item_time - timedelta(days=time_range_days)
-        time_end = original_post.item_time + timedelta(days=time_range_days)
-        statement = statement.where(
-            and_(
-                Post.item_time.isnot(None),
-                Post.item_time >= time_start,
-                Post.item_time <= time_end
-            )
+    if not candidates:
+        return []
+    
+    # 4) Calculate multi-dimensional scores
+    scored_posts = []
+    
+    # Prepare TF-IDF vectorizer
+    all_texts = [f"{original_post.title} {original_post.content}"]
+    all_texts.extend([f"{post.title} {post.content}" for post in candidates])
+    
+    try:
+        # Use TF-IDF for text similarity
+        vectorizer = TfidfVectorizer(
+            max_features=100,
+            ngram_range=(1, 2),  # Use both unigrams and bigrams
+            stop_words=None  # We'll keep all words for Chinese text
         )
-    
-    # 6) 条件 3：地点匹配（简单 LIKE 模糊匹配）
-    if original_post.location:
-        location_pattern = f"%{original_post.location}%"
-        statement = statement.where(Post.location.like(location_pattern))
-    
-    # 7) 获取初步候选（扩大范围以便后续排序，取limit的3倍）
-    statement = statement.order_by(Post.created_at.desc()).limit(limit * 3)  # 获取更多结果用于排序
-    matching_posts = list(session.exec(statement).all())
-    
-    # 条件 4：文本相似度匹配（新增）
-    if use_text_similarity and matching_posts:
-        # 计算每个匹配帖子的文本相似度
-        original_text = f"{original_post.title} {original_post.content}"
+        tfidf_matrix = vectorizer.fit_transform(all_texts)
         
-        for post in matching_posts:
+        # Calculate cosine similarity between original and all candidates
+        original_vector = tfidf_matrix[0:1]
+        candidate_vectors = tfidf_matrix[1:]
+        text_similarities = cosine_similarity(original_vector, candidate_vectors).flatten()
+    except:
+        # Fallback to simple similarity if TF-IDF fails
+        text_similarities = []
+        original_text = all_texts[0]
+        for post in candidates:
             match_text = f"{post.title} {post.content}"
-            similarity_score = TextSimilarityService.calculate_combined_similarity(
-                original_text, 
-                match_text
-            )
-            # 将相似度分数保存为临时属性
-            post.similarity_score = similarity_score
-        
-        # 按相似度排序（从高到低）
-        matching_posts.sort(key=lambda x: getattr(x, 'similarity_score', 0), reverse=True)
-        
-        # 只返回相似度大于0.1的结果
-        matching_posts = [
-            post for post in matching_posts 
-            if getattr(post, 'similarity_score', 0) > 0.1
-        ][:limit]
-    else:
-        # 不使用文本相似度，按时间排序
-        matching_posts = matching_posts[:limit]
+            sim = TextSimilarityService.calculate_combined_similarity(original_text, match_text)
+            text_similarities.append(sim)
+        text_similarities = np.array(text_similarities)
     
-    return matching_posts
+    # Calculate scores for each candidate
+    for idx, post in enumerate(candidates):
+        # a) Text Similarity Score (50% weight)
+        text_score = float(text_similarities[idx]) * 100  # Convert to 0-100 scale
+        
+        # b) Category Match Score (20% weight)
+        category_score = 100 if (original_post.category_id and 
+                                 original_post.category_id == post.category_id) else 0
+        
+        # c) Location Proximity Score (15% weight)
+        location_score = 0
+        if original_post.location and post.location:
+            try:
+                # Use Levenshtein distance for string similarity
+                distance = Levenshtein.distance(original_post.location.lower(), 
+                                               post.location.lower())
+                max_len = max(len(original_post.location), len(post.location))
+                location_score = (1 - distance / max_len) * 100 if max_len > 0 else 0
+            except:
+                # Fallback to simple containment check
+                if original_post.location.lower() in post.location.lower() or \
+                   post.location.lower() in original_post.location.lower():
+                    location_score = 50
+        
+        # d) Time Proximity Score (15% weight)
+        time_score = 0
+        if original_post.item_time and post.item_time:
+            # For lost->found: found time should be after lost time
+            # For found->lost: lost time should be before found time
+            time_diff = abs((post.item_time - original_post.item_time).days)
+            
+            if original_post.item_type == "lost" and post.item_time < original_post.item_time:
+                # Found before lost - invalid
+                time_score = 0
+            elif original_post.item_type == "found" and post.item_time > original_post.item_time:
+                # Lost after found - invalid  
+                time_score = 0
+            else:
+                # Linear decay: 100 points for same day, 0 points for 7+ days
+                time_score = max(0, (1 - time_diff / time_range_days) * 100)
+        
+        # Calculate weighted final score
+        final_score = (text_score * 0.50 + 
+                      category_score * 0.20 + 
+                      location_score * 0.15 + 
+                      time_score * 0.15)
+        
+        # Store score as temporary attribute
+        post.similarity_score = round(final_score, 2)
+        scored_posts.append((final_score, post))
+    
+    # 5) Sort by score and filter
+    scored_posts.sort(key=lambda x: x[0], reverse=True)
+    
+    # Only return posts with score > 10 (minimum threshold)
+    result_posts = [post for score, post in scored_posts if score > 10][:limit]
+    
+    return result_posts
 
 @router.get("/search/advanced", response_model=List[PostRead])
 def advanced_search(

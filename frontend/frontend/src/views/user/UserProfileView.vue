@@ -264,7 +264,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { formatRelative as formatRelativeTime, formatLocal } from '@/utils/time'
 import { useRoute } from 'vue-router'
-import { ElMessage } from 'element-plus'
+import message from '@/utils/message'
 import { 
   Compass, 
   ArrowLeft, 
@@ -318,7 +318,7 @@ const loadUserInfo = async () => {
     userInfo.value = response.data
   } catch (err) {
     error.value = err.response?.data?.detail || '加载用户信息失败'
-    ElMessage.error(error.value)
+    message.error(error.value)
   } finally {
     loading.value = false
   }
@@ -332,7 +332,7 @@ const loadUserPosts = async () => {
     const response = await userAPI.getUserPosts(userId)
     posts.value = response.data
   } catch (err) {
-    ElMessage.error('加载帖子失败')
+    message.error('加载帖子失败')
   } finally {
     loadingPosts.value = false
   }
@@ -346,7 +346,7 @@ const loadUserRatings = async () => {
     const response = await userAPI.getUserRatings(userId)
     ratings.value = response.data
   } catch (err) {
-    ElMessage.error('加载评价失败')
+    message.error('加载评价失败')
   } finally {
     loadingRatings.value = false
   }
