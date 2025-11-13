@@ -1,26 +1,7 @@
 <template>
   <div class="min-h-screen flex flex-col" style="background-color: var(--bg-page);">
-    <!-- Header with navigation -->
-    <el-header class="themed-header backdrop-blur-sm">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <router-link to="/" class="text-2xl font-bold text-fg-primary hover-text-primary transition-all flex items-center">
-          <el-icon class="mr-2" :size="28"><Compass /></el-icon>
-          Lost & Found Platform
-        </router-link>
-        <div class="flex gap-2">
-          <el-button v-if="authStore.isAuthenticated" text class="text-fg-secondary hover-text-primary" @click="$router.push('/dashboard')">
-            <el-icon><Monitor /></el-icon> 仪表盘
-          </el-button>
-          <el-button v-if="authStore.isAuthenticated" type="primary" @click="$router.push('/forum/create')">
-            <el-icon><Plus /></el-icon> 发布信息
-          </el-button>
-          <el-button v-else type="primary" @click="$router.push('/login')">登录</el-button>
-        </div>
-      </div>
-    </el-header>
-
     <!-- Main Content -->
-    <main class="flex-1 pt-20 pb-12 px-4 sm:px-6 lg:px-8">
+    <main class="flex-1 pt-24 pb-12 px-4 sm:px-6 lg:px-8">
       <div class="content-wrapper">
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
             <!-- Left sidebar for filters -->

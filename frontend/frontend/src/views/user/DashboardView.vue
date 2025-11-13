@@ -1,63 +1,8 @@
 <template>
   <div class="dashboard-container">
-    <!-- Simple Top Navigation -->
-    <nav class="top-nav">
-      <div class="nav-content">
-        <div class="nav-left">
-          <router-link to="/" class="logo-link">
-            <el-icon class="logo-icon" :size="28"><Clock /></el-icon>
-            <span class="logo-text">Lost & Found</span>
-          </router-link>
-        </div>
-        <div class="nav-right">
-          <!-- Theme Toggle Button -->
-
-          
-          <!-- Admin Link (Only for Admins) -->
-          <router-link 
-            v-if="authStore.user?.is_admin" 
-            to="/admin/users"
-            class="admin-link"
-          >
-            <el-icon><User /></el-icon>
-            <span>管理后台</span>
-          </router-link>
-          
-          <!-- Notifications -->
-          <el-badge :value="userStore.unreadCount" :hidden="userStore.unreadCount === 0">
-            <el-button circle @click="showNotifications = !showNotifications" class="notification-btn">
-              <el-icon><Bell /></el-icon>
-            </el-button>
-          </el-badge>
-          
-          <!-- User Dropdown -->
-          <el-dropdown trigger="click" @command="handleCommand">
-            <el-avatar :size="36" class="user-avatar">
-              {{ userInitials }}
-            </el-avatar>
-            <template #dropdown>
-              <el-dropdown-menu>
-                <el-dropdown-item command="profile">
-                  <el-icon><User /></el-icon>
-                  Profile
-                </el-dropdown-item>
-                <el-dropdown-item v-if="authStore.user?.is_admin" command="admin" divided>
-                  <el-icon><User /></el-icon>
-                  管理后台
-                </el-dropdown-item>
-                <el-dropdown-item command="logout" divided>
-                  <el-icon><SwitchButton /></el-icon>
-                  Sign out
-                </el-dropdown-item>
-              </el-dropdown-menu>
-            </template>
-          </el-dropdown>
-        </div>
-      </div>
-    </nav>
-
     <!-- Main Layout: Sidebar + Content -->
     <div class="main-layout">
+
       <!-- Left Sidebar -->
       <aside class="sidebar">
         <!-- User Info -->
@@ -243,50 +188,20 @@
         </div>
       </main>
     </div>
-
-    <!-- Notifications Drawer -->
-    <el-drawer
-      v-model="showNotifications"
-      title="Notifications"
-      direction="rtl"
-      size="400px"
-    >
-      <div v-if="userStore.notifications.length === 0" class="notification-empty">
-        <el-empty description="No notifications" />
-      </div>
-      <div v-else>
-        <el-button type="primary" size="small" class="mark-all-btn" @click="markAllAsRead">
-          Mark All as Read
-        </el-button>
-        <div v-for="notification in userStore.notifications" :key="notification.id" class="notification-item">
-          <router-link :to="notificationLink(notification)" class="notification-link" @click="markAsRead(notification.id)">
-            <el-card :body-style="{ padding: '12px' }" shadow="hover" class="notification-card">
-              <div class="notification-content">
-                <el-icon v-if="!notification.is_read" class="unread-icon"><Bell /></el-icon>
-                <div class="notification-text">
-                  <p class="notification-message">{{ notification.content }}</p>
-                  <p class="notification-time">{{ formatRelativeTime(notification.created_at) }}</p>
-                </div>
-              </div>
-            </el-card>
-          </router-link>
-        </div>
-      </div>
-    </el-drawer>
   </div>
 </template>
 
 <!-- ... -->
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { useUserStore } from '@/stores/user'
 import { useForumStore } from '@/stores/forum'
 import { claimAPI } from '@/api'
 import { 
-  Clock, Bell, User, SwitchButton, CircleCheck, Document, 
+  User, CircleCheck, Document, 
   Tickets, Search, Flag, TrendCharts, ArrowRight, Monitor,
   Sunny, Moon, Picture, Location
 } from '@element-plus/icons-vue'
@@ -294,11 +209,15 @@ import message from '@/utils/message'
 import { formatRelative as formatRelativeTime } from '@/utils/time'
 
 const router = useRouter()
+const route = useRoute()
 const authStore = useAuthStore()
 const userStore = useUserStore()
 const forumStore = useForumStore()
 
-const showNotifications = ref(false)
+const notificationsDrawer = computed({
+  get: () => userStore.notificationsDrawerOpen,
+  set: (val) => userStore.setNotificationsDrawer(val)
+})
 const activeMenu = ref('dashboard')
 const recentFoundItems = ref([])
 const loadingRecentItems = ref(false)
@@ -308,54 +227,53 @@ const userInitials = computed(() => {
   return authStore.user.name.split(' ').map(n => n[0]).join('').toUpperCase()
 })
 
-const handleCommand = (command) => {
-  if (command === 'logout') {
-    authStore.logout()
-    router.push('/')
-  } else if (command === 'profile') {
-    router.push('/profile')
-  } else if (command === 'admin') {
-    router.push('/admin/users')
-  }
-}
-
 // Build router-link destination for a notification
 const notificationLink = (notification) => {
-  if (notification?.link) return notification.link
-  if (notification?.related_post_id) return `/forum/${notification.related_post_id}`
-  if (notification?.related_claim_id) {
+  if (!notification) return null
+
+  if (notification.link) return notification.link
+
+  const extra = notification.extra_data || {}
+  if (extra.link) return extra.link
+
+  if (notification.related_post_id) {
+    const hash = notification.related_comment_id ? `#comment-${notification.related_comment_id}` : ''
+    return `/forum/${notification.related_post_id}${hash}`
+  }
+
+  if (notification.related_claim_id) {
     const t = (notification.type || '').toLowerCase()
     if (t.includes('claim_created')) return { path: '/claims', query: { tab: 'received' } }
     if (t.includes('claim_approved') || t.includes('claim_rejected') || t.includes('claim_cancelled')) {
       return { path: '/claims', query: { tab: 'submitted' } }
     }
-    return '/claims'
+    return { path: '/claims' }
   }
-  return '/dashboard'
+
+  if (extra.new_post_id) return `/forum/${extra.new_post_id}`
+  if (extra.matched_post_id) return `/forum/${extra.matched_post_id}`
+
+  return null
 }
 
 // Open notification and navigate
 const openNotification = async (notification) => {
   try {
-    // mark as read without blocking
-    userStore.markNotificationRead(notification.id).catch(() => {})
-    if (notification.link) {
-      router.push(notification.link)
-    } else if (notification.related_post_id) {
-      router.push(`/forum/${notification.related_post_id}`)
-    } else if (notification.related_claim_id) {
-      const t = (notification.type || '').toLowerCase()
-      if (t.includes('claim_created')) {
-        router.push({ path: '/claims', query: { tab: 'received' } })
-      } else if (t.includes('claim_approved') || t.includes('claim_rejected') || t.includes('claim_cancelled')) {
-        router.push({ path: '/claims', query: { tab: 'submitted' } })
-      } else {
-        router.push('/claims')
-      }
-    }
-  } catch (e) {
-    // noop
+    await userStore.markNotificationRead(notification.id)
+  } catch (error) {
+    console.warn('Failed to mark notification as read:', error)
   }
+
+  const target = notificationLink(notification)
+  if (!target) return
+
+  userStore.setNotificationsDrawer(false)
+  router.push(target).catch((err) => {
+    if (!err || err.name === 'NavigationDuplicated' || err.message?.includes('Avoided redundant navigation')) {
+      return
+    }
+    console.error('Failed to navigate to notification target:', err)
+  })
 }
 
 const handleMenuSelect = (index) => {
@@ -381,20 +299,21 @@ const handleCreatePost = (type) => {
   message.success(`Creating ${type} post...`)
 }
 
-const markAsRead = async (notificationId) => {
-  try {
-    await userStore.markNotificationRead(notificationId)
-  } catch (error) {
-    console.error('Failed to mark notification as read:', error)
-  }
-}
-
 const markAllAsRead = async () => {
   try {
     await userStore.markAllNotificationsRead()
-    showNotifications.value = false
+    userStore.setNotificationsDrawer(false)
   } catch (error) {
     console.error('Failed to mark all notifications as read:', error)
+  }
+}
+
+const maybeOpenDrawerFromRoute = () => {
+  const flag = route.query.openNotifications
+  if (flag === '1' || flag === 1 || flag === true) {
+    userStore.setNotificationsDrawer(true)
+    const { openNotifications, ...rest } = route.query
+    router.replace({ path: route.path, query: { ...rest } }).catch(() => {})
   }
 }
 
@@ -426,9 +345,15 @@ onMounted(async () => {
   } catch (error) {
     console.error('Failed to load notifications:', error)
   }
-  
+
   // Load recent found items
   loadRecentFoundItems()
+
+  maybeOpenDrawerFromRoute()
+})
+
+watch(() => route.query.openNotifications, () => {
+  maybeOpenDrawerFromRoute()
 })
 
 onUnmounted(() => {})

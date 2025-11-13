@@ -1,27 +1,7 @@
 <template>
   <div class="min-h-screen" style="background-color: var(--bg-page);">
-    <!-- Header with navigation -->
-    <el-header class="themed-header backdrop-blur-sm sticky top-0 z-10">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <router-link to="/" class="text-2xl font-bold text-fg-primary hover-text-primary transition-all flex items-center">
-          Lost & Found Platform
-        </router-link>
-        <div class="space-x-4">
-          <el-button text class="text-fg-secondary hover-text-primary" @click="$router.push('/dashboard')">
-            Dashboard
-          </el-button>
-          <el-button text class="text-fg-secondary hover-text-primary" @click="$router.push('/forum')">
-            Forum
-          </el-button>
-          <el-button text type="danger" @click="handleLogout" class="text-fg-secondary hover-text-primary">
-            Sign out
-          </el-button>
-        </div>
-      </div>
-    </el-header>
-
     <!-- Main content area -->
-    <main class="flex-grow py-8">
+    <main class="flex-grow py-8 pt-24">
       <div class="content-wrapper">
         <div class="max-w-5xl mx-auto">
         <!-- Steps -->

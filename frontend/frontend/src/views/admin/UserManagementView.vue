@@ -61,7 +61,6 @@
         <el-table
           :data="users"
           v-loading="loading"
-          stripe
           class="users-table enhanced-table"
           :header-cell-style="{ background: 'var(--bg-surface)', color: 'var(--text-primary)' }"
           :row-style="{ cursor: 'pointer' }"

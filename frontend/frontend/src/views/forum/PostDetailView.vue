@@ -1,21 +1,6 @@
 <template>
   <div class="min-h-screen bg-page">
-    <el-header class="fixed w-full z-10 themed-header">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <router-link to="/" class="text-xl font-bold text-primary flex items-center gap-2">
-          <el-icon><Target /></el-icon> Lost & Found
-        </router-link>
-        <div class="space-x-2">
-          <el-button text @click="$router.push('/forum')" class="text-fg-primary">
-            <el-icon><ArrowLeft /></el-icon> 返回列表
-          </el-button>
-          <el-button v-if="authStore.isAuthenticated" text @click="$router.push('/dashboard')">Dashboard</el-button>
-          <el-button v-else type="primary" @click="$router.push('/login')">登录</el-button>
-        </div>
-      </div>
-    </el-header>
-
-    <div class="content-wrapper py-24">
+    <div class="content-wrapper pt-28 pb-24">
       <!-- Loading -->
       <div v-if="loading" class="py-12">
         <el-skeleton :rows="8" animated class="rounded-lg overflow-hidden" />

@@ -7,7 +7,8 @@ export const useUserStore = defineStore('user', {
     notifications: [],
     unreadCount: 0,
     isLoading: false,
-    error: null
+    error: null,
+    notificationsDrawerOpen: false
   }),
 
   actions: {
@@ -81,6 +82,14 @@ export const useUserStore = defineStore('user', {
       } catch (error) {
         console.error('Mark all notifications read error:', error)
       }
+    },
+
+    setNotificationsDrawer(open) {
+      this.notificationsDrawerOpen = !!open
+    },
+
+    toggleNotificationsDrawer() {
+      this.notificationsDrawerOpen = !this.notificationsDrawerOpen
     },
 
     clearError() {

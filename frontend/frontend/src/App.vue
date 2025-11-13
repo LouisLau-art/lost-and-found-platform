@@ -10,8 +10,9 @@
       </router-view>
     </main>
 
-    <!-- Notification manager for authenticated users -->
+    <!-- Notification utilities for authenticated users -->
     <NotificationManager v-if="authStore.isAuthenticated" />
+    <NotificationDrawer v-if="authStore.isAuthenticated" />
   </div>
 </template>
 
@@ -19,8 +20,9 @@
 import { onMounted } from 'vue'
 import { RouterView } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-import NotificationManager from '@/components/NotificationManager.vue'
 import TheNavbar from '@/components/TheNavbar.vue'
+import NotificationManager from '@/components/NotificationManager.vue'
+import NotificationDrawer from '@/components/NotificationDrawer.vue'
 
 const authStore = useAuthStore()
 

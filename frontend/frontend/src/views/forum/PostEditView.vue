@@ -1,17 +1,7 @@
 <template>
   <div class="min-h-screen bg-page">
-    <el-header class="themed-header shadow">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <router-link to="/" class="text-xl font-bold text-fg-primary hover-text-primary">Lost & Found Platform</router-link>
-        <div class="space-x-2">
-          <el-button text @click="goBack">← 返回详情</el-button>
-          <el-button text @click="$router.push('/dashboard')">Dashboard</el-button>
-        </div>
-      </div>
-    </el-header>
-
     <!-- Main content -->
-    <div class="content-wrapper py-6">
+    <div class="content-wrapper pt-24 pb-6">
       <div class="max-w-4xl mx-auto">
         <el-card>
           <template #header>

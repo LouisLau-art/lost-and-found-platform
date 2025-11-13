@@ -1,16 +1,6 @@
 <template>
   <div class="min-h-screen" style="background-color: var(--bg-base);">
-    <el-header class="themed-header shadow">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <router-link to="/" class="text-xl font-bold text-fg-primary">🎯 Lost & Found</router-link>
-        <div class="space-x-2">
-          <el-button text @click="$router.push('/dashboard')">← 返回Dashboard</el-button>
-          <el-button text @click="$router.push('/forum')">论坛</el-button>
-        </div>
-      </div>
-    </el-header>
-
-    <div class="content-wrapper py-8">
+    <div class="content-wrapper py-8 pt-24">
       <h1 class="text-3xl font-bold text-fg-primary mb-6">📦 我的认领</h1>
 
       <el-tabs v-model="activeTab" class="claims-tabs">

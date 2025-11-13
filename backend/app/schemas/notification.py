@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field, computed_field
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Dict, Any
 
 class NotificationRead(BaseModel):
     id: int
@@ -11,6 +11,10 @@ class NotificationRead(BaseModel):
     read_at: Optional[datetime] = None
     user_id: int
     title: str = ""
+    related_post_id: Optional[int] = None
+    related_claim_id: Optional[int] = None
+    related_comment_id: Optional[int] = None
+    extra_data: Optional[Dict[str, Any]] = None
     
     @computed_field
     @property

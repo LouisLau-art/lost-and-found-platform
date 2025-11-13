@@ -46,7 +46,6 @@
         <el-table
           :data="posts"
           v-loading="loading"
-          stripe
           style="width: 100%"
           class="admin-table enhanced-table"
           :header-cell-style="{ background: 'var(--bg-muted)', color: 'var(--text-primary)' }"

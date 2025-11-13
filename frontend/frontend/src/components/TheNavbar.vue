@@ -14,9 +14,9 @@
       </nav>
 
       <div class="actions">
-        <router-link :to="{ path: '/dashboard', query: { notifications: '1' } }" class="icon-btn" title="通知">
+        <button class="icon-btn" type="button" title="通知" @click="openNotifications">
           <el-icon><Bell /></el-icon>
-        </router-link>
+        </button>
         <el-dropdown trigger="click">
           <span class="avatar-btn">
             <el-avatar :size="28">{{ initials }}</el-avatar>
@@ -38,10 +38,12 @@
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import { useUserStore } from '@/stores/user'
 import { Bell } from '@element-plus/icons-vue'
 
 const router = useRouter()
 const authStore = useAuthStore()
+const userStore = useUserStore()
 
 const initials = computed(() => {
   if (!authStore.user?.name) return 'U'
@@ -51,6 +53,21 @@ const initials = computed(() => {
 const logout = () => {
   authStore.logout()
   router.push('/login')
+}
+
+const openNotifications = async () => {
+  try {
+    if (!userStore.notifications.length) {
+      await userStore.getNotifications()
+    }
+    if (userStore.unreadCount === 0) {
+      await userStore.getUnreadCount()
+    }
+  } catch (error) {
+    console.error('Failed to refresh notifications before opening drawer:', error)
+  }
+
+  userStore.setNotificationsDrawer(true)
 }
 </script>
 
@@ -91,7 +108,27 @@ const logout = () => {
 .link:hover { background: var(--bg-muted); color: var(--text-primary); }
 .active { color: var(--brand-primary) !important; background: var(--bg-muted); }
 .actions { display: flex; align-items: center; gap: 10px; }
-.icon-btn { color: var(--text-secondary); text-decoration: none; }
-.icon-btn:hover { color: var(--brand-primary); }
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--bg-muted);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-base);
+  transition: all 0.2s ease;
+}
+.icon-btn:hover {
+  color: var(--brand-primary);
+  background: rgba(59, 130, 246, 0.18);
+  border-color: var(--brand-primary);
+  box-shadow: var(--shadow-sm);
+}
+.icon-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.35);
+}
 .avatar-btn { cursor: pointer; display: inline-flex; align-items: center; }
 </style>
