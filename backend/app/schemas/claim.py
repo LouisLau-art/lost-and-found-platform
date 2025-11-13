@@ -14,6 +14,8 @@ class PostReadInClaim(BaseModel):
     id: int
     title: str
     images: Optional[List[str]] = None
+    author_id: int
+    author: Optional[UserRead] = None
 
     class Config:
         from_attributes = True

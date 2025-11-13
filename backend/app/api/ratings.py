@@ -42,26 +42,40 @@ def create_rating(
     if existing:
         raise HTTPException(status_code=400, detail="You have already rated this claim")
     
+    # 确定被评价者：由系统根据当前用户身份自动推导，避免前端传错
+    if current_user.id == claim.claimer_id:
+        target_user_id = post.author_id
+    elif current_user.id == post.author_id:
+        target_user_id = claim.claimer_id
+    else:
+        # 理论上不会到这里，前面已校验，但为了安全保底
+        raise HTTPException(status_code=403, detail="Only parties involved can rate")
+
     # 创建评价
     db_rating = Rating(
         claim_id=rating.claim_id,
         rater_id=current_user.id,
-        ratee_id=rating.ratee_id,
+        ratee_id=target_user_id,
         score=rating.score,
-        comment=rating.comment
+        comment=rating.comment,
+        tags=rating.tags
     )
     session.add(db_rating)
     session.commit()
     session.refresh(db_rating)
     
     # 更新被评价者的信用分
-    ratee = session.get(User, rating.ratee_id)
+    ratee = session.get(User, target_user_id)
     if ratee:
-        # 简单的信用分计算：好评+5，中评+0，差评-5
-        if rating.score >= 4:
-            ratee.credit_score += 5
-        elif rating.score <= 2:
-            ratee.credit_score -= 5
+        # 更细化的信用分调整逻辑
+        adjustments = {
+            5: 8,
+            4: 4,
+            3: 0,
+            2: -3,
+            1: -6
+        }
+        ratee.credit_score += adjustments.get(rating.score, 0)
         session.add(ratee)
         session.commit()
     

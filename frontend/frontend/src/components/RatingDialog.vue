@@ -9,16 +9,23 @@
       <!-- 评价对象 -->
       <div class="bg-muted rounded p-4">
         <div class="text-sm text-fg-secondary mb-2">评价对象</div>
-        <div class="flex items-center gap-3">
+
+        <div v-if="loadingRatee" class="flex items-center justify-center py-4">
+          <el-skeleton :rows="2" animated style="width: 100%" />
+        </div>
+        <div v-else-if="rateeUser" class="flex items-center gap-3">
           <div class="w-12 h-12 rounded-full flex items-center justify-center" style="background: var(--bg-surface);">
             <svg class="w-6 h-6 icon-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
           </div>
           <div>
-            <div class="font-medium text-fg-primary">{{ rateeUser?.name }}</div>
-            <div class="text-sm text-fg-secondary">信用分：{{ rateeUser?.credit_score }}</div>
+            <div class="font-medium text-fg-primary">{{ rateeUser.name }}</div>
+            <div class="text-sm text-fg-secondary">信用分：{{ rateeUser.credit_score }}</div>
           </div>
+        </div>
+        <div v-else class="text-sm text-danger">
+          无法获取评价对象信息，请稍后重试。
         </div>
       </div>
 
@@ -36,14 +43,16 @@
           />
         </div>
         <div class="mt-2 text-xs text-fg-secondary">
-          <div v-if="form.score >= 4" class="text-success">
-            ✓ 好评将为对方增加 5 信用分
-          </div>
-          <div v-else-if="form.score === 3" class="text-fg-secondary">
-            中评不影响信用分
-          </div>
-          <div v-else-if="form.score > 0" class="text-danger">
-            ⚠ 差评将扣除对方 5 信用分
+          <div v-if="form.score > 0">
+            <span v-if="creditAdjustments[form.score] > 0" class="text-success">
+              ✓ 此评分将为对方增加 {{ creditAdjustments[form.score] }} 信用分
+            </span>
+            <span v-else-if="creditAdjustments[form.score] === 0" class="text-fg-secondary">
+              此评分不会影响信用分
+            </span>
+            <span v-else class="text-danger">
+              ⚠ 此评分将扣除对方 {{ Math.abs(creditAdjustments[form.score]) }} 信用分
+            </span>
           </div>
         </div>
       </div>
@@ -112,7 +121,7 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
 import message from '@/utils/message'
-import { ratingAPI } from '@/api'
+import { ratingAPI, userAPI } from '@/api'
 import { useAuthStore } from '@/stores/auth'
 
 const props = defineProps({
@@ -143,22 +152,47 @@ const form = ref({
 const submitting = ref(false)
 
 const rateTexts = ['很差', '较差', '一般', '满意', '非常满意']
+const creditAdjustments = {
+  1: -6,
+  2: -3,
+  3: 0,
+  4: 4,
+  5: 8
+}
 
 // 计算被评价者
-const rateeUser = computed(() => {
-  if (!props.claim) return null
-  
-  // 判断当前用户是认领者还是物主
+const rateeUser = ref(null)
+const loadingRatee = ref(false)
+
+const computeRatee = async () => {
+  rateeUser.value = null
+  if (!props.claim) return
+
   const isClaimerRating = props.claim.claimer_id === authStore.user?.id
-  
   if (isClaimerRating) {
-    // 认领者评价物主
-    return props.claim.post?.author
+    const existingAuthor = props.claim.post?.author
+    if (existingAuthor) {
+      rateeUser.value = existingAuthor
+      return
+    }
+
+    const authorId = props.claim.post?.author_id
+    if (!authorId) return
+
+    loadingRatee.value = true
+    try {
+      const res = await userAPI.getPublicInfo(authorId)
+      rateeUser.value = res.data
+    } catch (error) {
+      console.error('Failed to load post author info:', error)
+      message.error('无法加载物主信息，暂时无法评价')
+    } finally {
+      loadingRatee.value = false
+    }
   } else {
-    // 物主评价认领者
-    return props.claim.claimer
+    rateeUser.value = props.claim.claimer || null
   }
-})
+}
 
 // 重置表单
 const resetForm = () => {
@@ -167,6 +201,8 @@ const resetForm = () => {
     comment: ''
   }
   selectedTags.value = []
+  rateeUser.value = null
+  loadingRatee.value = false
 }
 
 // 关闭对话框
@@ -179,6 +215,11 @@ const handleClose = () => {
 const handleSubmit = async () => {
   if (!form.value.score) {
     message.warning('请选择评分')
+    return
+  }
+
+  if (!rateeUser.value) {
+    message.error('无法确定评价对象，请稍后重试')
     return
   }
 
@@ -246,6 +287,7 @@ watch(() => form.value.score, () => {
 watch(() => props.claim, () => {
   if (props.claim) {
     resetForm()
+    computeRatee()
   }
 })
 </script>

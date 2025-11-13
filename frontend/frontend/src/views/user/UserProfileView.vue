@@ -404,13 +404,15 @@ onMounted(async () => {
 }
 
 /* ===== Top Navigation ===== */
+
 .top-nav {
-  background-color: rgba(255, 255, 255, 0.95);
+  background-color: rgba(24, 24, 28, 0.85);
   border-bottom: 1px solid var(--border-base);
   position: sticky;
   top: 0;
   z-index: 100;
   backdrop-filter: blur(8px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
 }
 
 .nav-content {
@@ -427,7 +429,7 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
-  color: var(--text-primary);
+  color: #fff;
   text-decoration: none;
   font-size: 1.5rem;
   font-weight: 700;
@@ -444,6 +446,7 @@ onMounted(async () => {
 
 .logo-text {
   font-weight: 700;
+  color: #fff;
 }
 
 .nav-actions {
@@ -453,7 +456,7 @@ onMounted(async () => {
 }
 
 .nav-btn {
-  color: var(--text-secondary);
+  color: #fff;
   font-weight: 500;
 }
 
@@ -461,7 +464,6 @@ onMounted(async () => {
   color: var(--text-primary);
 }
 
-/* ===== Main Container ===== */
 .main-container {
   max-width: 1200px;
   margin: 0 auto;

@@ -117,7 +117,43 @@
             <div class="flex flex-wrap items-center justify-between mt-6 pt-6 card-footer gap-4">
               <div class="flex gap-2">
                 <el-button
-                  v-if="!post.is_claimed && canClaim"
+                  v-if="post.is_claimed"
+                  type="success"
+                  disabled
+                  size="large"
+                >
+                  <el-icon><Check /></el-icon>
+                  已认领
+                </el-button>
+                <el-button
+                  v-else-if="hasApprovedClaim"
+                  type="success"
+                  disabled
+                  size="large"
+                >
+                  <el-icon><Check /></el-icon>
+                  认领已通过
+                </el-button>
+                <el-button
+                  v-else-if="hasPendingClaim"
+                  type="warning"
+                  disabled
+                  size="large"
+                >
+                  <el-icon><Time /></el-icon>
+                  已提交认领，请等待物主确认
+                </el-button>
+                <el-button
+                  v-else-if="hasRejectedClaim"
+                  type="info"
+                  disabled
+                  size="large"
+                >
+                  <el-icon><InfoFilled /></el-icon>
+                  认领请求已被拒绝
+                </el-button>
+                <el-button
+                  v-else-if="canClaim"
                   type="primary"
                   size="large"
                   @click="handleClaim"
@@ -125,9 +161,6 @@
                 >
                   <el-icon><Check /></el-icon>
                   我要认领
-                </el-button>
-                <el-button v-if="post.is_claimed" type="success" disabled size="large">
-                  <el-icon><Check /></el-icon> 已认领
                 </el-button>
                 <el-button
                   v-if="isAuthor && !post.is_claimed"
@@ -404,6 +437,7 @@ const error = ref(null)
 const commentContent = ref('')
 const submittingComment = ref(false)
 const handlingClaim = ref(false)
+const myClaim = ref(null)
 
 // 计算属性
 const isAuthor = computed(() => {
@@ -413,12 +447,21 @@ const isAuthor = computed(() => {
 // 编辑帖子 - 函数定义在文件后续部分
 
 const canClaim = computed(() => {
-  return authStore.isAuthenticated && !isAuthor.value && post.value?.item_type === 'found'
+  if (!authStore.isAuthenticated || isAuthor.value) return false
+  if (post.value?.item_type !== 'found') return false
+  if (myClaim.value && ['pending', 'approved'].includes(myClaim.value.status)) {
+    return false
+  }
+  return true
 })
 
 const canViewContact = computed(() => {
   return authStore.isAuthenticated
 })
+
+const hasPendingClaim = computed(() => myClaim.value?.status === 'pending')
+const hasApprovedClaim = computed(() => myClaim.value?.status === 'approved')
+const hasRejectedClaim = computed(() => myClaim.value?.status === 'rejected')
 
 const hasDetails = computed(() => {
   return post.value?.location || post.value?.item_time || (post.value?.contact_info && canViewContact.value)
@@ -487,6 +530,12 @@ const loadPost = async () => {
       claimRequests.value = []
     }
 
+    if (authStore.isAuthenticated && !isAuthor.value) {
+      await refreshMyClaim()
+    } else {
+      myClaim.value = null
+    }
+
     // 加载匹配推荐
     if (post.value.item_type !== 'general') {
       try {
@@ -548,18 +597,34 @@ const handleClaim = async () => {
       post_id: post.value.id,
       message: claimMessage || null
     })
-    
+
     message.success('认领请求已提交，等待物主确认')
+    await refreshMyClaim()
     await loadPost()
   } catch (err) {
     if (err !== 'cancel') {
       const detail = err?.response?.data?.detail
       if (typeof detail === 'string' && detail.toLowerCase().includes('already have a pending')) {
-        message.warning('You already have a pending claim on this item.')
+        message.warning('已提交认领请求，请等待物主确认')
+        await refreshMyClaim()
       } else {
         message.error(detail || '提交失败')
       }
     }
+  }
+}
+
+const refreshMyClaim = async () => {
+  if (!authStore.isAuthenticated || isAuthor.value || !post.value?.id) {
+    myClaim.value = null
+    return
+  }
+
+  try {
+    const res = await claimAPI.getMyClaims()
+    myClaim.value = res.data.find(claim => claim.post_id === post.value.id && claim.status !== 'cancelled') || null
+  } catch (err) {
+    console.error('Failed to load user claim status:', err)
   }
 }
 

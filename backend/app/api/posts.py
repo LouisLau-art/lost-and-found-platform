@@ -404,8 +404,6 @@ def get_matching_posts(
                       location_score * 0.15 + 
                       time_score * 0.15)
         
-        # Store score as temporary attribute
-        post.similarity_score = round(final_score, 2)
         scored_posts.append((final_score, post))
     
     # 5) Sort by score and filter

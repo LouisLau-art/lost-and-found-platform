@@ -63,7 +63,10 @@ async def create_claim(
     # Reload with relationships for nested serialization
     created = session.exec(
         select(Claim)
-        .options(selectinload(Claim.post), selectinload(Claim.claimer))
+        .options(
+            selectinload(Claim.post).selectinload(Post.author),
+            selectinload(Claim.claimer)
+        )
         .where(Claim.id == db_claim.id)
     ).first()
     return created
@@ -76,7 +79,10 @@ def get_my_claims(
     """获取我提交的认领请求"""
     claims = session.exec(
         select(Claim)
-        .options(selectinload(Claim.post), selectinload(Claim.claimer))
+        .options(
+            selectinload(Claim.post).selectinload(Post.author),
+            selectinload(Claim.claimer)
+        )
         .where(Claim.claimer_id == current_user.id)
         .order_by(Claim.created_at.desc())
     ).all()
@@ -107,7 +113,10 @@ def get_received_claims(
 
     claims = session.exec(
         select(Claim)
-        .options(selectinload(Claim.post), selectinload(Claim.claimer))
+        .options(
+            selectinload(Claim.post).selectinload(Post.author),
+            selectinload(Claim.claimer)
+        )
         .where(Claim.post_id.in_(post_ids))
         .order_by(Claim.created_at.desc())
     ).all()
@@ -134,7 +143,10 @@ def get_post_claims(
     
     claims = session.exec(
         select(Claim)
-        .options(selectinload(Claim.post), selectinload(Claim.claimer))
+        .options(
+            selectinload(Claim.post).selectinload(Post.author),
+            selectinload(Claim.claimer)
+        )
         .where(Claim.post_id == post_id)
         .order_by(Claim.created_at.desc())
     ).all()
